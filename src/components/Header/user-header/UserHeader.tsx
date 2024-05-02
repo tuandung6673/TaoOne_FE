@@ -7,7 +7,7 @@ function UserHeader() {
       <div className={classes.header}>
         <div className={classes.header_main}>
           <div className={`${classes.header_left}`}>
-            <a href="/" title="Trang chủ">
+            <a href="/home" title="Trang chủ">
               <img className={classes.logo} src={headerLogo} alt="Logo" />
             </a>
           </div>

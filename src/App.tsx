@@ -3,6 +3,7 @@ import UserLayout from './layouts/User/UserLayout';
 import AdminLayout from './layouts/Admin/AdminLayout';
 import './App.scss';
 import Home from './components/home/Home';
+import AllCategory from './components/all-category/AllCategory';
 
 // import TrangChu from './components/trang-chu/TrangChu';
 // import TrangChu2 from './components/trang-chu-2/TrangChu2';
@@ -14,7 +15,7 @@ function App() {
         <Routes>
           <Route path="" element={<UserLayout />}>
             <Route path='home' element={<Home />} />
-            {/* <Route path="san-pham" element={<Footer />} />  */}
+            <Route path='san-pham' element={<AllCategory />} />
           </Route>
           <Route path="admin" element={<AdminLayout />} />
         </Routes>

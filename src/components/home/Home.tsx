@@ -1,8 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { dummnyCategory, dummySlider } from "../../dummyDatas/dummyData";
 import classes from "./Home.module.scss";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import 'swiper/scss/navigation';
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+
 interface Slider {
     img: string;
     name: string;
@@ -67,19 +73,39 @@ function Home() {
                 <div>
                     {category.map((product, index) => (
                         <div key={index} className={classes.product_wrapper}>
-                            <h2 style={{textAlign: 'center'}}>{product.ctgName}</h2>
-                            <div className={classes.product_list}>
+                            <h2 style={{ textAlign: "center" }}>
+                                {product.ctgName}
+                            </h2>
+                            <Swiper
+                                spaceBetween={25}
+                                slidesPerView={4}
+                                modules={[Navigation, Pagination, Scrollbar, A11y]}
+                                navigation
+                            >
                                 {product.listItems.map((item, index) => (
-                                    <div key={index} className={classes.product}>
-                                        {/* {(item.price !== item.salePrice) && <span className={classes.discount_percent}>SALE</span>} */}
+                                    <SwiperSlide
+                                        key={index}
+                                        className={classes.product}
+                                    >
+                                        {/* Your product content */}
                                         <div className={classes.product_img}>
-                                            <img src={item.image} alt={item.name}/>
+                                            <img
+                                                src={item.image}
+                                                alt={item.name}
+                                            />
                                         </div>
-                                        <p className={classes.product_name}>{item.name}</p>
-                                        <p className={classes.product_price}>{item.salePrice.toLocaleString('vi-VN')}đ</p>
-                                    </div>
+                                        <p className={classes.product_name}>
+                                            {item.name}
+                                        </p>
+                                        <p className={classes.product_price}>
+                                            {item.salePrice.toLocaleString(
+                                                "vi-VN"
+                                            )}
+                                            đ
+                                        </p>
+                                    </SwiperSlide>
                                 ))}
-                            </div>
+                            </Swiper>
                         </div>
                     ))}
                 </div>

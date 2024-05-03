@@ -42,36 +42,3 @@
         margin: 0 -10px;
     }
 }
-
-.product {
-    background: #FFFFFF;
-    border-radius: 20px;
-    padding: 20px 0 25px 0;
-    margin: 4px 0;
-    &:hover {
-        box-shadow: -4px -4px 8px rgb(134,134,134,0.2), 4px 4px 8px rgb(28,28,28,0.4);
-        transition: .1s ease-in-out;
-    }
-}
-
-.product {
-    &_img {
-        display: flex;
-        justify-content: center;
-        img {
-            width: 250px;
-        }
-        // height: 250px;
-    }
-    &_name {
-        text-align: center;
-        padding: 0 15px;
-    }
-    &_price {
-        text-align: center;
-        margin-top: 30px;
-        margin-bottom: 0;
-        font-weight: bold;
-        // margin-top: 20px ;
-    }
-}

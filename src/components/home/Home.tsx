@@ -6,8 +6,9 @@ import { dummnyCategory, dummySlider } from "../../dummyDatas/dummyData";
 import classes from "./Home.module.scss";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import 'swiper/scss/navigation';
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import "swiper/scss/navigation";
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+import ProductItem from "../product-item/ProductItem";
 
 interface Slider {
     img: string;
@@ -79,30 +80,20 @@ function Home() {
                             <Swiper
                                 spaceBetween={25}
                                 slidesPerView={4}
-                                modules={[Navigation, Pagination, Scrollbar, A11y]}
-                                navigation
+                                modules={[
+                                    Navigation,
+                                    Pagination,
+                                    Scrollbar,
+                                    A11y,
+                                ]}
+                                // navigation
                             >
                                 {product.listItems.map((item, index) => (
                                     <SwiperSlide
                                         key={index}
                                         className={classes.product}
                                     >
-                                        {/* Your product content */}
-                                        <div className={classes.product_img}>
-                                            <img
-                                                src={item.image}
-                                                alt={item.name}
-                                            />
-                                        </div>
-                                        <p className={classes.product_name}>
-                                            {item.name}
-                                        </p>
-                                        <p className={classes.product_price}>
-                                            {item.salePrice.toLocaleString(
-                                                "vi-VN"
-                                            )}
-                                            đ
-                                        </p>
+                                        <ProductItem productItem={item} />
                                     </SwiperSlide>
                                 ))}
                             </Swiper>

@@ -1,6 +1,6 @@
 import classes from "./UserHeader.module.scss";
 import headerLogo from "../../../images/Tao one den.png";
-
+import { AllRouteType } from "../../../constants/constants";
 function UserHeader() {
   return (
     <>
@@ -14,27 +14,27 @@ function UserHeader() {
           <div className={`${classes.header_center}`}>
             <ul>
               <li>
-                <a href="/watch" title="">
+                <a href={'/' + AllRouteType.watch} title="">
                   Watch
                 </a>
               </li>
               <li>
-                <a href="/ipad" title="">
+                <a href={'/' + AllRouteType.ipad} title="">
                   iPad
                 </a>
               </li>
               <li>
-                <a href="/macbook" title="">
+                <a href={'/' + AllRouteType.macbook} title="">
                   Macbook
                 </a>
               </li>
               <li>
-                <a href="/airpods" title="">
+                <a href={'/' + AllRouteType.airpod} title="">
                   Airpods
                 </a>
               </li>
               <li>
-                <a href="/accessories" title="">
+                <a href={'/' + AllRouteType.accessories} title="">
                   Phụ kiện
                 </a>
               </li>

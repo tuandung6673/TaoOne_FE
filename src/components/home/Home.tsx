@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom'
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { dummnyCategory, dummySlider } from "../../dummyDatas/dummyData";
@@ -31,6 +32,7 @@ interface Category {
 function Home() {
     const [slide, setSlide] = useState<Slider[]>([]);
     const [category, setCategory] = useState<Category[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Chuyển đổi mỗi đối tượng từ dummySilder sang cấu trúc Slider
@@ -41,6 +43,10 @@ function Home() {
         setSlide(formattedSlide);
         setCategory(dummnyCategory);
     }, []);
+
+    const handleAllCategory = (ctgName : string) => {
+        navigate('/' + ctgName)
+    }
 
     return (
         <div className={classes.wrapper}>
@@ -63,7 +69,7 @@ function Home() {
             <div className={classes.main}>
                 <div className={classes.category}>
                     {category.map((ctg, index) => (
-                        <div key={index} className={classes.category_item}>
+                        <div key={index} className={classes.category_item} onClick={() => handleAllCategory(ctg.ctgName)}>
                             <div className={classes.item_img}>
                                 <img src={ctg.ctgImage} alt={ctg.ctgImage} />
                             </div>

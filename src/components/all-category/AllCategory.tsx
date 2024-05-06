@@ -28,7 +28,7 @@ interface Category {
 function AllCategory() {
     const [banner, setBanner] = useState<BannerDetail[]>([]);
     const [category, setCategory] = useState<Category[]>([]);
-    const {categoryName} = useParams();
+    const { categoryName } = useParams();
     
     useEffect(() => {
         setBanner(bannerDetail);

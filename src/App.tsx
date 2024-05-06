@@ -15,7 +15,7 @@ function App() {
         <Routes>
           <Route path="" element={<UserLayout />}>
             <Route index element={<Home />} />
-            <Route path='san-pham' element={<AllCategory />} />
+            <Route path='/:categoryName' element={<AllCategory />} />
           </Route>
           <Route path="admin" element={<AdminLayout />} />
         </Routes>

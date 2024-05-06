@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { bannerDetail, dummnyCategory } from "../../dummyDatas/dummyData";
@@ -28,16 +28,12 @@ interface Category {
 function AllCategory() {
     const [banner, setBanner] = useState<BannerDetail[]>([]);
     const [category, setCategory] = useState<Category[]>([]);
-
+    const {categoryName} = useParams();
+    
     useEffect(() => {
         setBanner(bannerDetail);
         setCategory(dummnyCategory);
     }, []);
-
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const categoryName = queryParams.get("category");
-    console.log(categoryName);
     
     return (
         <div className={classes.main}>

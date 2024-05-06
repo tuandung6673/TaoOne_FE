@@ -7,34 +7,34 @@ function UserHeader() {
       <div className={classes.header}>
         <div className={classes.header_main}>
           <div className={`${classes.header_left}`}>
-            <a href="/home" title="Trang chủ">
+            <a href="/" title="Trang chủ">
               <img className={classes.logo} src={headerLogo} alt="Logo" />
             </a>
           </div>
           <div className={`${classes.header_center}`}>
             <ul>
               <li>
-                <a href="/san-pham?category=watch" title="">
+                <a href="/watch" title="">
                   Watch
                 </a>
               </li>
               <li>
-                <a href="/san-pham?category=ipad" title="">
+                <a href="/ipad" title="">
                   iPad
                 </a>
               </li>
               <li>
-                <a href="/san-pham?category=macbook" title="">
+                <a href="/macbook" title="">
                   Macbook
                 </a>
               </li>
               <li>
-                <a href="/san-pham?category=airpods" title="">
+                <a href="/airpods" title="">
                   Airpods
                 </a>
               </li>
               <li>
-                <a href="/san-pham?category=accessories" title="">
+                <a href="/accessories" title="">
                   Phụ kiện
                 </a>
               </li>

@@ -24,14 +24,14 @@ function ProductItem({ productItem }: Props) {
             </div>
             <p className={classes.product_name}>{productItem.name}</p>
             <div className={classes.product_price}>
-                <span className={classes.price_sale}>
-                    {productItem.salePrice.toLocaleString("vi-VN")}đ
-                </span>
                 {productItem.price !== productItem.salePrice && (
                     <span className={classes.price}>
                         {productItem.price.toLocaleString("vi-VN")}đ
                     </span>
                 )}
+                <span className={classes.price_sale}>
+                    {productItem.salePrice.toLocaleString("vi-VN")}đ
+                </span>
             </div>
         </div>
     );

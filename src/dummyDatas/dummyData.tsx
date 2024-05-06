@@ -19,7 +19,7 @@ export const dummySlider = [
 
 export const dummnyCategory = [
     {
-        ctgName: "Apple Watch",
+        ctgName: "watch",
         ctgImage:
             "https://manhquanstore.com/wp-content/uploads/2022/08/img-catewatch.png",
         listItems: [
@@ -74,7 +74,7 @@ export const dummnyCategory = [
         ],
     },
     {
-        ctgName: "iPad",
+        ctgName: "ipad",
         ctgImage:
             "https://manhquanstore.com/wp-content/uploads/2022/08/img-cateipad.png",
         listItems: [
@@ -129,7 +129,7 @@ export const dummnyCategory = [
         ],
     },
     {
-        ctgName: "Macbook",
+        ctgName: "macbook",
         ctgImage:
             "https://manhquanstore.com/wp-content/uploads/2022/08/img-catemac-300x136.png",
         listItems: [
@@ -184,7 +184,7 @@ export const dummnyCategory = [
         ],
     },
     {
-        ctgName: "Airpod",
+        ctgName: "airpods",
         ctgImage:
             "https://manhquanstore.com/wp-content/uploads/2022/08/img-catesound-300x220.png",
         listItems: [

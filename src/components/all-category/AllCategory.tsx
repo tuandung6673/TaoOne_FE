@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-// import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { bannerDetail, dummnyCategory } from "../../dummyDatas/dummyData";
@@ -34,13 +34,14 @@ function AllCategory() {
         setCategory(dummnyCategory);
     }, []);
 
-    // const location = useLocation();
-    // const queryParams = new URLSearchParams(location.search);
-    // const category = queryParams.get("category");
-
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const categoryName = queryParams.get("category");
+    console.log(categoryName);
+    
     return (
         <div className={classes.main}>
-            <h1>Watch</h1>
+            <h1>{categoryName}</h1>
             <div className={classes.carousel_custom}>
                 <Carousel
                     autoPlay={true}
@@ -61,7 +62,7 @@ function AllCategory() {
             <div className={classes.sort}>Xếp theo</div>
             <div className={classes.category_wrapper}>
                 {category.map((category) => (
-                    category.ctgName === 'Apple Watch' && <div key={category.ctgName}>
+                    category.ctgName === categoryName && <div key={category.ctgName}>
                         <div className={classes.category_item}>
                             {category.listItems.map((item) => (
                                 <div>

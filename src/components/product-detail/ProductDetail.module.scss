@@ -1,4 +1,14 @@
-.main {
+.product {
     width: 65%;
     margin: 0 auto;
+    &_up {
+        display: flex;
+        padding-top: 40px;
+    }
+    &_rating {
+        display: flex;
+    }
+    &_action {
+        display: flex;
+    }
 }

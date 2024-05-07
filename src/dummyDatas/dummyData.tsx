@@ -232,3 +232,39 @@ export const bannerDetail = [
     {image: 'https://manhquanstore.com/wp-content/uploads/2022/08/2400-600-1920x480-1.png', name: ''},
     {image: 'https://manhquanstore.com/wp-content/uploads/2022/08/2400-600-1920x480-1-1.png', name: ''}
 ]
+
+export const dummyDetail = {
+    name: 'Apple Watch Ultra 2 GPS + LTE Alpine Loop',
+    image: 'https://manhquanstore.com/wp-content/uploads/2023/10/ultra-2.webp',
+    listImages: [
+        {
+            image: 'https://manhquanstore.com/wp-content/uploads/2022/08/10051103-apple-watch-s7-gps-41mm-vien-nhom-day-cao-su-xanh-duong-1-650x650.jpg',
+            name: '1'
+        },
+        {
+            image: 'https://manhquanstore.com/wp-content/uploads/2022/08/10051103-apple-watch-s7-gps-41mm-vien-nhom-day-cao-su-xanh-duong-1-650x650.jpg',
+            name: '1'
+        },
+        {
+            image: 'https://manhquanstore.com/wp-content/uploads/2022/08/10051103-apple-watch-s7-gps-41mm-vien-nhom-day-cao-su-xanh-duong-1-650x650.jpg',
+            name: '1'
+        },
+        {
+            image: 'https://manhquanstore.com/wp-content/uploads/2022/08/10051103-apple-watch-s7-gps-41mm-vien-nhom-day-cao-su-xanh-duong-1-650x650.jpg',
+            name: '1'
+        },
+        {
+            image: 'https://manhquanstore.com/wp-content/uploads/2022/08/10051103-apple-watch-s7-gps-41mm-vien-nhom-day-cao-su-xanh-duong-1-650x650.jpg',
+            name: '1'
+        },
+        {
+            image: 'https://manhquanstore.com/wp-content/uploads/2022/08/10051103-apple-watch-s7-gps-41mm-vien-nhom-day-cao-su-xanh-duong-1-650x650.jpg',
+            name: '1'
+        }
+    ],
+    price: '17400000',
+    salePrice: '14500000',
+    categoryType: 'Apple Watch Ultra',
+    description: '',
+    specs: ''
+}

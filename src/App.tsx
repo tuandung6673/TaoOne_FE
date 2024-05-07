@@ -1,13 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import UserLayout from './layouts/User/UserLayout';
-import AdminLayout from './layouts/Admin/AdminLayout';
-import Home from './components/home/Home';
-import AllCategory from './components/all-category/AllCategory';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.scss';
+import AllCategory from './components/all-category/AllCategory';
+import Home from './components/home/Home';
 import ProductDetail from './components/product-detail/ProductDetail';
-
-// import TrangChu from './components/trang-chu/TrangChu';
-// import TrangChu2 from './components/trang-chu-2/TrangChu2';
+import AdminLayout from './layouts/Admin/AdminLayout';
+import UserLayout from './layouts/User/UserLayout';
 
 function App() {
   return (

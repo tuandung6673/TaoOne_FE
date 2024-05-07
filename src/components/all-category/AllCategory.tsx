@@ -7,23 +7,7 @@ import classes from "./AllCategory.module.scss";
 // import { Swiper, SwiperSlide } from "swiper/react";
 // import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import ProductItem from "../product-item/ProductItem";
-
-interface BannerDetail {
-    image: string;
-    name: string;
-}
-
-interface CategoryItem {
-    name: string;
-    image: string;
-    price: number;
-    salePrice: number;
-}
-interface Category {
-    ctgName: string;
-    ctgImage: string;
-    listItems: CategoryItem[];
-}
+import { BannerDetail, Category } from "../../constants/interface";
 
 function AllCategory() {
     const [banner, setBanner] = useState<BannerDetail[]>([]);

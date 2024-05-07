@@ -1,11 +1,5 @@
+import { CategoryItem } from "../../constants/interface";
 import classes from "./ProductItem.module.scss";
-
-interface CategoryItem {
-    name: string;
-    image: string;
-    price: number;
-    salePrice: number;
-}
 
 interface Props {
     productItem: CategoryItem;

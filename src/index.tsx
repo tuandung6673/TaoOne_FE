@@ -5,6 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'primeicons/primeicons.css';
 import 'swiper/css';
+import "primereact/resources/themes/lara-light-cyan/theme.css";
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

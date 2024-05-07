@@ -10,33 +10,16 @@ import "swiper/css";
 import "swiper/scss/navigation";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import ProductItem from "../product-item/ProductItem";
-
-interface Slider {
-    img: string;
-    name: string;
-}
-
-interface CategoryItem {
-    name: string;
-    image: string;
-    price: number;
-    salePrice: number;
-}
-
-interface Category {
-    ctgName: string;
-    ctgImage: string;
-    listItems: CategoryItem[];
-}
+import { Category, Image } from "../../constants/interface";
 
 function Home() {
-    const [slide, setSlide] = useState<Slider[]>([]);
+    const [slide, setSlide] = useState<Image[]>([]);
     const [category, setCategory] = useState<Category[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Chuyển đổi mỗi đối tượng từ dummySilder sang cấu trúc Slider
-        const formattedSlide: Slider[] = dummySlider.map((sl, index) => ({
+        // Chuyển đổi mỗi đối tượng từ dummySilder sang cấu trúc Image
+        const formattedSlide: Image[] = dummySlider.map((sl, index) => ({
             img: sl.img,
             name: sl.name,
         }));

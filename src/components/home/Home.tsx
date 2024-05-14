@@ -1,35 +1,40 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom'
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { dummnyCategory, dummySlider } from "../../dummyDatas/dummyData";
-import classes from "./Home.module.scss";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { json, useNavigate } from "react-router-dom";
 import "swiper/css";
+import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss/navigation";
-import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+import { Category } from "../../constants/interface";
+import ApiService from "../../services/api.service";
 import ProductItem from "../product-item/ProductItem";
-import { Category, Image } from "../../constants/interface";
+import classes from "./Home.module.scss";
+import { dummnyCategory } from "../../dummyDatas/dummyData";
 
 function Home() {
-    const [slide, setSlide] = useState<Image[]>([]);
+    const [slides, setSlides] = useState<any>();
     const [category, setCategory] = useState<Category[]>([]);
     const navigate = useNavigate();
 
+    const fetchSlides = async () => {
+        try {
+            const slideList = await ApiService.getSlide();
+            setSlides(slideList.data.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     useEffect(() => {
-        // Chuyển đổi mỗi đối tượng từ dummySilder sang cấu trúc Image
-        const formattedSlide: Image[] = dummySlider.map((sl, index) => ({
-            img: sl.img,
-            name: sl.name,
-        }));
-        setSlide(formattedSlide);
         setCategory(dummnyCategory);
+        fetchSlides();
     }, []);
 
-    const handleAllCategory = (ctgName : string) => {
-        navigate('/' + ctgName)
-    }
+    const handleAllCategory = (ctgName: string) => {
+        navigate("/" + ctgName);
+    };
 
     return (
         <div className={classes.wrapper}>
@@ -42,7 +47,7 @@ function Home() {
                     showThumbs={false}
                     showStatus={false}
                 >
-                    {slide.map((sl, index) => (
+                    {slides?.map((sl: any, index: any) => (
                         <div key={index} className={classes.slider}>
                             <img src={sl.img} alt={sl.name} />
                         </div>
@@ -52,7 +57,11 @@ function Home() {
             <div className={classes.main}>
                 <div className={classes.category}>
                     {category.map((ctg, index) => (
-                        <div key={index} className={classes.category_item} onClick={() => handleAllCategory(ctg.ctgName)}>
+                        <div
+                            key={index}
+                            className={classes.category_item}
+                            onClick={() => handleAllCategory(ctg.ctgName)}
+                        >
                             <div className={classes.item_img}>
                                 <img src={ctg.ctgImage} alt={ctg.ctgImage} />
                             </div>

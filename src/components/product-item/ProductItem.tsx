@@ -14,7 +14,7 @@ function ProductItem({ productItem }: Props) {
                 </span>
             )}
             <div className={classes.product_img}>
-                <img src={productItem.image} alt={productItem.name} />
+                <img src={productItem.img} alt={productItem.name} />
             </div>
             <p className={classes.product_name}>{productItem.name}</p>
             <div className={classes.product_price}>

@@ -5,7 +5,7 @@ export interface BannerDetail {
 
 export interface CategoryItem {
     name: string;
-    image: string;
+    img: string;
     price: number;
     salePrice: number;
 }
@@ -22,12 +22,29 @@ export interface Image {
 }
 
 export interface ItemDetail {
+    id: string,
+    category_id: string,
+    category_detail_id: string,
+    category_detail_name: string,
+    img: string,
     name: string, 
-    image: string,
-    listImage: Image[],
     price: number,
     salePrice: number,
-    categoryType: string,
     description: string,
     specs: string
+}
+
+export interface HomeCategory {
+    code: string, 
+    id: string, 
+    img: string, 
+    is_show_home: number,
+    name: string,
+    order: number,
+    status: number,
+    products: ItemDetail[]
+}
+
+export interface HomeInterface {
+    categories : HomeCategory[];
 }

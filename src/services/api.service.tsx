@@ -27,6 +27,30 @@ const ApiService = {
             throw error; // Ném lỗi ra để xử lý sau
         }
     },
+
+    getProductList: async (queryParams : string) => {
+        try {
+            const response = await axiosInstance.get(
+                `${environment.baseUrl}/Product/GetProductList?` + queryParams
+            )
+            return response.data; // Trả về dữ liệu từ API
+        } catch (error) {
+            console.error("Error fetching slide list:", error);
+            throw error; // Ném lỗi ra để xử lý sau
+        }
+    },
+
+    getCategoryDetail: async (queryParams : string) => {
+        try {
+            const response = await axiosInstance.get(
+                `${environment.baseUrl}/CategoryDetail/GetCategoryDetailList?` + queryParams
+            )
+            return response.data; // Trả về dữ liệu từ API
+        } catch (error) {
+            console.error("Error fetching slide list:", error);
+            throw error; // Ném lỗi ra để xử lý sau
+        }
+    }
 };
 
 export default ApiService;

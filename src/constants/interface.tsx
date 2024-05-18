@@ -1,6 +1,8 @@
 export interface BannerDetail {
-    image: string;
+    id: string;
+    img: string;
     name: string;
+    screen: string;
 }
 
 export interface CategoryItem {

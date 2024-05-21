@@ -18,9 +18,10 @@ export interface Category {
     listItems: CategoryItem[];
 }
 
-export interface Image {
-    img: string;
+export interface CategoryDetail {
+    id: string;
     name: string;
+    category_id: string;
 }
 
 export interface ItemDetail {

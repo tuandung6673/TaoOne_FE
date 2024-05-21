@@ -40,7 +40,7 @@ const ApiService = {
         }
     },
 
-    getCategoryDetail: async (queryParams : string) => {
+    GetCategoryDetailList: async (queryParams : string) => {
         try {
             const response = await axiosInstance.get(
                 `${environment.baseUrl}/CategoryDetail/GetCategoryDetailList?` + queryParams

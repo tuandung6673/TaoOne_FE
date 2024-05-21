@@ -10,3 +10,28 @@
         grid-gap: 40px;
     }
 }
+
+.filter {
+    margin-top: 20px;
+    display: flex;
+    flex-flow: row wrap;
+    &_item {
+        cursor: pointer;
+        color: #AFB7BD;
+        margin-right: 30px;
+        border-bottom: 1px solid transparent;
+        padding: 10px 1px;
+        &:hover {
+            color: #000000;
+            border-bottom: 1px solid #000000;
+            transition: .15s;
+        }
+    }
+    :first-child {
+        margin-left: 0;
+    }
+    .active {
+        color: #000000;
+        border-bottom: 1px solid #000000;
+    }
+}

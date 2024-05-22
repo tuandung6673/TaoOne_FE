@@ -24,18 +24,19 @@ export interface CategoryDetail {
     category_id: string;
 }
 
-export interface ItemDetail {
-    id: string,
-    category_id: string,
-    category_detail_id: string,
-    category_detail_name: string,
-    img: string,
-    name: string, 
-    price: number,
-    salePrice: number,
-    description: string,
-    specs: string
+export class ItemDetail {
+    id: string = '';
+    category_id: string = '';
+    category_detail_id: string = '';
+    category_detail_name: string = '';
+    img: string = '';
+    name: string = ''; 
+    price: number = 0;
+    salePrice: number = 0;
+    description: string = '';
+    specs: string = '';
 }
+
 
 export interface HomeCategory {
     code: string, 

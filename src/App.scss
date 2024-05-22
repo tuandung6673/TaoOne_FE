@@ -3,6 +3,25 @@
     margin: 0 -10px;
 }
 
-// :root {
-//     --swiper-navigation-sides-offset:4rem; /* offset for navigation */
-// }
+.p-breadcrumb {
+    background: none;
+    border: none;
+    padding-left: 0;
+    border-radius: 0;
+}
+
+.p-overlaypanel-content {
+    padding: 10px 0;
+}
+
+.p-button {
+    width: 100%;
+}
+
+.bag {
+    .p-button {
+        background: transparent !important;
+        border: 1px solid #06b6d4 !important;
+        color: #06b6d4 !important;
+    }
+}

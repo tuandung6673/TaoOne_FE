@@ -40,6 +40,18 @@ const ApiService = {
         }
     },
 
+    getProductDetail: async (id : string) => {
+        try {
+            const response = await axiosInstance.get(
+                `${environment.baseUrl}/Product/GetProductDetail?id=` + id
+            )
+            return response.data; // Trả về dữ liệu từ API
+        } catch (error) {
+            console.error("Error fetching slide list:", error);
+            throw error; // Ném lỗi ra để xử lý sau
+        }
+    },
+
     GetCategoryDetailList: async (queryParams : string) => {
         try {
             const response = await axiosInstance.get(

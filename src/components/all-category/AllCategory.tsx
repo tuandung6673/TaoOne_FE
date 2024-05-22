@@ -1,8 +1,10 @@
+import { OverlayPanel } from "primereact/overlaypanel";
 import queryString from "query-string";
 import { useEffect, useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useParams } from "react-router-dom";
+import { SORTFILTER } from "../../constants/constants";
 import {
     BannerDetail,
     CategoryDetail,
@@ -11,13 +13,15 @@ import {
 import ApiService from "../../services/api.service";
 import ProductItem from "../product-item/ProductItem";
 import classes from "./AllCategory.module.scss";
-import { OverlayPanel } from 'primereact/overlaypanel';
-        
+
 function AllCategory() {
     const [banner, setBanner] = useState<BannerDetail[]>([]);
     const [product, setProduct] = useState<ItemDetail[]>([]);
     const [categoryDetail, setCategoryDetail] = useState<CategoryDetail[]>([]);
-    const [activeFilter, setActiveFilter] = useState<string>("all")
+    const [activeFilter, setActiveFilter] = useState<string>("all");
+    const [sortFilterLabel, setSortFilterLabel] =
+        useState<string>("Năm ra mắt");
+    const [sortFilterValue, setSortFilterValue] = useState<string>("year");
     const { categoryName } = useParams<{ categoryName?: string }>();
     const op = useRef<OverlayPanel>(null);
     const slideParams = {
@@ -42,7 +46,10 @@ function AllCategory() {
         }
     };
 
-    const fetchCategory = async (categoryName: string, categoryDetailId: string) => {
+    const fetchCategory = async (
+        categoryName: string,
+        categoryDetailId: string
+    ) => {
         try {
             const productParams = {
                 category_code: categoryName || "",
@@ -65,7 +72,10 @@ function AllCategory() {
             const productList = await ApiService.GetCategoryDetailList(
                 queryParams
             );
-            const fakeData = [...productList.data.data, ...productList.data.data]
+            const fakeData = [
+                ...productList.data.data,
+                ...productList.data.data,
+            ];
             setCategoryDetail(fakeData);
         } catch (error) {
             console.error(error);
@@ -75,6 +85,11 @@ function AllCategory() {
     const handleFilterClick = (filterId: string) => {
         setActiveFilter(filterId);
         fetchCategory(categoryName || "", filterId === "all" ? "" : filterId);
+    };
+
+    const handleSortClick = (sortId: any) => {
+        setSortFilterLabel(sortId?.label);
+        setSortFilterValue(sortId?.value);
     };
 
     return (
@@ -97,22 +112,73 @@ function AllCategory() {
                 </Carousel>
             </div>
             <div className={classes.filter}>
-                <div onClick={() => handleFilterClick('all')} className={`${classes.filter_item} ${activeFilter === 'all' ? classes.active : ''}`}>Tất cả</div>
+                <div
+                    onClick={() => handleFilterClick("all")}
+                    className={`${classes.filter_item} ${
+                        activeFilter === "all" ? classes.active : ""
+                    }`}
+                >
+                    Tất cả
+                </div>
                 {categoryDetail.map((detail: CategoryDetail) => (
-                    <div className={`${classes.filter_item} ${activeFilter === detail.id ? classes.active : ''}`} key={detail.id} onClick={() => handleFilterClick(detail.id)}>{detail.name}</div>
+                    <div
+                        className={`${classes.filter_item} ${
+                            activeFilter === detail.id ? classes.active : ""
+                        }`}
+                        key={detail.id}
+                        onClick={() => handleFilterClick(detail.id)}
+                    >
+                        {detail.name}
+                    </div>
                 ))}
             </div>
-            <div className={classes.sort} onClick={(e) => op.current?.toggle(e)}>Xếp theo</div>
+            <div className={classes.sort}>
+                <span onClick={(e) => op.current?.toggle(e)}>
+                    Xếp theo: {sortFilterLabel}{" "}
+                    <i className="pi pi-chevron-down"></i>
+                </span>
+            </div>
             <OverlayPanel ref={op}>
-                <img src="/images/product/bamboo-watch.jpg" alt="Bamboo Watch"></img>
+                <div
+                    className={`${classes.sort_option} ${
+                        sortFilterValue === SORTFILTER.YEAR.value
+                            ? classes.sort_active
+                            : ""
+                    }`}
+                    onClick={() => handleSortClick(SORTFILTER.YEAR)}
+                >
+                    {sortFilterValue === SORTFILTER.YEAR.value && <span style={{marginRight: '8px'}}>
+                        <i className="pi pi-check"></i></span>}
+                    {SORTFILTER.YEAR.label}
+                </div>
+                <div
+                    className={`${classes.sort_option} ${
+                        sortFilterValue === SORTFILTER.PRICE_ASC.value
+                            ? classes.sort_active
+                            : ""
+                    }`}
+                    onClick={() => handleSortClick(SORTFILTER.PRICE_ASC)}
+                >
+                    {sortFilterValue === SORTFILTER.PRICE_ASC.value && <span style={{marginRight: '8px'}}>
+                        <i className="pi pi-check"></i></span>}
+                    {SORTFILTER.PRICE_ASC.label}
+                </div>
+                <div
+                    className={`${classes.sort_option} ${
+                        sortFilterValue === SORTFILTER.PRICE_DESC.value
+                            ? classes.sort_active
+                            : ""
+                    }`}
+                    onClick={() => handleSortClick(SORTFILTER.PRICE_DESC)}
+                >
+                    {sortFilterValue === SORTFILTER.PRICE_DESC.value && <span style={{marginRight: '8px'}}>
+                        <i className="pi pi-check"></i></span>}
+                    {SORTFILTER.PRICE_DESC.label}
+                </div>
             </OverlayPanel>
             <div className={classes.category_wrapper}>
                 {product.map((category: ItemDetail) => (
-                    <div key={category.id}>
-                        <div>
-                            <ProductItem productItem={category} />
-                        </div>
-                    </div>
+                        <ProductItem key={category.id} productItem={category} />
                 ))}
             </div>
         </div>

@@ -1,15 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { BreadCrumb } from "primereact/breadcrumb";
-import classes from "./ProductDetail.module.scss";
-import { AllRouteType } from "../../constants/constants";
+import { Button } from "primereact/button";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { dummyDetail } from "../../dummyDatas/dummyData";
-import React, { useState, useEffect, useMemo } from "react";
-import { Button } from 'primereact/button';
-import { Rating } from "primereact/rating";
+import { AllRouteType } from "../../constants/constants";
+import { ItemDetail } from "../../constants/interface";
+import saleLogo from "../../images/sale_tag_2.png";
+import ApiService from "../../services/api.service";
+import classes from "./ProductDetail.module.scss";
 
 function ProductDetail() {
-    const [detailData, setDetailData] = useState<any>();
+    const [detailData, setDetailData] = useState<ItemDetail>(new ItemDetail());
     const { categoryName, itemId } = useParams();
     const [breadcrumbItems, setBreadcrumbItems] = useState<any[]>([]);
     const home = { icon: "pi pi-home", url: "/" };
@@ -49,8 +50,14 @@ function ProductDetail() {
         [categoryName]
     );
 
+    const formatNumber = (number : number) => {
+        return new Intl.NumberFormat('de-DE').format(number);
+    };
+
     useEffect(() => {
-        setDetailData(dummyDetail);
+        if(itemId) {
+            fetchProductDetail(itemId);
+        }
     }, [itemId]);
 
     useEffect(() => {
@@ -59,19 +66,51 @@ function ProductDetail() {
                 // Tạo breadcrumb cho các loại sản phẩm
                 ...breadcrumItem,
                 {
-                    label: detailData.categoryType,
+                    label: detailData.category_detail_name,
                 },
             ];
             setBreadcrumbItems(newBreadcrumbItems);
         }
     }, [detailData, breadcrumItem]);
 
+    const fetchProductDetail = async (id : string) => {
+        try {
+            const productDetail = await ApiService.getProductDetail(id);
+            setDetailData(productDetail.data)
+        } catch (error) {
+            
+        }
+    }
+
     return (
         <div className={classes.product}>
             <div className={classes.product_up}>
                 <div className={classes.product_left}>
-                    {detailData && detailData.image && (
-                        <img src={detailData.image} alt={detailData.name} />
+                    {detailData && detailData.img && (
+                        <img
+                            className={classes.product_image}
+                            src={detailData.img}
+                            alt={detailData.name}
+                        />
+                    )}
+                    {detailData?.price !== detailData?.salePrice && (
+                        <div>
+                            <img
+                                className={classes.sale_logo}
+                                src={saleLogo}
+                                alt="logo"
+                            />
+                            <span className={classes.sale_percent}>
+                                -
+                                {(
+                                    (1 -
+                                        detailData.salePrice /
+                                            detailData.price) *
+                                    100
+                                ).toFixed(0)}
+                                %
+                            </span>
+                        </div>
                     )}
                 </div>
                 <div className={classes.product_right}>
@@ -83,37 +122,37 @@ function ProductDetail() {
                             {detailData.name}
                         </div>
                     )}
-                    <div className={classes.product_rating}>
+                    {/* <div className={classes.product_rating}>
                         <div>
                             <Rating value={4} readOnly cancel={false} />
                         </div>
                         |<span>5 Đánh giá</span>|<span>Nhận xét</span>
-                    </div>
+                    </div> */}
                     {detailData && detailData.price && detailData.salePrice && (
                         <div>
                             <span className={classes.sale_price}>
-                                {detailData.salePrice.toLocaleString("vi-VN")}đ
+                                {formatNumber(detailData.salePrice)}đ
                             </span>
                             <span className={classes.price}>
-                                {detailData.price.toLocaleString("vi-VN")}đ
+                                {formatNumber(detailData.price)}đ
                             </span>
-                            {detailData.price !== detailData.salePrice && (
-                                <span className={classes.sale_percent}>
-                                    -
-                                    {(
-                                        (1 - detailData.salePrice /detailData.price) *100
-                                    ).toFixed(0)}
-                                    %
-                                </span>
-                            )}
                         </div>
                     )}
+                    <div className={classes.status}>
+                        Tình trạng: Còn sản phẩm
+                    </div>
                     <div className={classes.product_action}>
-                        <div>
-                        <Button label="Mua ngay" icon="pi pi-shopping-cart" />
+                        <div className={classes.cart}>
+                            <Button
+                                label="Mua ngay"
+                                icon="pi pi-shopping-cart"
+                            />
                         </div>
-                        <div>
-                        <Button label="Thêm vào giỏ hàng" icon="pi pi-shopping-bag" />
+                        <div className={classes.bag}>
+                            <Button
+                                label="Thêm vào giỏ hàng"
+                                icon="pi pi-shopping-bag"
+                            />
                         </div>
                     </div>
                 </div>

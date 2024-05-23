@@ -5,16 +5,17 @@ import { useParams } from "react-router-dom";
 
 interface Props {
     productItem: ItemDetail;
+    categoryCode?: string;
 }
 
-function ProductItem({ productItem }: Props) {
+function ProductItem({ productItem, categoryCode }: Props) {
     const navigate = useNavigate();
     const { categoryName } = useParams<{ categoryName?: string }>();
     const directProductDetail = (productId: string) => {
         if(categoryName) {
             navigate(`${productId}`)
         } else {
-            console.log('12312312312');
+            navigate(`${categoryCode}/${productId}`)
         }
     }
     return (

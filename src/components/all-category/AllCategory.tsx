@@ -72,11 +72,7 @@ function AllCategory() {
             const productList = await ApiService.GetCategoryDetailList(
                 queryParams
             );
-            const fakeData = [
-                ...productList.data.data,
-                ...productList.data.data,
-            ];
-            setCategoryDetail(fakeData);
+            setCategoryDetail(productList.data.data);
         } catch (error) {
             console.error(error);
         }
@@ -178,7 +174,7 @@ function AllCategory() {
             </OverlayPanel>
             <div className={classes.category_wrapper}>
                 {product.map((category: ItemDetail) => (
-                        <ProductItem key={category.id} productItem={category} />
+                    <ProductItem productItem={category} />
                 ))}
             </div>
         </div>

@@ -29,7 +29,7 @@ function UserHeader() {
                 </a>
               </li>
               <li>
-                <a href={'/' + AllRouteType.airpod} title="">
+                <a href={'/' + AllRouteType.airpods} title="">
                   Airpods
                 </a>
               </li>

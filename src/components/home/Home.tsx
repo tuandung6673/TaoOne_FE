@@ -104,7 +104,7 @@ function Home() {
                                         key={index}
                                         className={classes.product}
                                     >
-                                        <ProductItem productItem={item} />
+                                        <ProductItem productItem={item} categoryCode={product.code}/>
                                     </SwiperSlide>
                                 ))}
                             </Swiper>

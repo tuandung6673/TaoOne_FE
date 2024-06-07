@@ -1,9 +1,12 @@
-.product {
+.product1 {
     width: 65%;
     margin: 0 auto;
+}
+.product {
     &_up {
         display: flex;
         padding-top: 40px;
+        min-height: 700px;
     }
     &_image {
         max-width: 100%;
@@ -75,6 +78,15 @@
 .status {
     margin: 20px 0;
     color: red;
+}
+
+.product2 {
+    background: #FFFFFF;
+}
+
+.product_down {
+    width: 65%;
+    margin: 0 auto;
 }
 
 

@@ -20,3 +20,8 @@ export const SORTFILTER = {
         value: 'price_desc'
     }
 }
+
+export const ROLE = {
+    // user: 'user',
+    admin: '/admin'
+}

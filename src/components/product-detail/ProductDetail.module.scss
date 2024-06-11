@@ -9,12 +9,19 @@
         min-height: 700px;
     }
     &_image {
-        max-width: 100%;
+        background: #FFFFFF;
+        width: 100%;
         position: absolute;
+        border-radius: 8px;
     }
     &_left {
         width: 50%;
+    }
+    &_left2 {
         position: relative;
+        //////////////////////
+        height: 624px;
+        width: 100%;
     }
     &_right {
         width: 50%;
@@ -89,4 +96,15 @@
     margin: 0 auto;
 }
 
-
+.list_image {
+    margin-top: 10px;
+    img {
+        cursor: pointer;
+        border-radius: 8px;
+        background: #FFFFFF;
+        height: 79px;
+        // width: 50px;
+        width: 100%;
+        object-fit: contain;
+    }
+}

@@ -1,20 +1,44 @@
 export const dummySlider = [
     {
-        img: "https://manhquanstore.com/wp-content/uploads/2022/08/Apple-watch-series-7.png",
+        img: "https://manhquanstore.com/wp-content/uploads/2023/10/ultra-2.webp",
         name: "dummySlider",
     },
     {
-        img: "https://manhquanstore.com/wp-content/uploads/2022/08/2.png",
+        img: "https://manhquanstore.com/wp-content/uploads/2023/10/ultra-do.webp",
         name: "dummySlider",
     },
     {
-        img: "https://manhquanstore.com/wp-content/uploads/2022/08/3.png",
+        img: "https://manhquanstore.com/wp-content/uploads/2023/10/ultra-222.webp",
         name: "dummySlider",
     },
     {
-        img: "https://manhquanstore.com/wp-content/uploads/2022/08/4.png",
+        img: "https://manhquanstore.com/wp-content/uploads/2023/10/ultra-222.webp",
         name: "dummySlider",
     },
+    {
+        img: "https://manhquanstore.com/wp-content/uploads/2023/10/ultra-2.webp",
+        name: "dummySlider",
+    },
+    {
+        img: "https://manhquanstore.com/wp-content/uploads/2023/10/ultra-do.webp",
+        name: "dummySlider",
+    },
+    {
+        img: "https://manhquanstore.com/wp-content/uploads/2023/10/ultra-222.webp",
+        name: "dummySlider",
+    },
+    {
+        img: "https://manhquanstore.com/wp-content/uploads/2023/10/ultra-222.webp",
+        name: "dummySlider",
+    },
+    {
+        img: 'https://manhquanstore.com/wp-content/uploads/2023/09/thep-7-45-webbb.jpeg',
+        name: ''
+    },
+    {
+        img: 'https://manhquanstore.com/wp-content/uploads/2023/09/thep-7-webb.webp',
+        name: ''
+    }
 ];
 
 export const dummnyCategory = [

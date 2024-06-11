@@ -1,19 +1,53 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { Editor } from '@tinymce/tinymce-react';
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
-import { useEffect, useMemo, useState } from "react";
+import { TabPanel, TabView } from 'primereact/tabview';
+import { useEffect, useMemo, useRef, useState } from "react";
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
 import { useParams } from "react-router-dom";
+import "swiper/css";
+import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/scss/navigation";
+import type { Editor as TinyMCEEditor } from 'tinymce';
 import { AllRouteType } from "../../constants/constants";
 import { ItemDetail } from "../../constants/interface";
+import { dummySlider } from "../../dummyDatas/dummyData";
 import saleLogo from "../../images/sale_tag_2.png";
 import ApiService from "../../services/api.service";
 import classes from "./ProductDetail.module.scss";
-import { TabView, TabPanel } from 'primereact/tabview';
-import Zoom from 'react-medium-image-zoom';
-import 'react-medium-image-zoom/dist/styles.css';
 
 function ProductDetail() {
+    const editorRef = useRef<TinyMCEEditor | null>(null);
+  
+    const log = () => {
+        if (editorRef.current) {
+        console.log(editorRef.current.getContent());
+        }
+    };
+    const abc = `<div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content active" id="tab-description" role="tabpanel" aria-labelledby="tab-title-description" bis_skin_checked="1">
+<h2><strong>Apple Watch Series 8 45mm GPS – Kháng nước, chống nứt, chống bụi tiêu chuẩn cao</strong></h2>
+<p>Apple Watch Series 8 45mm GPS là chiếc smartwatch sang trọng, được chế tác tinh xảo có khả năng chống nước và chống bụi. Đồng hồ được cải tiến nhiều tính năng đảm bảo độ chính xác khi theo dõi sức khỏe của người dùng. Bạn đã sẵn sàng tìm hiểu những điểm đặc biệt <a title="Đồng hồ Apple Watch Series 8 chính hãng" href="https://cellphones.com.vn/do-choi-cong-nghe/apple-watch/series-8.html" target="_blank" rel="noopener"><strong>đồng hồ&nbsp;Apple watch Series 8</strong></a>&nbsp;này chưa, cùng mình tìm hiểu nhé!</p>
+<p></p><div bis_skin_checked="1"><img style="display: block; margin-left: auto; margin-right: auto;" src="https://cdn.xtmobile.vn/vnt_upload/product/08_2019/apple-watch-series-5-xtmobile_1.jpg" alt="Apple Watch Series 5 44mm LTE Ch&iacute;nh h&atilde;ng, Gi&aacute; rẻ - XTmobile"></div><p></p>
+<p>&nbsp;</p>
+<h3><strong>Màn hình lớn rực rỡ, hiển thị thông minh</strong></h3>
+<p>Apple Watch S8 45mm GPS sở hữu màn hình 1.9 inch có độ phân giải 484×396 pixels vô cùng rực rỡ. Mặt đồng hồ được bảo vệ bởi lớp kính Ion-X strengthened glass, giúp Watch 8 đạt tiêu chuẩn chống nứt, chống nước IP6X và bụi WR50.</p>
+<p>Các chi tiết đồng hồ trông tuyệt đẹp kết hợp với màn hình Retina Always – On sáng sủa khiến tổng thể trông vô cùng nổi bật. Chế độ Always-On cũng giúp bạn dễ dàng theo dõi các thông tin trên đồng hồ mà không cần phải chạm vào bề mặt hay ấn nút gì cả.</p>
+<blockquote><p>Xem thêm mẫu đồng hồ Apple Watch Series 8 tại Mạnh Quân Store</p></blockquote>
+<p>Đồng hồ cũng giúp phát hiện những tai nạn và biến cố xảy ra đối với người thân và liên lạc tìm sự trợ giúp để bảo vệ cho bạn. Cảm biến nhiệt độ giúp theo dõi nhiệt độ cơ thể để nhận biết chu kỳ rụng trứng, hỗ trợ hiệu quả kế hoạch hóa gia đình.</p>
+<p>Cac thông tin dữ liệu về chu kỳ của bạn sẽ được mã hóa bằng mật mã, do đó bạn hoàn toàn yên tâm về tính năng bảo mật. Nếu có bất cứ vấn đề gì bất thường, bạn có thể chọn chia sẻ chu kỳ của bản thân với dịch vụ chăm sóc sức khỏe để có biện pháp cải thiện tốt nhất.</p>
+<p></p><div bis_skin_checked="1"><img style="display: block; margin-left: auto; margin-right: auto;" loading="lazy" decoding="async" class="aligncenter" src="https://cdn.viettelstore.vn/Images/Product/ProductImage/69267744.jpeg" alt="Apple Watch Series 8 GPS 41mm - ViettelStore.vn" width="429" height="429"></div><p></p>
+<h3><strong>Kết nối dễ dàng</strong></h3>
+<p>Apple Series 8 45mm GPS có thể kết nối với điện thoại hoặc máy tính dễ dàng qua Bluetooth 5.0. Giúp bạn tra cứu, truyền tải thông tin nhanh chóng, bạn cũng có thể nhận được thông báo từ các ứng dụng, mạng xã hội,…để giúp cho việc học tập, liên lạc dễ dàng hơn.</p>
+<h3><strong>Pin ấn tượng</strong></h3>
+<p>Apple Watch Series 8 45mm được tích hợp viên pin chất lượng cao cung cấp thời gian dùng lớn đến 36 giờ khi sử dụng ở chế độ nguồn điện thấp. Bạn có thể giữ thiết bị dùng lâu hơn với chế độ nguồn Nghe gọi qua Bluetoothn điện thấp để tiết kiệm năng lượng.</p>
+<p>&nbsp;</p>
+<p></p><div bis_skin_checked="1"><img decoding="async" class="aligncenter" src="https://cdn.xtmobile.vn/vnt_upload/product/08_2019/apple-watch-series-5-xtmobile_1.jpg" alt="Apple Watch Series 5 44mm LTE Chính hãng, Giá rẻ - XTmobile"></div><p></p>
+</div>`
     const [detailData, setDetailData] = useState<ItemDetail>(new ItemDetail());
+    const [mainImage, setMainImage] = useState<string>();
     const { categoryName, itemId } = useParams();
     const [breadcrumbItems, setBreadcrumbItems] = useState<any[]>([]);
     const home = { icon: "pi pi-home", url: "/" };
@@ -79,10 +113,15 @@ function ProductDetail() {
     const fetchProductDetail = async (id : string) => {
         try {
             const productDetail = await ApiService.getProductDetail(id);
-            setDetailData(productDetail.data)
+            setDetailData(productDetail.data);
+            setMainImage(productDetail.data.img);
         } catch (error) {
             
         }
+    }
+
+    const changeImage = (item : any) => {
+        setMainImage(item.img)
     }
 
     return (
@@ -90,34 +129,54 @@ function ProductDetail() {
             <div className={classes.product1}>
                 <div className={classes.product_up}>
                     <div className={classes.product_left}>
-                        {detailData && detailData.img && (
-                            <Zoom>
-                                <img
-                                    className={classes.product_image}
-                                    src={detailData.img}
-                                    alt={detailData.name}
-                                />
-                            </Zoom>
-                        )}
-                        {detailData?.price !== detailData?.salePrice && (
-                            <div>
-                                <img
-                                    className={classes.sale_logo}
-                                    src={saleLogo}
-                                    alt="logo"
-                                />
-                                <span className={classes.sale_percent}>
-                                    -
-                                    {(
-                                        (1 -
-                                            detailData.salePrice /
-                                                detailData.price) *
-                                        100
-                                    ).toFixed(0)}
-                                    %
-                                </span>
-                            </div>
-                        )}
+                        <div className={classes.product_left2}>
+                            {detailData && detailData.img && (
+                                <Zoom>
+                                    <img
+                                        className={classes.product_image}
+                                        src={mainImage}
+                                        alt={detailData.name}
+                                    />
+                                </Zoom>
+                            )}
+                            {detailData?.price !== detailData?.salePrice && (
+                                <div>
+                                    <img
+                                        className={classes.sale_logo}
+                                        src={saleLogo}
+                                        alt="logo"
+                                    />
+                                    <span className={classes.sale_percent}>
+                                        -
+                                        {(
+                                            (1 -
+                                                detailData.salePrice /
+                                                    detailData.price) *
+                                            100
+                                        ).toFixed(0)}
+                                        %
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                        <div className={classes.list_image}>
+                            <Swiper
+                                spaceBetween={20}
+                                slidesPerView={5}
+                                modules={[
+                                    Navigation,
+                                    Pagination,
+                                    Scrollbar,
+                                    A11y,
+                                ]}
+                            >
+                                {dummySlider.map((item : any) => (
+                                    <SwiperSlide onClick={() => changeImage(item)}>
+                                        <img src={item.img} alt={item.name}/>
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
+                        </div>
                     </div>
                     <div className={classes.product_right}>
                         <div className={classes.breadcrumb}>
@@ -168,12 +227,28 @@ function ProductDetail() {
                 <div className={classes.product_down}>
                     <TabView>
                         <TabPanel header="Mô tả">
-                            <p className="m-0">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-                                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                            </p>
+                            <div dangerouslySetInnerHTML={{__html: abc}}>
+
+                            </div>
+                            <Editor
+                                apiKey='6e616i1xetsifvarffma6u3bq62jkr5tbl6gngodsp2p24pg'
+                                onInit={(_evt, editor) => (editorRef.current = editor)}
+                                init={{
+                                height: 500,
+                                menubar: false,
+                                plugins: [
+                                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                ],
+                                toolbar: 'undo redo | blocks | ' +
+                                    'bold italic forecolor | alignleft aligncenter ' +
+                                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                                    'removeformat | help',
+                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                                }}
+                            />
+                            <button onClick={log}>Log editor content</button>
                         </TabPanel>
                         <TabPanel header="Thông số kĩ thuật">
                             <p className="m-0">

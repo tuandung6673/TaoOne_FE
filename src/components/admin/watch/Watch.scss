@@ -1,0 +1,12 @@
+.wrapper {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.sort_option {
+    cursor: pointer;
+        padding: 7px 45px 7px 15px;
+        &:hover {
+            background: #AFB7BD;
+        }
+}

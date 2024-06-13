@@ -12,6 +12,7 @@
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
     "axios": "^1.6.8",
+    "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
     "primereact": "^10.6.3",
     "query-string": "^9.0.0",

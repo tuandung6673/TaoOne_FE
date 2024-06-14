@@ -52,6 +52,18 @@ const ApiService = {
         }
     },
 
+    deleteProduct: async (id: string) => {
+        try {
+            const response = await axiosInstance.delete(
+                `${environment.baseUrl}/Product/DeleteProduct?id=` + id
+            )
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching slide list:", error);
+            throw error; // Ném lỗi ra để xử lý sau
+        }
+    },
+
     GetCategoryDetailList: async (queryParams : string) => {
         try {
             const response = await axiosInstance.get(

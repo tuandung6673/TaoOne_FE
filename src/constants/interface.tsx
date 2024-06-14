@@ -52,3 +52,8 @@ export interface HomeCategory {
 export interface HomeInterface {
     categories : HomeCategory[];
 }
+
+export interface DropdownInterface {
+    label: string,
+    value: string
+}

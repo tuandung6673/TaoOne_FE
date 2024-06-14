@@ -32,7 +32,8 @@ function AdminHeader () {
         },
         {
             label: 'Banner',
-            icon: ''
+            icon: '',
+            url: ROLE.admin + '/banner'
         },
         {
             label: 'Phân loại',
@@ -40,11 +41,11 @@ function AdminHeader () {
             items: [
                 {
                     label: 'Loại',
-                    url: ''
+                    url: ROLE.admin + '/category'
                 },
                 {
                     label: 'Loại chi tiết',
-                    url: ''
+                    url: ROLE.admin + '/category-detail'
                 }
             ]
         }

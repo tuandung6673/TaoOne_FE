@@ -9,6 +9,7 @@ import ProductDetail from './components/product-detail/ProductDetail';
 import { ROLE } from './constants/constants';
 import AdminLayout from './layouts/Admin/AdminLayout';
 import UserLayout from './layouts/User/UserLayout';
+import Banner from './components/admin/banner/banner';
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
       <Router>
         <Routes>
           <Route path={ROLE.admin} element={<AdminLayout />}>
+            <Route path='banner' element={<Banner />}></Route>
+            {/* banner detail + category + category_detail */}
             <Route path=':categoryName' element={<Watch />}></Route>
             <Route path=':categoryName/:productId' element={<WatchDetail />}></Route>
           </Route>

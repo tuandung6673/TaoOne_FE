@@ -29,7 +29,7 @@ function Home() {
     const fetchSlides = async () => {
         try {
             const queryParams = queryString.stringify(params)
-            const slideList = await ApiService.getSlide(queryParams);
+            const slideList = await ApiService.getSlideList(queryParams);
             setSlides(slideList.data.data);
         } catch (err) {
             console.error(err);

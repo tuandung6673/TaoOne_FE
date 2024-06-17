@@ -9,7 +9,9 @@ import ProductDetail from './components/product-detail/ProductDetail';
 import { ROLE } from './constants/constants';
 import AdminLayout from './layouts/Admin/AdminLayout';
 import UserLayout from './layouts/User/UserLayout';
-import Banner from './components/admin/banner/banner';
+import Banner from './components/admin/banner/Banner';
+import Category from './components/admin/category/Category';
+import CategoryDetail from './components/admin/category-detail/CategoryDetail';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Routes>
           <Route path={ROLE.admin} element={<AdminLayout />}>
             <Route path='banner' element={<Banner />}></Route>
+            <Route path='category' element={<Category />}></Route>
+            <Route path='category-detail' element={<CategoryDetail />}></Route>
             {/* banner detail + category + category_detail */}
             <Route path=':categoryName' element={<Watch />}></Route>
             <Route path=':categoryName/:productId' element={<WatchDetail />}></Route>

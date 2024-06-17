@@ -39,7 +39,7 @@ function AllCategory() {
     const fetchSlides = async () => {
         try {
             const queryParams = queryString.stringify(slideParams);
-            const slideList = await ApiService.getSlide(queryParams);
+            const slideList = await ApiService.getSlideList(queryParams);
             setBanner(slideList.data.data);
         } catch (err) {
             console.error(err);

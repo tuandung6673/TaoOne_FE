@@ -64,6 +64,12 @@ function Watch() {
         });
     }, [categoryName]);
 
+    
+    useEffect(() => {
+        if(!!slideParams.category_code)
+            fetchWatch(slideParams);
+    }, [slideParams, searchValue, rows, first]);
+
     const fetchWatch = async (slideParams: any) => {
         try {
             const queryParams = queryString.stringify(slideParams);
@@ -75,16 +81,12 @@ function Watch() {
         }
     };
 
-    useEffect(() => {
-        fetchWatch(slideParams);
-    }, [slideParams, searchValue, rows, first]);
-
     const fetchCategoryDetail = async () => {
         try {
             const queryParams = queryString.stringify({
                 category_code: categoryName,
             });
-            const ctgDetailList = await ApiService.GetCategoryDetailList(
+            const ctgDetailList = await ApiService.getCategoryDetailList(
                 queryParams
             );
             setListCtg(

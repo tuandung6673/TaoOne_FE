@@ -4,20 +4,6 @@ export interface BannerDetail {
     name: string;
     screen: string;
 }
-
-export interface CategoryItem {
-    name: string;
-    img: string;
-    price: number;
-    salePrice: number;
-}
-
-export interface Category {
-    ctgName: string;
-    ctgImage: string;
-    listItems: CategoryItem[];
-}
-
 export interface CategoryDetail {
     id: string;
     name: string;
@@ -37,7 +23,6 @@ export class ItemDetail {
     specs: string = '';
 }
 
-
 export interface HomeCategory {
     code: string, 
     id: string, 
@@ -56,4 +41,14 @@ export interface HomeInterface {
 export interface DropdownInterface {
     label: string,
     value: string
+}
+export interface Category {
+    id: string,
+    code: string,
+    name: string,
+    img: string,
+    order: number,
+    status: number,
+    is_show_home: number,
+    products: any,
 }

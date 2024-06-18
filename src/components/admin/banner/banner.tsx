@@ -46,7 +46,7 @@ function Banner() {
 
     const fetchCategoryDetail = async () => {
         try {
-            const ctgDetailList = await ApiService.GetCategoryList(
+            const ctgDetailList = await ApiService.getCategoryList(
                 queryString.stringify({
                     filter: '',
                 })

@@ -54,6 +54,9 @@ function AllCategory() {
             const productParams = {
                 category_code: categoryName || "",
                 category_detail_id: categoryDetailId || "",
+                filter: '',
+                offSet: 0, 
+                pageSize: 100
             };
             const queryParams = queryString.stringify(productParams);
             const productList = await ApiService.getProductList(queryParams);
@@ -66,10 +69,11 @@ function AllCategory() {
     const fetchCategoryDetail = async (categoryName: string) => {
         try {
             const productParams = {
-                category_code: categoryName || "", // Gán giá trị categoryName vào category_code
+                category_code: categoryName || "", // Gán giá trị categoryName vào category_code,
+                screen: ""
             };
             const queryParams = queryString.stringify(productParams);
-            const productList = await ApiService.GetCategoryDetailList(
+            const productList = await ApiService.getCategoryDetailList(
                 queryParams
             );
             setCategoryDetail(productList.data.data);

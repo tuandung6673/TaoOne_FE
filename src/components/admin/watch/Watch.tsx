@@ -10,13 +10,14 @@ import { Paginator } from "primereact/paginator";
 import { Toast } from "primereact/toast";
 import queryString from "query-string";
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AllRouteType } from "../../../constants/constants";
 import { DropdownInterface, ItemDetail } from "../../../constants/interface";
 import ApiService from "../../../services/api.service";
 import "./Watch.scss";
 
 function Watch() {
+    const navigate = useNavigate();
     const toast = useRef<Toast>(null);
     const op = useRef<OverlayPanel>(null);
     const op2 = useRef<OverlayPanel>(null);
@@ -219,6 +220,16 @@ function Watch() {
         });
     };
 
+    const handleAdd = () => {
+        const currentPath = window.location.pathname;
+        navigate(`${currentPath}/them-moi`);
+    }
+
+    const handleEdit = () => {
+        const currentPath = window.location.pathname;
+        navigate(`${currentPath}/${selectedId}`);
+    }
+
     return (
         <>
             <Toast ref={toast} />
@@ -276,7 +287,7 @@ function Watch() {
                                 </OverlayPanel>
                             </div>
                             <div className="add-btn">
-                                <Button label="Thêm mới" icon="pi pi-plus" />
+                                <Button label="Thêm mới" icon="pi pi-plus" onClick={handleAdd} />
                             </div>
                         </div>
                     </div>
@@ -329,7 +340,7 @@ function Watch() {
                 </div>
             </div>
             <OverlayPanel ref={op}>
-                <div className="sort_option">
+                <div className="sort_option" onClick={handleEdit}>
                     <span className="mr-2">
                         <i className="pi pi-pencil"></i>
                     </span>

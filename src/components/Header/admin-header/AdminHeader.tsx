@@ -45,7 +45,7 @@ function AdminHeader () {
                 },
                 {
                     label: 'Loại chi tiết',
-                    url: ROLE.admin + '/category-detail'
+                    // url: ROLE.admin + '/category-detail'
                 }
             ]
         }

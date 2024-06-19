@@ -22,6 +22,7 @@ function App() {
             <Route path='category' element={<Category />}></Route>
             {/* banner detail + category + category_detail */}
             <Route path=':categoryName' element={<Watch />}></Route>
+            <Route path=':categoryName/them-moi' element={<WatchDetail />}></Route>
             <Route path=':categoryName/:productId' element={<WatchDetail />}></Route>
           </Route>
           <Route path="/" element={<UserLayout />}>

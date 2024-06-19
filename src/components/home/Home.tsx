@@ -50,7 +50,7 @@ function Home() {
     };
 
     return (
-        <div className={classes.wrapper}>
+        <div className={classes.homeWrapper}>
             <div className={classes.carousel}>
                 <Carousel
                     autoPlay={true}

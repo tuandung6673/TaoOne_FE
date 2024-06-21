@@ -65,8 +65,8 @@ function Category() {
                     ), // Giả sử đây là API lấy danh sách category detail
                 ]);
 
-            const categories = categoryResponse.data.data;
-            const categoryDetails = categoryDetailResponse.data.data;
+            const categories = categoryResponse?.data?.data;
+            const categoryDetails = categoryDetailResponse?.data?.data;
 
             return { categories, categoryDetails };
         } catch (err) {
@@ -80,9 +80,9 @@ function Category() {
         categoryDetails: any
     ) => {
         return categories.map((category: any) => {
-            const childs = categoryDetails.filter(
+            const childs = categoryDetails ? categoryDetails.filter(
                 (detail: any) => detail.category_id === category.id
-            );
+            ) : [];
             return {
                 ...category,
                 childs,

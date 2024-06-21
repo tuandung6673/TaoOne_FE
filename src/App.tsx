@@ -9,8 +9,8 @@ import ProductDetail from './components/product-detail/ProductDetail';
 import { ROLE } from './constants/constants';
 import AdminLayout from './layouts/Admin/AdminLayout';
 import UserLayout from './layouts/User/UserLayout';
-import Banner from './components/admin/banner/Banner';
 import Category from './components/admin/category/Category';
+import Banner from './components/admin/banner/banner';
 
 function App() {
   return (

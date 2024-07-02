@@ -1,8 +1,8 @@
-export interface BannerDetail {
-    id: string;
-    img: string;
-    name: string;
-    screen: string;
+export class BannerDetail {
+    id: string = '';
+    img: string = '';
+    name: string = '';
+    screen: string = '';
 }
 export interface CategoryDetail {
     id: string;

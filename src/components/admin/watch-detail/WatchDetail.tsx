@@ -133,6 +133,7 @@ function WatchDetail() {
             const response = await ApiService.postProduct(data);
             if (response.status === 'success' && toast.current) {
                 toast.current.show({ severity: 'success', summary: 'Thành công', detail: (!!productId ? 'Lưu' : 'Thêm mới') + ' thành công !' });
+                navigate(-1);
             }
         } catch (error) {
             console.log(error);

@@ -6,15 +6,18 @@ import { DataTable } from "primereact/datatable";
 import { Dropdown } from "primereact/dropdown";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { Toast } from "primereact/toast";
+import { Sidebar } from 'primereact/sidebar';
 import queryString from "query-string";
 import { useEffect, useRef, useState } from "react";
-import { DropdownInterface, ItemDetail } from "../../../constants/interface";
+import { BannerDetail, DropdownInterface, ItemDetail } from "../../../constants/interface";
 import ApiService from "../../../services/api.service";
-
+import { InputText } from "primereact/inputtext";
+import { FileUpload } from "primereact/fileupload";
 
 function Banner() {
     const toast = useRef<Toast>(null);
     const op = useRef<OverlayPanel>(null);
+    const [visibleRight, setVisibleRight] = useState(false);
     const op2 = useRef<OverlayPanel>(null);
     const home = { icon: "pi pi-home", url: "" };
     const breadcrumbItems = [{ label: "Banner" }];
@@ -25,7 +28,12 @@ function Banner() {
     const [selectCtg, setSelectCtg] = useState(null);
     const [selectedId, setSelectedId] = useState<string>();
     const [listCtg, setListCtg] = useState<DropdownInterface[]>([]);
-
+    const [bannerDetail, setBannerDetail] = useState<BannerDetail>(new BannerDetail())
+    const onUpload = () => {
+        if (toast.current) {
+            toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
+        }
+    };
     useEffect(() => {
         fetchCategoryDetail();
     }, []);
@@ -144,6 +152,39 @@ function Banner() {
         });
     };
 
+    const fetchDetailBanner = async () => {
+        try {
+            const detailBanner = await ApiService.getSlideDetail(selectedId || "")
+            setBannerDetail(detailBanner.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const viewDetail = () => {
+        fetchDetailBanner();
+        setVisibleRight(true);
+    }
+
+    const handleChangeScreen = (e : any) => {
+        setBannerDetail((prev) => ({
+            ...prev,
+            screen: e.value
+        }))
+    } 
+
+    const handleChange = (e : any) => {
+        const { name, value } = e.target;
+        setBannerDetail((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = () => {
+        console.log('bannerDetail', bannerDetail);
+    }
+
     return (
         <>
             <Toast ref={toast} />
@@ -224,7 +265,7 @@ function Banner() {
                 </div>
             </div>
             <OverlayPanel ref={op}>
-                <div className="sort_option">
+                <div className="sort_option" onClick={() => viewDetail()}>
                     <span className="mr-2">
                         <i className="pi pi-pencil"></i>
                     </span>
@@ -237,6 +278,41 @@ function Banner() {
                     Xóa
                 </div>
             </OverlayPanel>
+            <Sidebar visible={visibleRight} className="w-6" position="right" onHide={() => setVisibleRight(false)}>
+                <h2>Banner</h2>
+                <div className="grid">
+                    <div className="col-12">
+                        <img className="w-full" style={{'height': '300px', 'objectFit': 'contain'}} src={bannerDetail?.img || "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"} alt="" />
+                        <FileUpload mode="basic" name="demo[]" url="/api/upload" accept="image/*" maxFileSize={1000000} onUpload={onUpload} chooseLabel="Ảnh" />
+                    </div>
+                    <div className="col-6">
+                        <div>Màn hình</div>
+                        <Dropdown
+                            value={bannerDetail.screen}
+                            className='w-full'
+                            options={listCtg}
+                            onChange={(e) => handleChangeScreen(e)}
+                        />
+                    </div>
+                    <div className="col-6">
+                        <div>Tên</div>
+                        <InputText 
+                            className='w-full'
+                            value={bannerDetail.name}
+                            name='name'
+                            onChange={(e) => handleChange(e)}
+                        />
+                    </div>
+                </div>
+                <div className='flex mt-5 mr-2 justify-content-end'>
+                    <div className='cancel-btn mr-2'>
+                        <Button label='Hủy' style={{'height': '40px'}} />
+                    </div>
+                    <div className='save-btn'>
+                        <Button onClick={handleSubmit} label='Lưu' style={{'height': '40px'}} />
+                    </div>
+                </div>
+            </Sidebar>
         </>
     );
 }

@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Editor } from '@tinymce/tinymce-react';
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
 import { TabPanel, TabView } from 'primereact/tabview';
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import { useParams } from "react-router-dom";
@@ -11,7 +10,6 @@ import "swiper/css";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss/navigation";
-import type { Editor as TinyMCEEditor } from 'tinymce';
 import { AllRouteType } from "../../constants/constants";
 import { ItemDetail } from "../../constants/interface";
 import { dummySlider } from "../../dummyDatas/dummyData";
@@ -20,13 +18,6 @@ import ApiService from "../../services/api.service";
 import classes from "./ProductDetail.module.scss";
 
 function ProductDetail() {
-    const editorRef = useRef<TinyMCEEditor | null>(null);
-  
-    const log = () => {
-        if (editorRef.current) {
-        console.log(editorRef.current.getContent());
-        }
-    };
     const abc = `<div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content active" id="tab-description" role="tabpanel" aria-labelledby="tab-title-description" bis_skin_checked="1">
 <h2><strong>Apple Watch Series 8 45mm GPS – Kháng nước, chống nứt, chống bụi tiêu chuẩn cao</strong></h2>
 <p>Apple Watch Series 8 45mm GPS là chiếc smartwatch sang trọng, được chế tác tinh xảo có khả năng chống nước và chống bụi. Đồng hồ được cải tiến nhiều tính năng đảm bảo độ chính xác khi theo dõi sức khỏe của người dùng. Bạn đã sẵn sàng tìm hiểu những điểm đặc biệt <a title="Đồng hồ Apple Watch Series 8 chính hãng" href="https://cellphones.com.vn/do-choi-cong-nghe/apple-watch/series-8.html" target="_blank" rel="noopener"><strong>đồng hồ&nbsp;Apple watch Series 8</strong></a>&nbsp;này chưa, cùng mình tìm hiểu nhé!</p>
@@ -44,7 +35,7 @@ function ProductDetail() {
 <h3><strong>Pin ấn tượng</strong></h3>
 <p>Apple Watch Series 8 45mm được tích hợp viên pin chất lượng cao cung cấp thời gian dùng lớn đến 36 giờ khi sử dụng ở chế độ nguồn điện thấp. Bạn có thể giữ thiết bị dùng lâu hơn với chế độ nguồn Nghe gọi qua Bluetoothn điện thấp để tiết kiệm năng lượng.</p>
 <p>&nbsp;</p>
-<p></p><div bis_skin_checked="1"><img decoding="async" class="aligncenter" src="https://cdn.xtmobile.vn/vnt_upload/product/08_2019/apple-watch-series-5-xtmobile_1.jpg" alt="Apple Watch Series 5 44mm LTE Chính hãng, Giá rẻ - XTmobile"></div><p></p>
+<p></p><div bis_skin_checked="1"><img style="display: block; margin-left: auto; margin-right: auto;" decoding="async" class="aligncenter" src="https://cdn.xtmobile.vn/vnt_upload/product/08_2019/apple-watch-series-5-xtmobile_1.jpg" alt="Apple Watch Series 5 44mm LTE Chính hãng, Giá rẻ - XTmobile"></div><p></p>
 </div>`
     const [detailData, setDetailData] = useState<ItemDetail>(new ItemDetail());
     const [mainImage, setMainImage] = useState<string>();
@@ -230,25 +221,6 @@ function ProductDetail() {
                             <div dangerouslySetInnerHTML={{__html: abc}}>
 
                             </div>
-                            <Editor
-                                apiKey='6e616i1xetsifvarffma6u3bq62jkr5tbl6gngodsp2p24pg'
-                                onInit={(_evt, editor) => (editorRef.current = editor)}
-                                init={{
-                                height: 500,
-                                menubar: false,
-                                plugins: [
-                                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                                ],
-                                toolbar: 'undo redo | blocks | ' +
-                                    'bold italic forecolor | alignleft aligncenter ' +
-                                    'alignright alignjustify | bullist numlist outdent indent | ' +
-                                    'removeformat | help',
-                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                                }}
-                            />
-                            <button onClick={log}>Log editor content</button>
                         </TabPanel>
                         <TabPanel header="Thông số kĩ thuật">
                             <p className="m-0">

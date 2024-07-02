@@ -12,15 +12,16 @@ export interface CategoryDetail {
 
 export class ItemDetail {
     id: string = '';
-    category_id: string = '';
-    category_detail_id: string = '';
-    category_detail_name: string = '';
-    img: string = '';
-    name: string = ''; 
+    category_id?: string = '';
+    category_code?: string = '';
+    category_detail_id?: string = '';
+    category_detail_name?: string = '';
+    img?: string = '';
+    name?: string = ''; 
     price: number = 0;
     salePrice: number = 0;
-    description: string = '';
-    specs: string = '';
+    description?: string = '';
+    specs?: string = '';
 }
 
 export interface HomeCategory {

@@ -56,7 +56,7 @@ const ApiService = {
 
     deleteSlide: async (id: string) => {
         try {
-            const response = await axiosInstance.get(
+            const response = await axiosInstance.delete(
                 `${environment.baseUrl}/Slide/DeteleSlide?id=` + id
             );
             return response.data; // Trả về dữ liệu từ API

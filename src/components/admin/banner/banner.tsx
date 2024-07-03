@@ -181,8 +181,32 @@ function Banner() {
         }));
     };
 
-    const handleSubmit = () => {
-        console.log('bannerDetail', bannerDetail);
+    const handleSubmit = async () => {
+        const data : any = bannerDetail;
+        if(!selectedId) {
+            delete data.id;
+        }
+        try {
+            const response = await ApiService.postSlide(data);
+            if (response.status === 'success' && toast.current) {
+                toast.current.show({ severity: 'success', summary: 'Thành công', detail: (!!selectedId ? 'Lưu' : 'Thêm mới') + ' thành công !' });
+                setVisibleRight(false);
+                fetchSlide(slideParams);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleCancel = () => {
+        setSelectedId(undefined);
+        setVisibleRight(false);
+    }
+
+    const handleAddBanner = () => {
+        setSelectedId(undefined);
+        setVisibleRight(true);
+        setBannerDetail(new BannerDetail());
     }
 
     return (
@@ -228,7 +252,7 @@ function Banner() {
                                 </OverlayPanel>
                             </div>
                             <div className="add-btn">
-                                <Button label="Thêm mới" icon="pi pi-plus" />
+                                <Button onClick={handleAddBanner} label="Thêm mới" icon="pi pi-plus" />
                             </div>
                         </div>
                     </div>
@@ -244,6 +268,10 @@ function Banner() {
                             <Column
                                 field="screen"
                                 header="Màn hình"
+                            ></Column>
+                            <Column
+                                field="name"
+                                header="Tên"
                             ></Column>
                             <Column
                                 body={optionsTemplate}
@@ -306,7 +334,7 @@ function Banner() {
                 </div>
                 <div className='flex mt-5 mr-2 justify-content-end'>
                     <div className='cancel-btn mr-2'>
-                        <Button label='Hủy' style={{'height': '40px'}} />
+                        <Button onClick={handleCancel} label='Hủy' style={{'height': '40px'}} />
                     </div>
                     <div className='save-btn'>
                         <Button onClick={handleSubmit} label='Lưu' style={{'height': '40px'}} />

@@ -4,10 +4,10 @@ export class BannerDetail {
     name: string = '';
     screen: string = '';
 }
-export interface CategoryDetail {
-    id: string;
-    name: string;
-    category_id: string;
+export class CategoryDetail {
+    id: string = "";
+    name: string = "";
+    category_id: string = "";
 }
 
 export class ItemDetail {
@@ -43,13 +43,13 @@ export interface DropdownInterface {
     label: string,
     value: string
 }
-export interface Category {
-    id: string,
-    code: string,
-    name: string,
-    img: string,
-    order: number,
-    status: number,
-    is_show_home: number,
-    products: any,
+export class Category {
+    id: string = '';
+    code: string = '';
+    name: string = '';
+    img: string = '';
+    order: number = 0;
+    status: number = 0;
+    is_show_home: number = 0;
+    products: any = "";
 }

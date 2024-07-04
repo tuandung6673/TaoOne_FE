@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useParams } from "react-router-dom";
-import { SORTFILTER } from "../../constants/constants";
+import { AllRouteType, SORTFILTER } from "../../constants/constants";
 import {
     BannerDetail,
     CategoryDetail,
@@ -54,9 +54,9 @@ function AllCategory() {
             const productParams = {
                 category_code: categoryName || "",
                 category_detail_id: categoryDetailId || "",
-                filter: '',
-                offSet: 0, 
-                pageSize: 100
+                filter: "",
+                offSet: 0,
+                pageSize: 100,
             };
             const queryParams = queryString.stringify(productParams);
             const productList = await ApiService.getProductList(queryParams);
@@ -70,7 +70,7 @@ function AllCategory() {
         try {
             const productParams = {
                 category_code: categoryName || "", // Gán giá trị categoryName vào category_code,
-                screen: ""
+                screen: "",
             };
             const queryParams = queryString.stringify(productParams);
             const productList = await ApiService.getCategoryDetailList(
@@ -94,7 +94,19 @@ function AllCategory() {
 
     return (
         <div className={classes.main}>
-            <h1>{categoryName}</h1>
+            <h1>
+                {categoryName === AllRouteType.watch
+                    ? "Apple Watch"
+                    : categoryName === AllRouteType.ipad
+                    ? "iPad"
+                    : categoryName === AllRouteType.airpods
+                    ? "Airpods"
+                    : categoryName === AllRouteType.macbook
+                    ? "Macbook"
+                    : categoryName === AllRouteType.accessories
+                    ? "Phụ kiện"
+                    : ""}
+            </h1>
             <div className={classes.carousel_custom}>
                 <Carousel
                     autoPlay={true}
@@ -147,8 +159,11 @@ function AllCategory() {
                     }`}
                     onClick={() => handleSortClick(SORTFILTER.YEAR)}
                 >
-                    {sortFilterValue === SORTFILTER.YEAR.value && <span style={{marginRight: '8px'}}>
-                        <i className="pi pi-check"></i></span>}
+                    {sortFilterValue === SORTFILTER.YEAR.value && (
+                        <span style={{ marginRight: "8px" }}>
+                            <i className="pi pi-check"></i>
+                        </span>
+                    )}
                     {SORTFILTER.YEAR.label}
                 </div>
                 <div
@@ -159,8 +174,11 @@ function AllCategory() {
                     }`}
                     onClick={() => handleSortClick(SORTFILTER.PRICE_ASC)}
                 >
-                    {sortFilterValue === SORTFILTER.PRICE_ASC.value && <span style={{marginRight: '8px'}}>
-                        <i className="pi pi-check"></i></span>}
+                    {sortFilterValue === SORTFILTER.PRICE_ASC.value && (
+                        <span style={{ marginRight: "8px" }}>
+                            <i className="pi pi-check"></i>
+                        </span>
+                    )}
                     {SORTFILTER.PRICE_ASC.label}
                 </div>
                 <div
@@ -171,8 +189,11 @@ function AllCategory() {
                     }`}
                     onClick={() => handleSortClick(SORTFILTER.PRICE_DESC)}
                 >
-                    {sortFilterValue === SORTFILTER.PRICE_DESC.value && <span style={{marginRight: '8px'}}>
-                        <i className="pi pi-check"></i></span>}
+                    {sortFilterValue === SORTFILTER.PRICE_DESC.value && (
+                        <span style={{ marginRight: "8px" }}>
+                            <i className="pi pi-check"></i>
+                        </span>
+                    )}
                     {SORTFILTER.PRICE_DESC.label}
                 </div>
             </OverlayPanel>

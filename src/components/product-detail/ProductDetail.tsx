@@ -5,7 +5,7 @@ import { TabPanel, TabView } from 'primereact/tabview';
 import { useEffect, useMemo, useState } from "react";
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "swiper/css";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -19,24 +19,25 @@ import classes from "./ProductDetail.module.scss";
 
 function ProductDetail() {
     const abc = `<div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content active" id="tab-description" role="tabpanel" aria-labelledby="tab-title-description" bis_skin_checked="1">
-<h2><strong>Apple Watch Series 8 45mm GPS – Kháng nước, chống nứt, chống bụi tiêu chuẩn cao</strong></h2>
-<p>Apple Watch Series 8 45mm GPS là chiếc smartwatch sang trọng, được chế tác tinh xảo có khả năng chống nước và chống bụi. Đồng hồ được cải tiến nhiều tính năng đảm bảo độ chính xác khi theo dõi sức khỏe của người dùng. Bạn đã sẵn sàng tìm hiểu những điểm đặc biệt <a title="Đồng hồ Apple Watch Series 8 chính hãng" href="https://cellphones.com.vn/do-choi-cong-nghe/apple-watch/series-8.html" target="_blank" rel="noopener"><strong>đồng hồ&nbsp;Apple watch Series 8</strong></a>&nbsp;này chưa, cùng mình tìm hiểu nhé!</p>
-<p></p><div bis_skin_checked="1"><img style="display: block; margin-left: auto; margin-right: auto;" src="https://cdn.xtmobile.vn/vnt_upload/product/08_2019/apple-watch-series-5-xtmobile_1.jpg" alt="Apple Watch Series 5 44mm LTE Ch&iacute;nh h&atilde;ng, Gi&aacute; rẻ - XTmobile"></div><p></p>
-<p>&nbsp;</p>
-<h3><strong>Màn hình lớn rực rỡ, hiển thị thông minh</strong></h3>
-<p>Apple Watch S8 45mm GPS sở hữu màn hình 1.9 inch có độ phân giải 484×396 pixels vô cùng rực rỡ. Mặt đồng hồ được bảo vệ bởi lớp kính Ion-X strengthened glass, giúp Watch 8 đạt tiêu chuẩn chống nứt, chống nước IP6X và bụi WR50.</p>
-<p>Các chi tiết đồng hồ trông tuyệt đẹp kết hợp với màn hình Retina Always – On sáng sủa khiến tổng thể trông vô cùng nổi bật. Chế độ Always-On cũng giúp bạn dễ dàng theo dõi các thông tin trên đồng hồ mà không cần phải chạm vào bề mặt hay ấn nút gì cả.</p>
-<blockquote><p>Xem thêm mẫu đồng hồ Apple Watch Series 8 tại Mạnh Quân Store</p></blockquote>
-<p>Đồng hồ cũng giúp phát hiện những tai nạn và biến cố xảy ra đối với người thân và liên lạc tìm sự trợ giúp để bảo vệ cho bạn. Cảm biến nhiệt độ giúp theo dõi nhiệt độ cơ thể để nhận biết chu kỳ rụng trứng, hỗ trợ hiệu quả kế hoạch hóa gia đình.</p>
-<p>Cac thông tin dữ liệu về chu kỳ của bạn sẽ được mã hóa bằng mật mã, do đó bạn hoàn toàn yên tâm về tính năng bảo mật. Nếu có bất cứ vấn đề gì bất thường, bạn có thể chọn chia sẻ chu kỳ của bản thân với dịch vụ chăm sóc sức khỏe để có biện pháp cải thiện tốt nhất.</p>
-<p></p><div bis_skin_checked="1"><img style="display: block; margin-left: auto; margin-right: auto;" loading="lazy" decoding="async" class="aligncenter" src="https://cdn.viettelstore.vn/Images/Product/ProductImage/69267744.jpeg" alt="Apple Watch Series 8 GPS 41mm - ViettelStore.vn" width="429" height="429"></div><p></p>
-<h3><strong>Kết nối dễ dàng</strong></h3>
-<p>Apple Series 8 45mm GPS có thể kết nối với điện thoại hoặc máy tính dễ dàng qua Bluetooth 5.0. Giúp bạn tra cứu, truyền tải thông tin nhanh chóng, bạn cũng có thể nhận được thông báo từ các ứng dụng, mạng xã hội,…để giúp cho việc học tập, liên lạc dễ dàng hơn.</p>
-<h3><strong>Pin ấn tượng</strong></h3>
-<p>Apple Watch Series 8 45mm được tích hợp viên pin chất lượng cao cung cấp thời gian dùng lớn đến 36 giờ khi sử dụng ở chế độ nguồn điện thấp. Bạn có thể giữ thiết bị dùng lâu hơn với chế độ nguồn Nghe gọi qua Bluetoothn điện thấp để tiết kiệm năng lượng.</p>
-<p>&nbsp;</p>
-<p></p><div bis_skin_checked="1"><img style="display: block; margin-left: auto; margin-right: auto;" decoding="async" class="aligncenter" src="https://cdn.xtmobile.vn/vnt_upload/product/08_2019/apple-watch-series-5-xtmobile_1.jpg" alt="Apple Watch Series 5 44mm LTE Chính hãng, Giá rẻ - XTmobile"></div><p></p>
-</div>`
+        <h2><strong>Apple Watch Series 8 45mm GPS – Kháng nước, chống nứt, chống bụi tiêu chuẩn cao</strong></h2>
+        <p>Apple Watch Series 8 45mm GPS là chiếc smartwatch sang trọng, được chế tác tinh xảo có khả năng chống nước và chống bụi. Đồng hồ được cải tiến nhiều tính năng đảm bảo độ chính xác khi theo dõi sức khỏe của người dùng. Bạn đã sẵn sàng tìm hiểu những điểm đặc biệt <a title="Đồng hồ Apple Watch Series 8 chính hãng" href="https://cellphones.com.vn/do-choi-cong-nghe/apple-watch/series-8.html" target="_blank" rel="noopener"><strong>đồng hồ&nbsp;Apple watch Series 8</strong></a>&nbsp;này chưa, cùng mình tìm hiểu nhé!</p>
+        <p></p><div bis_skin_checked="1"><img style="display: block; margin-left: auto; margin-right: auto;" src="https://cdn.xtmobile.vn/vnt_upload/product/08_2019/apple-watch-series-5-xtmobile_1.jpg" alt="Apple Watch Series 5 44mm LTE Ch&iacute;nh h&atilde;ng, Gi&aacute; rẻ - XTmobile"></div><p></p>
+        <p>&nbsp;</p>
+        <h3><strong>Màn hình lớn rực rỡ, hiển thị thông minh</strong></h3>
+        <p>Apple Watch S8 45mm GPS sở hữu màn hình 1.9 inch có độ phân giải 484×396 pixels vô cùng rực rỡ. Mặt đồng hồ được bảo vệ bởi lớp kính Ion-X strengthened glass, giúp Watch 8 đạt tiêu chuẩn chống nứt, chống nước IP6X và bụi WR50.</p>
+        <p>Các chi tiết đồng hồ trông tuyệt đẹp kết hợp với màn hình Retina Always – On sáng sủa khiến tổng thể trông vô cùng nổi bật. Chế độ Always-On cũng giúp bạn dễ dàng theo dõi các thông tin trên đồng hồ mà không cần phải chạm vào bề mặt hay ấn nút gì cả.</p>
+        <blockquote><p>Xem thêm mẫu đồng hồ Apple Watch Series 8 tại Mạnh Quân Store</p></blockquote>
+        <p>Đồng hồ cũng giúp phát hiện những tai nạn và biến cố xảy ra đối với người thân và liên lạc tìm sự trợ giúp để bảo vệ cho bạn. Cảm biến nhiệt độ giúp theo dõi nhiệt độ cơ thể để nhận biết chu kỳ rụng trứng, hỗ trợ hiệu quả kế hoạch hóa gia đình.</p>
+        <p>Cac thông tin dữ liệu về chu kỳ của bạn sẽ được mã hóa bằng mật mã, do đó bạn hoàn toàn yên tâm về tính năng bảo mật. Nếu có bất cứ vấn đề gì bất thường, bạn có thể chọn chia sẻ chu kỳ của bản thân với dịch vụ chăm sóc sức khỏe để có biện pháp cải thiện tốt nhất.</p>
+        <p></p><div bis_skin_checked="1"><img style="display: block; margin-left: auto; margin-right: auto;" loading="lazy" decoding="async" class="aligncenter" src="https://cdn.viettelstore.vn/Images/Product/ProductImage/69267744.jpeg" alt="Apple Watch Series 8 GPS 41mm - ViettelStore.vn" width="429" height="429"></div><p></p>
+        <h3><strong>Kết nối dễ dàng</strong></h3>
+        <p>Apple Series 8 45mm GPS có thể kết nối với điện thoại hoặc máy tính dễ dàng qua Bluetooth 5.0. Giúp bạn tra cứu, truyền tải thông tin nhanh chóng, bạn cũng có thể nhận được thông báo từ các ứng dụng, mạng xã hội,…để giúp cho việc học tập, liên lạc dễ dàng hơn.</p>
+        <h3><strong>Pin ấn tượng</strong></h3>
+        <p>Apple Watch Series 8 45mm được tích hợp viên pin chất lượng cao cung cấp thời gian dùng lớn đến 36 giờ khi sử dụng ở chế độ nguồn điện thấp. Bạn có thể giữ thiết bị dùng lâu hơn với chế độ nguồn Nghe gọi qua Bluetoothn điện thấp để tiết kiệm năng lượng.</p>
+        <p>&nbsp;</p>
+        <p></p><div bis_skin_checked="1"><img style="display: block; margin-left: auto; margin-right: auto;" decoding="async" class="aligncenter" src="https://cdn.xtmobile.vn/vnt_upload/product/08_2019/apple-watch-series-5-xtmobile_1.jpg" alt="Apple Watch Series 5 44mm LTE Chính hãng, Giá rẻ - XTmobile"></div><p></p>
+    </div>`
+    const navigate = useNavigate();
     const [detailData, setDetailData] = useState<ItemDetail>(new ItemDetail());
     const [mainImage, setMainImage] = useState<string>();
     const { categoryName, itemId } = useParams();
@@ -113,6 +114,10 @@ function ProductDetail() {
 
     const changeImage = (item : any) => {
         setMainImage(item.img)
+    }
+
+    const buynow = () => {
+        navigate('/thanh-toan/'+ itemId)
     }
 
     return (
@@ -198,7 +203,7 @@ function ProductDetail() {
                             Tình trạng: Còn sản phẩm
                         </div>
                         <div className={classes.product_action}>
-                            <div className={classes.cart}>
+                            <div className={classes.cart} onClick={buynow}>
                                 <Button
                                     label="Mua ngay"
                                     icon="pi pi-shopping-cart"

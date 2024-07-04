@@ -299,10 +299,11 @@ function Category() {
     };
 
     const handleSaveDetailCtg = async () => {
-        const data: any = detailCtg;
+        const data: Ctg = detailCtg;
         if (!selectedId) {
             delete data.id;
         }
+        delete data.products;
         try {
             const response = await ApiService.postCategory(data);
             if (response.status === "success" && toast.current) {
@@ -349,6 +350,13 @@ function Category() {
         setVisibleRight(true);
         setDetailCtg(new Ctg());
     };
+
+    const addCtgDetail = () => {
+        setVisibleLeft(true);
+        const newData : CategoryDetail = new CategoryDetail();
+        newData.category_id = selectedId || "";
+        setDetailDetailCtg(newData)
+    }
 
     const rowExpansionTemplate = (data: any) => {
         return (
@@ -454,9 +462,9 @@ function Category() {
                 </div>
             </div>
             <OverlayPanel ref={op}>
-                <div className="sort_option">
+                <div className="sort_option" onClick={addCtgDetail}>
                     <span className="mr-2">
-                        <i className="pi pi-plus"></i>
+                        <i className="pi pi-plus" style={{'color': '#007bff'}}></i>
                     </span>
                     Thêm
                 </div>
@@ -507,6 +515,7 @@ function Category() {
                             className="w-full"
                             value={detailCtg.code}
                             name="code"
+                            onChange={(e) => handleCtgChange(e)}
                             disabled={!!selectedId}
                         />
                     </div>

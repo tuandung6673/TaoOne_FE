@@ -44,7 +44,7 @@ export interface DropdownInterface {
     value: string
 }
 export class Category {
-    id: string = '';
+    id?: string = '';
     code: string = '';
     name: string = '';
     img: string = '';
@@ -52,4 +52,19 @@ export class Category {
     status: number = 0;
     is_show_home: number = 0;
     products: any = "";
+}
+
+export class UserInfo {
+    name: string = '';
+    phone: string = '';
+    email: string = '';
+    tp: string = '';
+    qh: string = '';
+    px: string = '';
+    address: string = '';
+    note: string = '';
+}
+
+export class PaymentForm extends UserInfo {
+    payment_method: string = '';
 }

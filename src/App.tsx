@@ -11,6 +11,7 @@ import AdminLayout from './layouts/Admin/AdminLayout';
 import UserLayout from './layouts/User/UserLayout';
 import Category from './components/admin/category/Category';
 import Banner from './components/admin/banner/banner';
+import Payment from './components/payment/payment';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           </Route>
           <Route path="/" element={<UserLayout />}>
             <Route index element={<Home />} />
+            <Route path='thanh-toan/:itemId' element={<Payment/>} />
             <Route path=':categoryName' element={<AllCategory />} />
             <Route path=':categoryName/:itemId' element={<ProductDetail />} />
           </Route>

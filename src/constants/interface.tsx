@@ -62,9 +62,9 @@ export class UserInfo {
     qh: string = '';
     px: string = '';
     address: string = '';
-    note: string = '';
 }
 
 export class PaymentForm extends UserInfo {
     payment_method: string = '';
+    note: string = '';
 }

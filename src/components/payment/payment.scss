@@ -102,6 +102,11 @@
     }
 }
 
+.error {
+    color: red;
+    font-size: 14px;
+}
+
 /* Nút đặt hàng */
 // button.p-button {
 //     background-color: #007bff;
@@ -117,3 +122,48 @@
 // button.p-button:hover {
 //     background-color: #0056b3;
 // }
+
+.qr-code {
+    position: fixed;
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 3px 8px 0 8px;
+    border-radius: 8px;
+    bottom: 10px;
+    right: 10px;
+    img {
+        object-fit: contain;
+        height: 280px;
+        width: 230px;
+    }
+}
+
+.qr-small {
+    display: none;
+    img {
+        object-fit: contain;
+        height: 180px;
+        width: 130px;
+    }
+} 
+
+
+@media (max-width: 1200px) {
+    .qr-code img {
+        height: 200px;
+        width: 150px;
+    }
+}
+@media (max-width: 768px) {
+    .qr-code {
+        display: none;
+    }
+    .qr-small {
+        display: block;
+    }
+}
+
+.p-inputtextarea {
+    padding: 5px !important;
+    min-height: 55px;
+}

@@ -1,8 +1,8 @@
 export class BannerDetail {
-    id: string = '';
-    img: string = '';
-    name: string = '';
-    screen: string = '';
+    id: string = "";
+    img: string = "";
+    name: string = "";
+    screen: string = "";
 }
 export class CategoryDetail {
     id: string = "";
@@ -11,43 +11,43 @@ export class CategoryDetail {
 }
 
 export class ItemDetail {
-    id: string = '';
-    category_id?: string = '';
-    category_code?: string = '';
-    category_detail_id?: string = '';
-    category_detail_name?: string = '';
-    img?: string = '';
-    name?: string = ''; 
+    id: string = "";
+    category_id?: string = "";
+    category_code?: string = "";
+    category_detail_id?: string = "";
+    category_detail_name?: string = "";
+    img?: string = "";
+    name?: string = "";
     price: number = 0;
     salePrice: number = 0;
-    description?: string = '';
-    specs?: string = '';
+    description?: string = "";
+    specs?: string = "";
 }
 
 export interface HomeCategory {
-    code: string, 
-    id: string, 
-    img: string, 
-    is_show_home: number,
-    name: string,
-    order: number,
-    status: number,
-    products: ItemDetail[]
+    code: string;
+    id: string;
+    img: string;
+    is_show_home: number;
+    name: string;
+    order: number;
+    status: number;
+    products: ItemDetail[];
 }
 
 export interface HomeInterface {
-    categories : HomeCategory[];
+    categories: HomeCategory[];
 }
 
 export interface DropdownInterface {
-    label: string,
-    value: string
+    label: string;
+    value: string;
 }
 export class Category {
-    id?: string = '';
-    code: string = '';
-    name: string = '';
-    img: string = '';
+    id?: string = "";
+    code: string = "";
+    name: string = "";
+    img: string = "";
     order: number = 0;
     status: number = 0;
     is_show_home: number = 0;
@@ -55,16 +55,20 @@ export class Category {
 }
 
 export class UserInfo {
-    name: string = '';
-    phone: string = '';
-    email: string = '';
-    tp: string = '';
-    qh: string = '';
-    px: string = '';
-    address: string = '';
+    name: string = "";
+    phone: string = "";
+    email: string = "";
+    tp: string = "";
+    qh: string = "";
+    px: string = "";
+    address: string = "";
 }
 
 export class PaymentForm extends UserInfo {
-    payment_method: string = '';
-    note: string = '';
+    payment_method: string = "";
+    note: string = "";
+}
+
+export interface Window {
+    fbAsyncInit: () => void;
 }

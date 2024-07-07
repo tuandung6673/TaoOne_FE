@@ -30,9 +30,12 @@ const FacebookChat = () => {
 
   return (
     <>
-      <Helmet>
+      {/* <Helmet> */}
         <div id="fb-root"></div>
-      </Helmet>
+      {/* </Helmet> */}
+
+      <div id="fb-customer-chat" className="fb-customerchat">
+        </div>
 
       <div className="fb-customerchat"
         data-attribution="setup_tool"

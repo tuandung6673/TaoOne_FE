@@ -1,7 +1,8 @@
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
-import { useEffect, useState } from "react";
+import { Toast } from "primereact/toast";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import QrLogo from "../../images/qr-code.jpg";
 import { ItemDetail, PaymentForm } from "../../constants/interface";
@@ -15,6 +16,7 @@ enum PaymentMethod {
 }
 
 function Payment() {
+    const toast = useRef<Toast>(null);
     const [productDetail, setProductDetail] = useState<ItemDetail>();
     const [paymentForm, setPaymentForm] = useState<PaymentForm>({
         ...new PaymentForm(),
@@ -72,17 +74,21 @@ function Payment() {
     const handleSubmit = () => {
         if(!!productDetail) {
             if (validateForm()) {
-                // Xử lý logic đặt hàng ở đây
-                console.log("Form data:", paymentForm);
+                const data = paymentForm;
+                data.product_id = itemId;
+                
             }
         } else {
             // Ngăn chặn ng dùng sửa id ko hợp lệ trên url rồi submit linh tinh
-            console.log('Ma sp ko hop le');
+            if (toast.current) {
+                toast.current.show({ severity: 'error', summary: 'Thông báo', detail: 'Mã sản phẩm không hợp lệ !' });
+            }
         }
     };
 
     return (
         <>
+            <Toast ref={toast} />
             <div className="flex justify-content-center">
                 <div className="sm-col-12 md:col-8 lg:col-6 xl:col-4 main-form">
                     <div className="flex product">

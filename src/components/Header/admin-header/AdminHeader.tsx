@@ -48,6 +48,11 @@ function AdminHeader () {
                     // url: ROLE.admin + '/category-detail'
                 }
             ]
+        },
+        {
+            label: 'Đơn hàng',
+            icon: '',
+            url: ROLE.admin + '/order'
         }
     ];
     // const start = <h2>Quản trị</h2>;

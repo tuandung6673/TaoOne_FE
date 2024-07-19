@@ -4,15 +4,15 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import QrLogo from "../../images/qr-code.jpg";
 import { ItemDetail, PaymentForm } from "../../constants/interface";
+import QrLogo from "../../images/qr-code.jpg";
 import ApiService from "../../services/api.service";
 import "./payment.scss";
 
 enum PaymentMethod {
     BankTransfer = "bankTransfer", //0
     CheckPayment = "checkPayment", //1
-    CashPayment = "cashPayment",   //2
+    CashPayment = "cashPayment", //2
 }
 
 function Payment() {
@@ -20,12 +20,12 @@ function Payment() {
     const [productDetail, setProductDetail] = useState<ItemDetail>();
     const [paymentForm, setPaymentForm] = useState<PaymentForm>({
         ...new PaymentForm(),
-        payment_method: PaymentMethod.BankTransfer,
+        payment_method: PaymentMethod.CheckPayment,
     });
     const [formError, setFormError] = useState<Partial<PaymentForm>>({});
     // const [quantity, setQuantity] = useState<number>(0);
     const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(
-        PaymentMethod.BankTransfer
+        PaymentMethod.CheckPayment
     );
     const { itemId } = useParams<{ itemId?: string }>();
 
@@ -71,17 +71,33 @@ function Payment() {
         return Object.keys(errors).length === 0;
     };
 
-    const handleSubmit = () => {
-        if(!!productDetail) {
+    const handleSubmit = async () => {
+        if (!!productDetail) {
             if (validateForm()) {
                 const data = paymentForm;
                 data.product_id = itemId;
-                
+                try {
+                    const response = await ApiService.postPayment(data);
+                    if (response.status === "success" && toast.current) {
+                        toast.current.show({
+                            severity: "success",
+                            summary: "Thành công",
+                            detail: "Đặt hàng thành công !",
+                        });
+                        // navigate(-1);
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
             }
         } else {
             // Ngăn chặn ng dùng sửa id ko hợp lệ trên url rồi submit linh tinh
             if (toast.current) {
-                toast.current.show({ severity: 'error', summary: 'Thông báo', detail: 'Mã sản phẩm không hợp lệ !' });
+                toast.current.show({
+                    severity: "error",
+                    summary: "Thông báo",
+                    detail: "Mã sản phẩm không hợp lệ !",
+                });
             }
         }
     };
@@ -235,35 +251,6 @@ function Payment() {
                         <div className="options option-1">
                             <input
                                 type="radio"
-                                id={PaymentMethod.BankTransfer}
-                                name="payment"
-                                value={PaymentMethod.BankTransfer}
-                                onChange={handleRadioChange}
-                                checked={
-                                    selectedMethod ===
-                                    PaymentMethod.BankTransfer
-                                }
-                            />
-                            <label htmlFor={PaymentMethod.BankTransfer}>
-                                Chuyển khoản ngân hàng
-                            </label>
-                            {selectedMethod === PaymentMethod.BankTransfer && (
-                                <>
-                                    <div className="description">
-                                        Quý khách vui lòng chuyển tiền đến tài khoản
-                                        của chúng tôi <br></br>
-                                        Ngân hàng: MB Bank - 896667898888 - NGUYEN
-                                        TUAN DUNG
-                                    </div>
-                                    <div className="qr-small text-center">
-                                        <img src={QrLogo} alt="" />
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                        <div className="options option-2">
-                            <input
-                                type="radio"
                                 id={PaymentMethod.CheckPayment}
                                 name="payment"
                                 value={PaymentMethod.CheckPayment}
@@ -284,8 +271,37 @@ function Payment() {
                                             500.000đ
                                         </span>{" "}
                                         đến tài khoản của chúng tôi <br></br>
-                                        Ngân hàng: MB Bank - 896667898888 - NGUYEN
-                                        TUAN DUNG
+                                        Ngân hàng: MB Bank - 896667898888 -
+                                        NGUYEN TUAN DUNG
+                                    </div>
+                                    <div className="qr-small text-center">
+                                        <img src={QrLogo} alt="" />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                        <div className="options option-2">
+                            <input
+                                type="radio"
+                                id={PaymentMethod.BankTransfer}
+                                name="payment"
+                                value={PaymentMethod.BankTransfer}
+                                onChange={handleRadioChange}
+                                checked={
+                                    selectedMethod ===
+                                    PaymentMethod.BankTransfer
+                                }
+                            />
+                            <label htmlFor={PaymentMethod.BankTransfer}>
+                                Chuyển khoản ngân hàng
+                            </label>
+                            {selectedMethod === PaymentMethod.BankTransfer && (
+                                <>
+                                    <div className="description">
+                                        Quý khách vui lòng chuyển tiền đến tài
+                                        khoản của chúng tôi <br></br>
+                                        Ngân hàng: MB Bank - 896667898888 -
+                                        NGUYEN TUAN DUNG
                                     </div>
                                     <div className="qr-small text-center">
                                         <img src={QrLogo} alt="" />
@@ -315,8 +331,8 @@ function Payment() {
                                             500.000đ
                                         </span>{" "}
                                         đến tài khoản của chúng tôi <br></br>
-                                        Ngân hàng: MB Bank - 896667898888 - NGUYEN
-                                        TUAN DUNG
+                                        Ngân hàng: MB Bank - 896667898888 -
+                                        NGUYEN TUAN DUNG
                                     </div>
                                     <div className="qr-small text-center">
                                         <img src={QrLogo} alt="" />
@@ -337,7 +353,7 @@ function Payment() {
                 </div>
             </div>
             <div className="qr-code">
-                <img src={QrLogo} alt=""/>
+                <img src={QrLogo} alt="" />
             </div>
         </>
     );

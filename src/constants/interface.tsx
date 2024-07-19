@@ -68,6 +68,9 @@ export class PaymentForm extends UserInfo {
     payment_method: string = "";
     note: string = "";
     product_id?: string = "";
+    product_name?: string = "";
+    status?: number = 0;
+    total_bill?:number = 0;
 }
 export interface Window {
     fbAsyncInit: () => void;

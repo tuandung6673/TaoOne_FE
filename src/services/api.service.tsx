@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { environment } from "../environments/environment";
 import axiosInstance from "./api.interceptor";
+import Payment from "./../components/payment/payment";
+import { PaymentForm } from "../constants/interface";
 
 const ApiService = {
     // Home
@@ -210,6 +212,53 @@ const ApiService = {
         try {
             const response = await axiosInstance.delete(
                 `${environment.baseUrl}/CategoryDetail/DeleteCategoryDetail?id=` +
+                    id
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching slide list:", error);
+            throw error; // Ném lỗi ra để xử lý sau
+        }
+    },
+
+    // Payment
+    getPaymentList: async (queryParams: string) => {
+        try {
+            const response = await axiosInstance.get(`${environment.baseUrl}/Payment/GetPaymentList?` + queryParams)    
+            return response.data;      
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    postPayment: async (data: PaymentForm) => {
+        try {
+            const response = await axiosInstance.post(
+                `${environment.baseUrl}/Payment/PostPayment`,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    updatePaymentStatus: async (data: any) => {
+        try {
+            const response = await axiosInstance.post(
+                `${environment.baseUrl}/Payment/UpdatePaymentStatus`,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    deletePayment: async (id: string) => {
+        try {
+            const response = await axiosInstance.delete(
+                `${environment.baseUrl}/Payment/DeletePayment?id=` +
                     id
             );
             return response.data;

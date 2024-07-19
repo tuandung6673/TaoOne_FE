@@ -12,6 +12,7 @@ import UserLayout from './layouts/User/UserLayout';
 import Category from './components/admin/category/Category';
 import Banner from './components/admin/banner/banner';
 import Payment from './components/payment/payment';
+import Order from './components/admin/order/Order';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path=':categoryName' element={<Watch />}></Route>
             <Route path=':categoryName/them-moi' element={<WatchDetail />}></Route>
             <Route path=':categoryName/:productId' element={<WatchDetail />}></Route>
+            <Route path='order' element={<Order />}></Route>
           </Route>
           <Route path="/" element={<UserLayout />}>
             <Route index element={<Home />} />

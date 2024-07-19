@@ -1,0 +1,37 @@
+.status {
+    border-radius: 8px;
+    padding: 4px 0 4px 6px;
+    &-0 {
+        background-color: #808080;
+        color: #FFFFFF
+    }
+    &-1 {
+        background-color: #0000FF;
+        color: #FFFFFF
+    }
+    &-2 {
+        background-color: #008000;
+        color: #FFFFFF
+    }
+    &-3 {
+        background-color: #FFFF00;
+        color: #000000
+    }
+    &-4 {
+        background-color: #FF0000;
+        color: #FFFFFF
+    }
+}
+
+.order-wrapper {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.total-bill {
+    background-color: #A4C2F4;
+    padding: 3px 5px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #000000;
+}

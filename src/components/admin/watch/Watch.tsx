@@ -65,10 +65,8 @@ function Watch() {
         });
     }, [categoryName]);
 
-    
     useEffect(() => {
-        if(!!slideParams.category_code)
-            fetchWatch(slideParams);
+        if (!!slideParams.category_code) fetchWatch(slideParams);
     }, [slideParams, searchValue, rows, first]);
 
     const fetchWatch = async (slideParams: any) => {
@@ -223,12 +221,12 @@ function Watch() {
     const handleAdd = () => {
         const currentPath = window.location.pathname;
         navigate(`${currentPath}/them-moi`);
-    }
+    };
 
     const handleEdit = () => {
         const currentPath = window.location.pathname;
         navigate(`${currentPath}/${selectedId}`);
-    }
+    };
 
     return (
         <>
@@ -287,7 +285,11 @@ function Watch() {
                                 </OverlayPanel>
                             </div>
                             <div className="add-btn">
-                                <Button label="Thêm mới" icon="pi pi-plus" onClick={handleAdd} />
+                                <Button
+                                    label="Thêm mới"
+                                    icon="pi pi-plus"
+                                    onClick={handleAdd}
+                                />
                             </div>
                         </div>
                     </div>

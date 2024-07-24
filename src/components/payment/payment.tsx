@@ -8,6 +8,7 @@ import { ItemDetail, PaymentForm } from "../../constants/interface";
 import QrLogo from "../../images/qr-code.jpg";
 import ApiService from "../../services/api.service";
 import "./payment.scss";
+import ThankYou from "../thank-you/ThankYou";
 
 enum PaymentMethod {
     BankTransfer = "bankTransfer", //0
@@ -16,6 +17,7 @@ enum PaymentMethod {
 }
 
 function Payment() {
+    const [showThankYou, setShowThankYou] = useState(false);
     const toast = useRef<Toast>(null);
     const [productDetail, setProductDetail] = useState<ItemDetail>();
     const [paymentForm, setPaymentForm] = useState<PaymentForm>({
@@ -77,14 +79,14 @@ function Payment() {
                 const data = paymentForm;
                 data.product_id = itemId;
                 try {
-                    const response = await ApiService.postPayment(data);
-                    if (response.status === "success" && toast.current) {
+                    // const response = await ApiService.postPayment(data);
+                    if ( toast.current) {
                         toast.current.show({
                             severity: "success",
                             summary: "Thành công",
                             detail: "Đặt hàng thành công !",
                         });
-                        // navigate(-1);
+                        setShowThankYou(true);
                     }
                 } catch (error) {
                     console.log(error);
@@ -105,253 +107,255 @@ function Payment() {
     return (
         <>
             <Toast ref={toast} />
-            <div className="flex justify-content-center">
-                <div className="sm-col-12 md:col-8 lg:col-6 xl:col-4 main-form">
-                    <div className="flex product">
-                        <div className="col-3">
-                            <img
-                                style={{ width: "100%" }}
-                                src={productDetail?.img}
-                                alt={productDetail?.name}
-                            />
+            {showThankYou ? (<ThankYou paymentForm={paymentForm}/>) : (
+                <div className="flex justify-content-center">
+                    <div className="sm-col-12 md:col-8 lg:col-6 xl:col-4 main-form">
+                        <div className="flex pm-product">
+                            <div className="col-3">
+                                <img
+                                    style={{ width: "100%" }}
+                                    src={productDetail?.img}
+                                    alt={productDetail?.name}
+                                />
+                            </div>
+                            <div className="col-6">
+                                <div>{productDetail?.name}</div>
+                            </div>
+                            <div className="col-3 text-right font-bold">
+                                <span>
+                                    {productDetail?.salePrice.toLocaleString(
+                                        "vi-VN"
+                                    )}
+                                    đ
+                                </span>
+                            </div>
                         </div>
-                        <div className="col-6">
-                            <div>{productDetail?.name}</div>
-                        </div>
-                        <div className="col-3 text-right">
-                            <span>
-                                {productDetail?.salePrice.toLocaleString(
-                                    "vi-VN"
+                        <div className="grid user-info">
+                            <div className="col-12">
+                                <div>Họ và tên *</div>
+                                <InputText
+                                    className="w-full"
+                                    placeholder="Họ tên của bạn"
+                                    name="name"
+                                    value={paymentForm.name}
+                                    onChange={handleInputChange}
+                                />
+                                {formError.name && (
+                                    <div className="error">{formError.name}</div>
                                 )}
-                                đ
-                            </span>
-                        </div>
-                    </div>
-                    <div className="grid user-info">
-                        <div className="col-12">
-                            <div>Họ và tên *</div>
-                            <InputText
-                                className="w-full"
-                                placeholder="Họ tên của bạn"
-                                name="name"
-                                value={paymentForm.name}
-                                onChange={handleInputChange}
-                            />
-                            {formError.name && (
-                                <div className="error">{formError.name}</div>
-                            )}
-                        </div>
-                        <div className="col-12 md:col-6">
-                            <div>Số điện thoại *</div>
-                            <InputText
-                                className="w-full"
-                                placeholder="Số điện thoại của bạn"
-                                name="phone"
-                                value={paymentForm.phone}
-                                onChange={handleInputChange}
-                            />
-                            {formError.phone && (
-                                <div className="error">{formError.phone}</div>
-                            )}
-                        </div>
-                        <div className="col-12 md:col-6">
-                            <div>Email</div>
-                            <InputText
-                                className="w-full"
-                                placeholder="Email của bạn"
-                                name="email"
-                                value={paymentForm.email}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <div className="col-12 md:col-6">
-                            <div>Tỉnh/Thành phố *</div>
-                            <InputText
-                                className="w-full"
-                                placeholder="Tỉnh/Thành Phố"
-                                name="tp"
-                                value={paymentForm.tp}
-                                onChange={handleInputChange}
-                            />
-                            {formError.tp && (
-                                <div className="error">{formError.tp}</div>
-                            )}
-                        </div>
-                        <div className="col-12 md:col-6">
-                            <div>Quận/Huyện *</div>
-                            <InputText
-                                className="w-full"
-                                placeholder="Quận/Huyện"
-                                name="qh"
-                                value={paymentForm.qh}
-                                onChange={handleInputChange}
-                            />
-                            {formError.qh && (
-                                <div className="error">{formError.qh}</div>
-                            )}
-                        </div>
-                        <div className="col-12 md:col-6">
-                            <div>Xã/Phường *</div>
-                            <InputText
-                                className="w-full"
-                                placeholder="Xã/Phường"
-                                name="px"
-                                value={paymentForm.px}
-                                onChange={handleInputChange}
-                            />
-                            {formError.px && (
-                                <div className="error">{formError.px}</div>
-                            )}
-                        </div>
-                        <div className="col-12 md:col-6">
-                            <div>Địa chỉ *</div>
-                            <InputText
-                                className="w-full"
-                                placeholder="Địa chỉ của bạn"
-                                name="address"
-                                value={paymentForm.address}
-                                onChange={handleInputChange}
-                            />
-                            {formError.address && (
-                                <div className="error">{formError.address}</div>
-                            )}
-                        </div>
-                        <div className="col-12">
-                            <div>Ghi chú</div>
-                            <InputTextarea
-                                className="w-full"
-                                name="note"
-                                value={paymentForm.note}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                    </div>
-                    <div className="overview">
-                        <div className="flex justify-content-between">
-                            <span>Tạm tính:</span>
-                            <span>
-                                {productDetail?.salePrice.toLocaleString(
-                                    "vi-VN"
+                            </div>
+                            <div className="col-12 md:col-6">
+                                <div>Số điện thoại *</div>
+                                <InputText
+                                    className="w-full"
+                                    placeholder="Số điện thoại của bạn"
+                                    name="phone"
+                                    value={paymentForm.phone}
+                                    onChange={handleInputChange}
+                                />
+                                {formError.phone && (
+                                    <div className="error">{formError.phone}</div>
                                 )}
-                                đ
-                            </span>
-                        </div>
-                        <hr></hr>
-                        <div className="flex justify-content-between total">
-                            <span>Tổng:</span>
-                            <span>
-                                {productDetail?.salePrice.toLocaleString(
-                                    "vi-VN"
+                            </div>
+                            <div className="col-12 md:col-6">
+                                <div>Email</div>
+                                <InputText
+                                    className="w-full"
+                                    placeholder="Email của bạn"
+                                    name="email"
+                                    value={paymentForm.email}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            <div className="col-12 md:col-6">
+                                <div>Tỉnh/Thành phố *</div>
+                                <InputText
+                                    className="w-full"
+                                    placeholder="Tỉnh/Thành Phố"
+                                    name="tp"
+                                    value={paymentForm.tp}
+                                    onChange={handleInputChange}
+                                />
+                                {formError.tp && (
+                                    <div className="error">{formError.tp}</div>
                                 )}
-                                đ
-                            </span>
+                            </div>
+                            <div className="col-12 md:col-6">
+                                <div>Quận/Huyện *</div>
+                                <InputText
+                                    className="w-full"
+                                    placeholder="Quận/Huyện"
+                                    name="qh"
+                                    value={paymentForm.qh}
+                                    onChange={handleInputChange}
+                                />
+                                {formError.qh && (
+                                    <div className="error">{formError.qh}</div>
+                                )}
+                            </div>
+                            <div className="col-12 md:col-6">
+                                <div>Xã/Phường *</div>
+                                <InputText
+                                    className="w-full"
+                                    placeholder="Xã/Phường"
+                                    name="px"
+                                    value={paymentForm.px}
+                                    onChange={handleInputChange}
+                                />
+                                {formError.px && (
+                                    <div className="error">{formError.px}</div>
+                                )}
+                            </div>
+                            <div className="col-12 md:col-6">
+                                <div>Địa chỉ *</div>
+                                <InputText
+                                    className="w-full"
+                                    placeholder="Địa chỉ của bạn"
+                                    name="address"
+                                    value={paymentForm.address}
+                                    onChange={handleInputChange}
+                                />
+                                {formError.address && (
+                                    <div className="error">{formError.address}</div>
+                                )}
+                            </div>
+                            <div className="col-12">
+                                <div>Ghi chú</div>
+                                <InputTextarea
+                                    className="w-full"
+                                    name="note"
+                                    value={paymentForm.note}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <div className="method">
-                        <div className="options option-1">
-                            <input
-                                type="radio"
-                                id={PaymentMethod.CheckPayment}
-                                name="payment"
-                                value={PaymentMethod.CheckPayment}
-                                onChange={handleRadioChange}
-                                checked={
-                                    selectedMethod ===
-                                    PaymentMethod.CheckPayment
-                                }
-                            />
-                            <label htmlFor={PaymentMethod.CheckPayment}>
-                                Kiểm tra thanh toán
-                            </label>
-                            {selectedMethod === PaymentMethod.CheckPayment && (
-                                <>
-                                    <div className="description">
-                                        Quý khách vui lòng chuyển tiền đặt cọc{" "}
-                                        <span className="text-red-500">
-                                            500.000đ
-                                        </span>{" "}
-                                        đến tài khoản của chúng tôi <br></br>
-                                        Ngân hàng: MB Bank - 896667898888 -
-                                        NGUYEN TUAN DUNG
-                                    </div>
-                                    <div className="qr-small text-center">
-                                        <img src={QrLogo} alt="" />
-                                    </div>
-                                </>
-                            )}
+                        <div className="overview">
+                            <div className="flex justify-content-between">
+                                <span>Tạm tính:</span>
+                                <span>
+                                    {productDetail?.salePrice.toLocaleString(
+                                        "vi-VN"
+                                    )}
+                                    đ
+                                </span>
+                            </div>
+                            <hr></hr>
+                            <div className="flex justify-content-between total">
+                                <span>Tổng:</span>
+                                <span>
+                                    {productDetail?.salePrice.toLocaleString(
+                                        "vi-VN"
+                                    )}
+                                    đ
+                                </span>
+                            </div>
                         </div>
-                        <div className="options option-2">
-                            <input
-                                type="radio"
-                                id={PaymentMethod.BankTransfer}
-                                name="payment"
-                                value={PaymentMethod.BankTransfer}
-                                onChange={handleRadioChange}
-                                checked={
-                                    selectedMethod ===
-                                    PaymentMethod.BankTransfer
-                                }
-                            />
-                            <label htmlFor={PaymentMethod.BankTransfer}>
-                                Chuyển khoản ngân hàng
-                            </label>
-                            {selectedMethod === PaymentMethod.BankTransfer && (
-                                <>
-                                    <div className="description">
-                                        Quý khách vui lòng chuyển tiền đến tài
-                                        khoản của chúng tôi <br></br>
-                                        Ngân hàng: MB Bank - 896667898888 -
-                                        NGUYEN TUAN DUNG
-                                    </div>
-                                    <div className="qr-small text-center">
-                                        <img src={QrLogo} alt="" />
-                                    </div>
-                                </>
-                            )}
+                        <div className="method">
+                            <div className="options option-1">
+                                <input
+                                    type="radio"
+                                    id={PaymentMethod.CheckPayment}
+                                    name="payment"
+                                    value={PaymentMethod.CheckPayment}
+                                    onChange={handleRadioChange}
+                                    checked={
+                                        selectedMethod ===
+                                        PaymentMethod.CheckPayment
+                                    }
+                                />
+                                <label htmlFor={PaymentMethod.CheckPayment}>
+                                    Kiểm tra thanh toán
+                                </label>
+                                {selectedMethod === PaymentMethod.CheckPayment && (
+                                    <>
+                                        <div className="description">
+                                            Quý khách vui lòng chuyển tiền đặt cọc{" "}
+                                            <span className="text-red-500">
+                                                500.000đ
+                                            </span>{" "}
+                                            đến tài khoản của chúng tôi <br></br>
+                                            Ngân hàng: MB Bank - 896667898888 -
+                                            NGUYEN TUAN DUNG
+                                        </div>
+                                        <div className="qr-small text-center">
+                                            <img src={QrLogo} alt="" />
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                            <div className="options option-2">
+                                <input
+                                    type="radio"
+                                    id={PaymentMethod.BankTransfer}
+                                    name="payment"
+                                    value={PaymentMethod.BankTransfer}
+                                    onChange={handleRadioChange}
+                                    checked={
+                                        selectedMethod ===
+                                        PaymentMethod.BankTransfer
+                                    }
+                                />
+                                <label htmlFor={PaymentMethod.BankTransfer}>
+                                    Chuyển khoản ngân hàng
+                                </label>
+                                {selectedMethod === PaymentMethod.BankTransfer && (
+                                    <>
+                                        <div className="description">
+                                            Quý khách vui lòng chuyển tiền đến tài
+                                            khoản của chúng tôi <br></br>
+                                            Ngân hàng: MB Bank - 896667898888 -
+                                            NGUYEN TUAN DUNG
+                                        </div>
+                                        <div className="qr-small text-center">
+                                            <img src={QrLogo} alt="" />
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                            <div className="options option-2">
+                                <input
+                                    type="radio"
+                                    id={PaymentMethod.CashPayment}
+                                    name="payment"
+                                    value={PaymentMethod.CashPayment}
+                                    onChange={handleRadioChange}
+                                    checked={
+                                        selectedMethod === PaymentMethod.CashPayment
+                                    }
+                                />
+                                <label htmlFor={PaymentMethod.CashPayment}>
+                                    Trả tiền mặt khi nhận hàng
+                                </label>
+                                {selectedMethod === PaymentMethod.CashPayment && (
+                                    <>
+                                        <div className="description">
+                                            Quý khách vui lòng chuyển tiền đặt cọc{" "}
+                                            <span className="text-red-500">
+                                                500.000đ
+                                            </span>{" "}
+                                            đến tài khoản của chúng tôi <br></br>
+                                            Ngân hàng: MB Bank - 896667898888 -
+                                            NGUYEN TUAN DUNG
+                                        </div>
+                                        <div className="qr-small text-center">
+                                            <img src={QrLogo} alt="" />
+                                        </div>
+                                    </>
+                                )}
+                            </div>
                         </div>
-                        <div className="options option-2">
-                            <input
-                                type="radio"
-                                id={PaymentMethod.CashPayment}
-                                name="payment"
-                                value={PaymentMethod.CashPayment}
-                                onChange={handleRadioChange}
-                                checked={
-                                    selectedMethod === PaymentMethod.CashPayment
-                                }
-                            />
-                            <label htmlFor={PaymentMethod.CashPayment}>
-                                Trả tiền mặt khi nhận hàng
-                            </label>
-                            {selectedMethod === PaymentMethod.CashPayment && (
-                                <>
-                                    <div className="description">
-                                        Quý khách vui lòng chuyển tiền đặt cọc{" "}
-                                        <span className="text-red-500">
-                                            500.000đ
-                                        </span>{" "}
-                                        đến tài khoản của chúng tôi <br></br>
-                                        Ngân hàng: MB Bank - 896667898888 -
-                                        NGUYEN TUAN DUNG
-                                    </div>
-                                    <div className="qr-small text-center">
-                                        <img src={QrLogo} alt="" />
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                    <div className="flex justify-content-center">
-                        <div className="col-8 md:col-5 order">
-                            <Button
-                                label="Đặt hàng"
-                                className="w-full"
-                                onClick={handleSubmit}
-                            />
+                        <div className="flex justify-content-center">
+                            <div className="col-8 md:col-5 order">
+                                <Button
+                                    label="Đặt hàng"
+                                    className="w-full"
+                                    onClick={handleSubmit}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                )}
             <div className="qr-code">
                 <img src={QrLogo} alt="" />
             </div>

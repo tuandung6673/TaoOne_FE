@@ -2,7 +2,7 @@
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
 import { TabPanel, TabView } from 'primereact/tabview';
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,9 +15,11 @@ import { ItemDetail } from "../../constants/interface";
 import { dummySlider } from "../../dummyDatas/dummyData";
 import saleLogo from "../../images/sale_tag_2.png";
 import ApiService from "../../services/api.service";
-import classes from "./ProductDetail.module.scss";
+import './ProductDetail.scss'
+import { Toast } from "primereact/toast";
 
 function ProductDetail() {
+    const toast = useRef<Toast>(null);
     const abc = `<div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--description panel entry-content active" id="tab-description" role="tabpanel" aria-labelledby="tab-title-description" bis_skin_checked="1">
         <h2><strong>Apple Watch Series 8 45mm GPS – Kháng nước, chống nứt, chống bụi tiêu chuẩn cao</strong></h2>
         <p>Apple Watch Series 8 45mm GPS là chiếc smartwatch sang trọng, được chế tác tinh xảo có khả năng chống nước và chống bụi. Đồng hồ được cải tiến nhiều tính năng đảm bảo độ chính xác khi theo dõi sức khỏe của người dùng. Bạn đã sẵn sàng tìm hiểu những điểm đặc biệt <a title="Đồng hồ Apple Watch Series 8 chính hãng" href="https://cellphones.com.vn/do-choi-cong-nghe/apple-watch/series-8.html" target="_blank" rel="noopener"><strong>đồng hồ&nbsp;Apple watch Series 8</strong></a>&nbsp;này chưa, cùng mình tìm hiểu nhé!</p>
@@ -120,16 +122,23 @@ function ProductDetail() {
         navigate('/thanh-toan/'+ itemId)
     }
 
+    const bagnow = () => {
+        if(toast.current) {
+            toast.current.show({severity: 'warn', summary: 'Thông báo', detail: 'Tính năng giỏ hàng đang được phát triển'})
+        }
+    }
+
     return (
-        <div className={classes.product}>
-            <div className={classes.product1}>
-                <div className={classes.product_up}>
-                    <div className={classes.product_left}>
-                        <div className={classes.product_left2}>
+        <div className="product">
+            <Toast ref={toast} />
+            <div className="product1">
+                <div className="product_up">
+                    <div className="product_left">
+                        <div className="product_left2">
                             {detailData && detailData.img && (
                                 <Zoom>
                                     <img
-                                        className={classes.product_image}
+                                        className="product_image"
                                         src={mainImage}
                                         alt={detailData.name}
                                     />
@@ -138,11 +147,11 @@ function ProductDetail() {
                             {detailData?.price !== detailData?.salePrice && (
                                 <div>
                                     <img
-                                        className={classes.sale_logo}
+                                        className="sale_logo"
                                         src={saleLogo}
                                         alt="logo"
                                     />
-                                    <span className={classes.sale_percent}>
+                                    <span className="sale_percent">
                                         -
                                         {(
                                             (1 -
@@ -155,7 +164,7 @@ function ProductDetail() {
                                 </div>
                             )}
                         </div>
-                        <div className={classes.list_image}>
+                        <div className="list_image">
                             <Swiper
                                 spaceBetween={20}
                                 slidesPerView={5}
@@ -174,16 +183,16 @@ function ProductDetail() {
                             </Swiper>
                         </div>
                     </div>
-                    <div className={classes.product_right}>
-                        <div className={classes.breadcrumb}>
+                    <div className="product_right">
+                        <div className="breadcrumb">
                             <BreadCrumb model={breadcrumbItems} home={home} />
                         </div>
                         {detailData && detailData.name && (
-                            <div className={classes.product_name}>
+                            <div className="product_name">
                                 {detailData.name}
                             </div>
                         )}
-                        {/* <div className={classes.product_rating}>
+                        {/* <div className="product_rating">
                             <div>
                                 <Rating value={4} readOnly cancel={false} />
                             </div>
@@ -191,25 +200,25 @@ function ProductDetail() {
                         </div> */}
                         {detailData && detailData.price && detailData.salePrice && (
                             <div>
-                                <span className={classes.sale_price}>
+                                <span className="sale_price">
                                     {formatNumber(detailData.salePrice)}đ
                                 </span>
-                                <span className={classes.price}>
+                                <span className="price">
                                     {formatNumber(detailData.price)}đ
                                 </span>
                             </div>
                         )}
-                        <div className={classes.status}>
+                        <div className="status">
                             Tình trạng: Còn sản phẩm
                         </div>
-                        <div className={classes.product_action}>
-                            <div className={classes.cart} onClick={buynow}>
+                        <div className="product_action">
+                            <div className="cart" onClick={buynow}>
                                 <Button
                                     label="Mua ngay"
                                     icon="pi pi-shopping-cart"
                                 />
                             </div>
-                            <div className={classes.bag}>
+                            <div className="bag" onClick={bagnow}>
                                 <Button
                                     label="Thêm vào giỏ hàng"
                                     icon="pi pi-shopping-bag"
@@ -219,8 +228,8 @@ function ProductDetail() {
                     </div>
                 </div>
             </div>
-            <div className={classes.product2}>
-                <div className={classes.product_down}>
+            <div className="product2">
+                <div className="product_down">
                     <TabView>
                         <TabPanel header="Mô tả">
                             <div dangerouslySetInnerHTML={{__html: abc}}>

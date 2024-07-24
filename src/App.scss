@@ -23,14 +23,6 @@
     width: 100%;
 }
 
-.bag {
-    .p-button {
-        background: transparent !important;
-        border: 1px solid #06b6d4 !important;
-        color: #06b6d4 !important;
-    }
-}
-
 .p-tabview-nav {
     justify-content: center;
 }
@@ -71,6 +63,12 @@
     }
     .p-button-icon-only {
         padding: 0 8px;
+    }
+}
+
+.p-button {
+    &:focus {
+        box-shadow: none !important;
     }
 }
 

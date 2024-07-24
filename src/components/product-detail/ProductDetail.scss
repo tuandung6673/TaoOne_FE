@@ -1,3 +1,5 @@
+@import '../../color/colors.scss';
+
 .product1 {
     width: 65%;
     margin: 0 auto;
@@ -106,5 +108,40 @@
         // width: 50px;
         width: 100%;
         object-fit: contain;
+    }
+}
+
+.cart .p-button {
+    background-color: $main-green-color;
+    border-color: $main-green-color;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.cart .p-button:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.bag {
+    .p-button {
+        border-color: $main-green-color;
+        background: transparent;
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        &:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            .p-button-label {
+                color: #FFFFFF;
+            }
+            .p-button-icon {
+                color: #FFFFFF;
+            }
+        }
+    }
+    .p-button-label {
+        color: $main-green-color;
+    }
+    .p-button-icon {
+        color: $main-green-color;
     }
 }

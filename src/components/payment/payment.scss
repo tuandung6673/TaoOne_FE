@@ -24,20 +24,16 @@
 }
 
 /* Sản phẩm */
-.product {
-    display: flex;
+.pm-product {
     align-items: center;
     margin-bottom: 10px;
-}
-
-.product img {
-    border-radius: 8px;
-}
-
-.product span {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
+    img {
+        border-radius: 8px;
+    }
+    span {
+        display: block;
+        margin-bottom: 5px;
+    }
 }
 
 /* Thông tin người dùng */

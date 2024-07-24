@@ -1,0 +1,51 @@
+@import '../../color/colors.scss';
+
+.main-thank {
+    text-align: center;
+    padding: 30px 30px 20px 30px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin: 40px auto;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.main-thank div {
+    margin-bottom: 15px;
+}
+
+.main-thank span {
+    display: block;
+    // margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    // color: $main-green-color;
+}
+
+.main-thank i.pi-check-circle {
+    font-size: 50px;
+    color: $main-green-color;
+}
+
+.main-thank .customer-info {
+    display: inline;
+    font-weight: normal;
+    color: #333;
+    font-size: 20px;
+    color: $main-green-color;
+}
+
+.main-thank .button-wrapper {
+    margin-top: 20px;
+}
+
+.main-thank .p-button {
+    background-color: $main-green-color;
+    border-color: $main-green-color;
+}
+
+.main-thank .p-button:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}

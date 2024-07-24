@@ -22,6 +22,7 @@ function Order() {
     const [selectedId, setSelectedId] = useState<string>();
     const breadcrumbItems = [{ label: "Đơn hàng" }];
     const statusOptions = [
+        { label: "Tất cả", value: -1 },
         { label: "0. Khởi tạo", value: 0 },
         { label: "1. Đã xác nhận", value: 1 },
         { label: "2. Hoàn thành", value: 2 },
@@ -229,7 +230,6 @@ function Order() {
                                                 changeCtgHanlder(e)
                                             }
                                             options={statusOptions}
-                                            showClear
                                             placeholder="Select"
                                             className="w-full"
                                         />

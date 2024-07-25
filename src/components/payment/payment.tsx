@@ -79,8 +79,8 @@ function Payment() {
                 const data = paymentForm;
                 data.product_id = itemId;
                 try {
-                    // const response = await ApiService.postPayment(data);
-                    if ( toast.current) {
+                    const response = await ApiService.postPayment(data);
+                    if (response.status === "success" && toast.current) {
                         toast.current.show({
                             severity: "success",
                             summary: "Thành công",

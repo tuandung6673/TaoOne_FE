@@ -1,7 +1,4 @@
-// .main-form {
-//     background: #fff;
-//     box-shadow: 0 0 3px #b4b4b4;
-// }
+@import '../../color/colors.scss';
 
 .product {
     border-bottom: 1px solid #ececec;
@@ -141,7 +138,7 @@
         height: 180px;
         width: 130px;
     }
-} 
+}
 
 
 @media (max-width: 1200px) {
@@ -162,4 +159,17 @@
 .p-inputtextarea {
     padding: 5px !important;
     min-height: 55px;
+}
+
+.order .p-button {
+    border-color: $main-green-color;
+    background-color: $main-green-color;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    &:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+        .p-button-label {
+            color: #FFFFFF;
+        }
+    }
 }

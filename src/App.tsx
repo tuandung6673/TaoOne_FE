@@ -13,6 +13,7 @@ import Category from './components/admin/category/Category';
 import Banner from './components/admin/banner/banner';
 import Payment from './components/payment/payment';
 import Order from './components/admin/order/Order';
+import LoginForm from './components/login/Login';
 
 function App() {
   return (
@@ -27,6 +28,8 @@ function App() {
             <Route path=':categoryName/them-moi' element={<WatchDetail />}></Route>
             <Route path=':categoryName/:productId' element={<WatchDetail />}></Route>
             <Route path='order' element={<Order />}></Route>
+          </Route>
+          <Route path='login' element={<LoginForm />}>
           </Route>
           <Route path="/" element={<UserLayout />}>
             <Route index element={<Home />} />

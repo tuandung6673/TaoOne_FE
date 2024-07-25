@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { PaymentForm } from "../../../constants/interface";
 import ApiService from "../../../services/api.service";
 import "./Order.scss";
+import moment from "moment";
 
 function Order() {
     const [selectStatus, setSelectStatus] = useState(null);
@@ -46,7 +47,7 @@ function Order() {
         setSelectStatus(e.value);
         setOrderParams((prevParams) => ({
             ...prevParams,
-            status: e.value ? e.value : "",
+            status: e.value ? e.value : "0",
         }));
         op2.current?.toggle(e);
     };
@@ -101,6 +102,10 @@ function Order() {
         }
         return template;
     };
+
+    const dateTemplate = (product : any) => {
+        return moment(product.date).format('DD/MM/YYYY')
+    }
 
     const optionsTemplate = (rowData: any) => {
         return (
@@ -294,6 +299,12 @@ function Order() {
                             style={{ minWidth: "140px" }}
                             field="note"
                             header="Ghi chú"
+                        ></Column>
+                        <Column
+                            style={{ minWidth: "140px" }}
+                            field="date"
+                            header="Ngày đặt"
+                            body={dateTemplate}
                         ></Column>
                         <Column
                             style={{ minWidth: "200px" }}

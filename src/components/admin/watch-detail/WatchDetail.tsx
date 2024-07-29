@@ -170,7 +170,7 @@ function WatchDetail() {
                             <FileUpload mode="basic" name="demo[]" url="/api/upload" accept="image/*" maxFileSize={1000000} onUpload={onUpload} chooseLabel="Ảnh đại diện" />
                         </div>
                         <div className="grid mt-1">
-                            <div className="col-4">
+                            {/* <div className="col-4">
                                 <input type="file" id="file-input" />
                                 <label htmlFor='file-input' className='addimage'>
                                     <img className='w-full' src='https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' alt='' />
@@ -205,7 +205,15 @@ function WatchDetail() {
                                 <label htmlFor='file-input' className='addimage'>
                                     <img className='w-full' src='https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' alt='' />
                                 </label>
-                            </div>
+                            </div> */}
+                            {formData && formData.listImages?.map((item : any) => (
+                                <div className="col-4 sub-image">
+                                    <input type="file" id="file-input" />
+                                    <label htmlFor='file-input' className='addimage'>
+                                        <img className='w-full' src={item.imgSource ? item.imgSource : 'https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'} alt='' />
+                                    </label>
+                                </div>
+                            ))}
                         </div>
                     </div>
                     <div className="col-12 md:col-9 md:pl-5">

@@ -115,7 +115,7 @@ function ProductDetail() {
     }
 
     const changeImage = (item : any) => {
-        setMainImage(item.img)
+        setMainImage(item.imgSource)
     }
 
     const buynow = () => {
@@ -175,9 +175,9 @@ function ProductDetail() {
                                     A11y,
                                 ]}
                             >
-                                {dummySlider.map((item : any) => (
+                                {detailData && detailData.listImages?.map((item : any) => (
                                     <SwiperSlide onClick={() => changeImage(item)}>
-                                        <img src={item.img} alt={item.name}/>
+                                        <img src={item.imgSource} alt={item.name}/>
                                     </SwiperSlide>
                                 ))}
                             </Swiper>

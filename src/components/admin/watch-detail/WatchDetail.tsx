@@ -166,7 +166,7 @@ function WatchDetail() {
                 <div className="grid">
                     <div className="col-12 md:col-3">
                         <div className="avatar">
-                            <img className="w-full" src="https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png" alt="" />
+                            <img className="w-full" src={formData.img ? formData.img : 'https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png'} alt="" />
                             <FileUpload mode="basic" name="demo[]" url="/api/upload" accept="image/*" maxFileSize={1000000} onUpload={onUpload} chooseLabel="Ảnh đại diện" />
                         </div>
                         <div className="grid mt-1">

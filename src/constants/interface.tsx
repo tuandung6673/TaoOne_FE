@@ -10,6 +10,12 @@ export class CategoryDetail {
     category_id: string = "";
 }
 
+export class SubImage {
+    id: string = "";
+    productId: string = "";
+    imgSource: string = ""
+}
+
 export class ItemDetail {
     id: string = "";
     category_id?: string = "";
@@ -22,6 +28,7 @@ export class ItemDetail {
     salePrice: number = 0;
     description?: string = "";
     specs?: string = "";
+    listImages? : SubImage[] = [];
 }
 
 export interface HomeCategory {

@@ -1,4 +1,5 @@
 /* eslint-disable eqeqeq */
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
@@ -11,7 +12,6 @@ import {
 } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
-import { FileUpload } from "primereact/fileupload";
 import { InputText } from "primereact/inputtext";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { Sidebar } from "primereact/sidebar";
@@ -23,18 +23,11 @@ import {
     Category as Ctg,
     DropdownInterface,
 } from "../../../constants/interface";
+import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
+import './Category.scss';
 
 function Category() {
-    const onUpload = () => {
-        if (toast.current) {
-            toast.current.show({
-                severity: "info",
-                summary: "Success",
-                detail: "File Uploaded",
-            });
-        }
-    };
     const toast = useRef<Toast>(null);
     const home = { icon: "pi pi-home", url: "" };
     const op = useRef<OverlayPanel>(null);
@@ -53,6 +46,9 @@ function Category() {
     const [visibleRight, setVisibleRight] = useState(false);
     const [visibleLeft, setVisibleLeft] = useState(false);
     const [listCtg, setListCtg] = useState<DropdownInterface[]>([]);
+    const [image, setImage] = useState<File | null>(null);
+    const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
+    const [imageUrl, setImageUrl] = useState<string>('');
 
     useEffect(() => {
         fetchData();
@@ -181,7 +177,7 @@ function Category() {
                         life: 3000,
                     });
                 }
-                fetchCategoriesAndDetails();
+                fetchData()
             } else {
                 if (toast.current) {
                     toast.current.show({
@@ -243,12 +239,57 @@ function Category() {
         });
     };
 
+    const onSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const selectedImage = e.target.files[0];
+            setImage(selectedImage);
+            // setAvatarImageName(image.name);
+            const reader = new FileReader();
+      
+            reader.onloadend = () => {
+              setImageUrl(reader.result as string);
+            };
+      
+            reader.readAsDataURL(selectedImage);
+            setIsChangeAvatar(true);
+        }
+    };
+    
+    const uploadAvatar = (): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            if (image) {
+                const storageRef = ref(storage, `images/${image.name}`);
+                const uploadTask = uploadBytesResumable(storageRef, image);
+          
+                uploadTask.on(
+                    'state_changed',
+                    (snapshot) => {
+                        // Tiến trình tải lên
+                    },
+                    (error) => {
+                        console.error("Upload failed", error);
+                        reject(error);
+                    },
+                    () => {
+                        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL1) => {
+                            setImageUrl(downloadURL1);
+                            resolve();
+                        });
+                    }
+                );
+            } else {
+                resolve();
+            }
+        });
+    }
+
     const fetchCtgDetail = async () => {
         try {
             const detailCtg = await ApiService.getCategoryDetail(
                 selectedId || ""
             );
             setDetailCtg(detailCtg.data);
+            setImageUrl(detailCtg.data.img);
         } catch (error) {
             console.log(error);
         }
@@ -300,21 +341,27 @@ function Category() {
 
     const handleSaveDetailCtg = async () => {
         const data: Ctg = detailCtg;
+        data.img = isChangeAvatar ? 'https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F' + image?.name + '?alt=media' : detailCtg.img;
         if (!selectedId) {
             delete data.id;
         }
         delete data.products;
         try {
             const response = await ApiService.postCategory(data);
-            if (response.status === "success" && toast.current) {
-                toast.current.show({
-                    severity: "success",
-                    summary: "Thành công",
-                    detail:
-                        (!!selectedId ? "Lưu" : "Thêm mới") + " thành công !",
-                });
-                fetchData();
+            if (response.status === "success") {
+                if (toast.current) {
+                    toast.current.show({
+                        severity: "success",
+                        summary: "Thành công",
+                        detail:
+                            (!!selectedId ? "Lưu" : "Thêm mới") + " thành công !",
+                    });
+                }
+                if(isChangeAvatar) {
+                    await uploadAvatar();
+                }
                 setVisibleRight(false);
+                fetchData();
             }
         } catch (error) {
             console.log(error);
@@ -322,7 +369,6 @@ function Category() {
     };
 
     const submitDetailDetail = async () => {
-        // console.log(detailDetailCtg);
         const data: any = detailDetailCtg;
         if (!selectedDetailId) {
             delete data.id;
@@ -349,6 +395,7 @@ function Category() {
         setSelectedId(undefined);
         setVisibleRight(true);
         setDetailCtg(new Ctg());
+        setImageUrl('');
     };
 
     const addCtgDetail = () => {
@@ -488,26 +535,12 @@ function Category() {
                 onHide={() => setVisibleRight(false)}
             >
                 <h2>Loại</h2>
-                <div className="grid">
-                    <div className="col-12">
-                        <img
-                            className="w-full"
-                            style={{ height: "300px", objectFit: "none" }}
-                            src={
-                                detailCtg?.img ||
-                                "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
-                            }
-                            alt=""
-                        />
-                        <FileUpload
-                            mode="basic"
-                            name="demo[]"
-                            url="/api/upload"
-                            accept="image/*"
-                            maxFileSize={1000000}
-                            onUpload={onUpload}
-                            chooseLabel="Ảnh"
-                        />
+                <div className="grid catgory">
+                    <div className="col-12 avatar">
+                        <input type='file' id='avatar-input' accept='image/*' onChange={onSelect}/>
+                        <label htmlFor='avatar-input'>
+                            <img className="w-full" src={imageUrl ? imageUrl : 'https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png'} alt="abcákjdh" />
+                        </label>
                     </div>
                     <div className="col-6">
                         <div>Mã</div>

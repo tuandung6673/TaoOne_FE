@@ -1,24 +1,29 @@
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { DataTable } from "primereact/datatable";
 import { Dropdown } from "primereact/dropdown";
+import { InputText } from "primereact/inputtext";
 import { OverlayPanel } from "primereact/overlaypanel";
-import { Toast } from "primereact/toast";
 import { Sidebar } from 'primereact/sidebar';
+import { Toast } from "primereact/toast";
 import queryString from "query-string";
 import { useEffect, useRef, useState } from "react";
 import { BannerDetail, DropdownInterface, ItemDetail } from "../../../constants/interface";
+import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
-import { InputText } from "primereact/inputtext";
-import { FileUpload } from "primereact/fileupload";
+import './banner.scss';
 
 function Banner() {
     const toast = useRef<Toast>(null);
     const op = useRef<OverlayPanel>(null);
     const [visibleRight, setVisibleRight] = useState(false);
     const op2 = useRef<OverlayPanel>(null);
+    const [image, setImage] = useState<File | null>(null);
+    const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
+    const [imageUrl, setImageUrl] = useState<string>('');
     const home = { icon: "pi pi-home", url: "" };
     const breadcrumbItems = [{ label: "Banner" }];
     const [slideParams, setSlideParams] = useState({
@@ -29,11 +34,7 @@ function Banner() {
     const [selectedId, setSelectedId] = useState<string>();
     const [listCtg, setListCtg] = useState<DropdownInterface[]>([]);
     const [bannerDetail, setBannerDetail] = useState<BannerDetail>(new BannerDetail())
-    const onUpload = () => {
-        if (toast.current) {
-            toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
-        }
-    };
+    
     useEffect(() => {
         fetchCategoryDetail();
     }, []);
@@ -140,6 +141,50 @@ function Banner() {
         }
     };
 
+    const onSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const selectedImage = e.target.files[0];
+            setImage(selectedImage);
+            // setAvatarImageName(image.name);
+            const reader = new FileReader();
+      
+            reader.onloadend = () => {
+              setImageUrl(reader.result as string);
+            };
+      
+            reader.readAsDataURL(selectedImage);
+            setIsChangeAvatar(true);
+        }
+    };
+
+    const uploadAvatar = (): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            if (image) {
+                const storageRef = ref(storage, `images/${image.name}`);
+                const uploadTask = uploadBytesResumable(storageRef, image);
+          
+                uploadTask.on(
+                    'state_changed',
+                    (snapshot) => {
+                        // Tiến trình tải lên
+                    },
+                    (error) => {
+                        console.error("Upload failed", error);
+                        reject(error);
+                    },
+                    () => {
+                        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL1) => {
+                            setImageUrl(downloadURL1);
+                            resolve();
+                        });
+                    }
+                );
+            } else {
+                resolve();
+            }
+        });
+    }
+
     const confirmDelete = () => {
         confirmDialog({
             header: "Xác nhận",
@@ -156,6 +201,7 @@ function Banner() {
         try {
             const detailBanner = await ApiService.getSlideDetail(selectedId || "")
             setBannerDetail(detailBanner.data)
+            setImageUrl(detailBanner.data.img);
         } catch (error) {
             console.log(error);
         }
@@ -183,13 +229,19 @@ function Banner() {
 
     const handleSubmit = async () => {
         const data : any = bannerDetail;
+        data.img = isChangeAvatar ? 'https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F' + image?.name + '?alt=media' : bannerDetail.img;
         if(!selectedId) {
             delete data.id;
         }
         try {
             const response = await ApiService.postSlide(data);
-            if (response.status === 'success' && toast.current) {
-                toast.current.show({ severity: 'success', summary: 'Thành công', detail: (!!selectedId ? 'Lưu' : 'Thêm mới') + ' thành công !' });
+            if (response.status === 'success') {
+                if (toast.current) {
+                    toast.current.show({ severity: 'success', summary: 'Thành công', detail: (!!selectedId ? 'Lưu' : 'Thêm mới') + ' thành công !' });
+                }
+                if(isChangeAvatar) {
+                    await uploadAvatar();
+                }
                 setVisibleRight(false);
                 fetchSlide(slideParams);
             }
@@ -207,6 +259,7 @@ function Banner() {
         setSelectedId(undefined);
         setVisibleRight(true);
         setBannerDetail(new BannerDetail());
+        setImageUrl('');
     }
 
     return (
@@ -308,10 +361,12 @@ function Banner() {
             </OverlayPanel>
             <Sidebar visible={visibleRight} className="w-6" position="right" onHide={() => setVisibleRight(false)}>
                 <h2>Banner</h2>
-                <div className="grid">
-                    <div className="col-12">
-                        <img className="w-full" style={{'height': '300px', 'objectFit': 'contain'}} src={bannerDetail?.img || "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"} alt="" />
-                        <FileUpload mode="basic" name="demo[]" url="/api/upload" accept="image/*" maxFileSize={1000000} onUpload={onUpload} chooseLabel="Ảnh" />
+                <div className="grid banner">
+                    <div className="col-12 avatar">
+                        <input type='file' id='avatar-input' accept='image/*' onChange={onSelect}/>
+                        <label htmlFor='avatar-input'>
+                            <img className="w-full" src={imageUrl ? imageUrl : 'https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png'} alt="abcákjdh" />
+                        </label>
                     </div>
                     <div className="col-6">
                         <div>Màn hình</div>

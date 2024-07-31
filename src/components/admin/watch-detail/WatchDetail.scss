@@ -2,10 +2,12 @@ input[type="file"] {
     display: none;
 }
 
-.avatar {
-    border-radius: 10px;
-    box-shadow: 0 0 3px #b4b4b4;
-    padding: 0.5rem;
+.product-detail {
+    .avatar {
+        border-radius: 10px;
+        box-shadow: 0 0 3px #b4b4b4;
+        padding: 0.5rem;
+    }
 }
 
 .addimage {

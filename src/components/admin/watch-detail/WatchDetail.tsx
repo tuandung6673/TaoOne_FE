@@ -1,20 +1,24 @@
 import { Editor } from '@tinymce/tinymce-react';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
-import { FileUpload } from 'primereact/fileupload';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from "primereact/toast";
 import queryString from 'query-string';
 import { useEffect, useRef, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { Editor as TinyMCEEditor } from 'tinymce';
 import { Category, CategoryDetail, ItemDetail } from '../../../constants/interface';
+import { storage } from '../../../firebase/firebaseConfig';
 import ApiService from '../../../services/api.service';
 import './WatchDetail.scss';
 
 function WatchDetail() {
     const navigate = useNavigate();
+    const [image, setImage] = useState<File | null>(null);
+    const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
+    const [imageUrl, setImageUrl] = useState<string>('');
     const [formData, setFormData] = useState<ItemDetail>(new ItemDetail());
     const [categoryList, setCategoryList] = useState<Category[]>([]);
     const [categoryDetailList, setCategoryDetailList] = useState<CategoryDetail[]>([]);
@@ -24,11 +28,50 @@ function WatchDetail() {
     const { productId } = useParams<{ productId?: string }>();
     const breadcrumbItems = [{ label: "Sản phẩm" }, { label: !!productId ? 'Chi tiết' : 'Thêm mới' }];
     const home = { icon: "pi pi-home", url: "" };
-    const onUpload = () => {
-        if (toast.current) {
-            toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded' });
+    
+    const onSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const selectedImage = e.target.files[0];
+            setImage(selectedImage);
+            // setAvatarImageName(image.name);
+            const reader = new FileReader();
+      
+            reader.onloadend = () => {
+              setImageUrl(reader.result as string);
+            };
+      
+            reader.readAsDataURL(selectedImage);
+            setIsChangeAvatar(true);
         }
     };
+    
+    const uploadAvatar = (): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            if (image) {
+                const storageRef = ref(storage, `images/${image.name}`);
+                const uploadTask = uploadBytesResumable(storageRef, image);
+          
+                uploadTask.on(
+                    'state_changed',
+                    (snapshot) => {
+                        // Tiến trình tải lên
+                    },
+                    (error) => {
+                        console.error("Upload failed", error);
+                        reject(error);
+                    },
+                    () => {
+                        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL1) => {
+                            setImageUrl(downloadURL1);
+                            resolve();
+                        });
+                    }
+                );
+            } else {
+                resolve();
+            }
+        });
+    }
 
     useEffect(() => {
         if(!!productId) {
@@ -47,6 +90,7 @@ function WatchDetail() {
         try {
             const productDetail = await ApiService.getProductDetail(id);
             setFormData(productDetail.data);
+            setImageUrl(productDetail.data.img);
         } catch (error) {
             console.log(error);
         }
@@ -124,15 +168,22 @@ function WatchDetail() {
 
     const handleSubmit = async () => {
         const data : any = formData;
+        data.img = isChangeAvatar ? 'https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F' + image?.name + '?alt=media' : formData.img;
         delete data.category_code;
         delete data.category_detail_name;
         if(!productId) {
             delete data.id;
         }
+
         try {
             const response = await ApiService.postProduct(data);
-            if (response.status === 'success' && toast.current) {
-                toast.current.show({ severity: 'success', summary: 'Thành công', detail: (!!productId ? 'Lưu' : 'Thêm mới') + ' thành công !' });
+            if (response.status === 'success') {
+                if (toast.current) {
+                    toast.current.show({ severity: 'success', summary: 'Thành công', detail: (!!productId ? 'Lưu' : 'Thêm mới') + ' thành công !' });
+                }
+                if(isChangeAvatar) {
+                    await uploadAvatar();
+                }
                 navigate(-1);
             }
         } catch (error) {
@@ -143,7 +194,7 @@ function WatchDetail() {
     return (
         <>
             <Toast ref={toast} />
-            <div className="detail-wrapper">
+            <div className="detail-wrapper product-detail">
                 <div className="header mb-3">
                     <BreadCrumb model={breadcrumbItems} home={home}></BreadCrumb>
                     <div className='header-main flex justify-content-between'>
@@ -166,16 +217,12 @@ function WatchDetail() {
                 <div className="grid">
                     <div className="col-12 md:col-3">
                         <div className="avatar">
-                            <img className="w-full" src={formData.img ? formData.img : 'https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png'} alt="" />
-                            <FileUpload mode="basic" name="demo[]" url="/api/upload" accept="image/*" maxFileSize={1000000} onUpload={onUpload} chooseLabel="Ảnh đại diện" />
+                            <input type='file' id='avatar-input' accept='image/*' onChange={onSelect}/>
+                            <label htmlFor='avatar-input'>
+                                <img className="w-full" src={imageUrl ? imageUrl : 'https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png'} alt="abcákjdh" />
+                            </label>
                         </div>
                         <div className="grid mt-1">
-                            {/* <div className="col-4">
-                                <input type="file" id="file-input" />
-                                <label htmlFor='file-input' className='addimage'>
-                                    <img className='w-full' src='https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' alt='' />
-                                </label>
-                            </div>
                             <div className="col-4">
                                 <input type="file" id="file-input" />
                                 <label htmlFor='file-input' className='addimage'>
@@ -205,15 +252,21 @@ function WatchDetail() {
                                 <label htmlFor='file-input' className='addimage'>
                                     <img className='w-full' src='https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' alt='' />
                                 </label>
-                            </div> */}
-                            {formData && formData.listImages?.map((item : any) => (
+                            </div>
+                            <div className="col-4">
+                                <input type="file" id="file-input" />
+                                <label htmlFor='file-input' className='addimage'>
+                                    <img className='w-full' src='https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' alt='' />
+                                </label>
+                            </div>
+                            {/* {formData && formData.listImages?.map((item : any) => (
                                 <div className="col-4 sub-image">
                                     <input type="file" id="file-input" />
                                     <label htmlFor='file-input' className='addimage'>
                                         <img className='w-full' src={item.imgSource ? item.imgSource : 'https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'} alt='' />
                                     </label>
                                 </div>
-                            ))}
+                            ))} */}
                         </div>
                     </div>
                     <div className="col-12 md:col-9 md:pl-5">

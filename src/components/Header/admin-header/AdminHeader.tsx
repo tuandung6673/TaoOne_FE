@@ -43,10 +43,10 @@ function AdminHeader () {
                     label: 'Loại',
                     url: ROLE.admin + '/category'
                 },
-                {
-                    label: 'Loại chi tiết',
-                    // url: ROLE.admin + '/category-detail'
-                }
+                // {
+                //     label: 'Loại chi tiết',
+                //     // url: ROLE.admin + '/category-detail'
+                // }
             ]
         },
         {

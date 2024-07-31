@@ -96,6 +96,38 @@ function WatchDetail() {
         }
     }
 
+    const handleSubImageChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const newListImages = [...formData.listImages];
+                newListImages[index] = {
+                    ...newListImages[index],
+                    imgSource: reader.result as string
+                };
+                setFormData({ ...formData, listImages: newListImages });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    
+    const handleAddSubImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const newListImages = [...formData.listImages, {
+                    id: '',
+                    productId: formData.id,
+                    imgSource: reader.result as string
+                }];
+                setFormData({ ...formData, listImages: newListImages });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const fetchCategory = async (queryParams = '') => {
         try {
             const categoryList = await ApiService.getCategoryList(queryParams);
@@ -191,6 +223,12 @@ function WatchDetail() {
         }
     }
 
+    const handleDeleteSubImage = (index: number) => {
+        const newListImages = [...formData.listImages];
+        newListImages.splice(index, 1);
+        setFormData({ ...formData, listImages: newListImages });
+    };
+
     return (
         <>
             <Toast ref={toast} />
@@ -222,51 +260,24 @@ function WatchDetail() {
                                 <img className="w-full" src={imageUrl ? imageUrl : 'https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png'} alt="abcákjdh" />
                             </label>
                         </div>
-                        <div className="grid mt-1">
-                            <div className="col-4">
-                                <input type="file" id="file-input" />
-                                <label htmlFor='file-input' className='addimage'>
-                                    <img className='w-full' src='https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' alt='' />
-                                </label>
-                            </div>
-                            <div className="col-4">
-                                <input type="file" id="file-input" />
-                                <label htmlFor='file-input' className='addimage'>
-                                    <img className='w-full' src='https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' alt='' />
-                                </label>
-                            </div>
-                            <div className="col-4">
-                                <input type="file" id="file-input" />
-                                <label htmlFor='file-input' className='addimage'>
-                                    <img className='w-full' src='https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' alt='' />
-                                </label>
-                            </div>
-                            <div className="col-4">
-                                <input type="file" id="file-input" />
-                                <label htmlFor='file-input' className='addimage'>
-                                    <img className='w-full' src='https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' alt='' />
-                                </label>
-                            </div>
-                            <div className="col-4">
-                                <input type="file" id="file-input" />
-                                <label htmlFor='file-input' className='addimage'>
-                                    <img className='w-full' src='https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' alt='' />
-                                </label>
-                            </div>
-                            <div className="col-4">
-                                <input type="file" id="file-input" />
-                                <label htmlFor='file-input' className='addimage'>
-                                    <img className='w-full' src='https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' alt='' />
-                                </label>
-                            </div>
-                            {/* {formData && formData.listImages?.map((item : any) => (
-                                <div className="col-4 sub-image">
-                                    <input type="file" id="file-input" />
-                                    <label htmlFor='file-input' className='addimage'>
-                                        <img className='w-full' src={item.imgSource ? item.imgSource : 'https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'} alt='' />
+                        <div className="grid mt-3">
+                            {formData && formData.listImages?.map((item : any, index) => (
+                                <div className="col-4 sub-image" key={index}>
+                                    <input type="file" id={`file-input-${index}`} accept='image/*' onChange={(event) => handleSubImageChange(index, event)} />
+                                    <label htmlFor={`file-input-${index}`} className='addimage cursor-pointer'>
+                                        <img className='w-full h-full' src={item.imgSource ? item.imgSource : 'https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'} alt='' />
+                                    </label>
+                                    <button className="delete-button" onClick={() => handleDeleteSubImage(index)}><i className='pi pi-trash'></i></button>
+                                </div>
+                            ))}
+                            {formData && formData.listImages?.length < 6 && (
+                                <div className="col-4 sub-image add-image">
+                                    <input type="file" id="file-input" accept='image/*' onChange={handleAddSubImage}  />
+                                    <label htmlFor='file-input' className='flex justify-content-center align-items-center w-full h-full cursor-pointer'>
+                                        <span className='w-full flex justify-content-center align-items-center'><i className='pi pi-plus text-3xl'></i></span>
                                     </label>
                                 </div>
-                            ))} */}
+                            )}
                         </div>
                     </div>
                     <div className="col-12 md:col-9 md:pl-5">

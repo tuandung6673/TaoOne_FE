@@ -27,8 +27,37 @@ input[type="file"] {
     height: 40px;
 }
 .sub-image {
+    position: relative;
     height: 80px;
     img {
         height: 100%;
     }
+}
+.add-image {
+    box-shadow: 0 0 3px #b4b4b4;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.delete-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: none;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+}
+
+.sub-image:hover .delete-button {
+    display: flex;
 }

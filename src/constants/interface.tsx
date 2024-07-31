@@ -28,7 +28,7 @@ export class ItemDetail {
     salePrice: number = 0;
     description?: string = "";
     specs?: string = "";
-    listImages? : SubImage[] = [];
+    listImages : SubImage[] = [];
 }
 
 export interface HomeCategory {

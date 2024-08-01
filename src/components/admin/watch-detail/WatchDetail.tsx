@@ -96,35 +96,54 @@ function WatchDetail() {
         }
     }
 
-    const handleSubImageChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadSubImage = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const storageRef = ref(storage, `images/${file.name}`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+    
+            uploadTask.on(
+                'state_changed',
+                (snapshot) => {
+                    // Tiến trình tải lên
+                },
+                (error) => {
+                    console.error("Upload failed", error);
+                    reject(error);
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        // resolve(downloadURL);
+                        resolve('https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F' + file?.name + '?alt=media')
+                    });
+                }
+            );
+        });
+    };
+
+    const handleSubImageChange = async (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onloadend = () => {
+            try {
+                const downloadURL = await uploadSubImage(file);
                 const newListImages = [...formData.listImages];
-                newListImages[index] = {
-                    ...newListImages[index],
-                    imgSource: reader.result as string
-                };
+                newListImages[index] = { ...newListImages[index], imgSource: downloadURL };
                 setFormData({ ...formData, listImages: newListImages });
-            };
-            reader.readAsDataURL(file);
+            } catch (error) {
+                console.error("Error uploading image", error);
+            }
         }
     };
     
-    const handleAddSubImage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAddSubImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const newListImages = [...formData.listImages, {
-                    id: '',
-                    productId: formData.id,
-                    imgSource: reader.result as string
-                }];
+            try {
+                const downloadURL = await uploadSubImage(file);
+                const newListImages = [...formData.listImages, { id: '', productId: formData.id, imgSource: downloadURL }];
                 setFormData({ ...formData, listImages: newListImages });
-            };
-            reader.readAsDataURL(file);
+            } catch (error) {
+                console.error("Error uploading image", error);
+            }
         }
     };
 
@@ -207,6 +226,8 @@ function WatchDetail() {
             delete data.id;
         }
 
+        console.log('data', data);
+        
         try {
             const response = await ApiService.postProduct(data);
             if (response.status === 'success') {

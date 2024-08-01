@@ -12,7 +12,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss/navigation";
 import { AllRouteType } from "../../constants/constants";
 import { ItemDetail } from "../../constants/interface";
-import { dummySlider } from "../../dummyDatas/dummyData";
 import saleLogo from "../../images/sale_tag_2.png";
 import ApiService from "../../services/api.service";
 import './ProductDetail.scss'

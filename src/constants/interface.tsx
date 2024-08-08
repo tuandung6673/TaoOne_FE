@@ -11,8 +11,6 @@ export class CategoryDetail {
 }
 
 export class SubImage {
-    id: string = "";
-    productId: string = "";
     imgSource: string = ""
 }
 

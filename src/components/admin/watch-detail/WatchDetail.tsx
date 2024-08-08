@@ -139,7 +139,7 @@ function WatchDetail() {
             const file = event.target.files[0];
             try {
                 const downloadURL = await uploadSubImage(file);
-                const newListImages = [...formData.listImages, { id: '', productId: formData.id, imgSource: downloadURL }];
+                const newListImages = [...formData.listImages, { imgSource: downloadURL }];
                 setFormData({ ...formData, listImages: newListImages });
             } catch (error) {
                 console.error("Error uploading image", error);
@@ -226,8 +226,6 @@ function WatchDetail() {
             delete data.id;
         }
 
-        console.log('data', data);
-        
         try {
             const response = await ApiService.postProduct(data);
             if (response.status === 'success') {

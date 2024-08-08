@@ -14,10 +14,13 @@ import Banner from './components/admin/banner/banner';
 import Payment from './components/payment/payment';
 import Order from './components/admin/order/Order';
 import LoginForm from './components/login/Login';
+import { SpinnerProvider } from './custom-hook/SpinnerContext';
+import Spinner from './components/spinner/Spinner';
 
 function App() {
   return (
-    <>
+    <SpinnerProvider>
+      <Spinner />
       <Router>
         <Routes>
           <Route path={ROLE.admin} element={<AdminLayout />}>
@@ -39,7 +42,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
-    </>
+    </SpinnerProvider>
   );
 }
 

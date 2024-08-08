@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import queryString from 'query-string';
 import { useEffect, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -11,7 +12,6 @@ import { HomeInterface } from "../../constants/interface";
 import ApiService from "../../services/api.service";
 import ProductItem from "../product-item/ProductItem";
 import classes from "./Home.module.scss";
-import queryString from 'query-string';
 
 function Home() {
     const [slides, setSlides] = useState<any>();

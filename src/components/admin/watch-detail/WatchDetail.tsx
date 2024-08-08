@@ -13,9 +13,11 @@ import { Category, CategoryDetail, ItemDetail } from '../../../constants/interfa
 import { storage } from '../../../firebase/firebaseConfig';
 import ApiService from '../../../services/api.service';
 import './WatchDetail.scss';
+import { useSpinner } from '../../../custom-hook/SpinnerContext';
 
 function WatchDetail() {
     const navigate = useNavigate();
+    const { showSpinner, hideSpinner } = useSpinner();
     const [image, setImage] = useState<File | null>(null);
     const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
     const [imageUrl, setImageUrl] = useState<string>('');
@@ -46,6 +48,7 @@ function WatchDetail() {
     };
     
     const uploadAvatar = (): Promise<void> => {
+        showSpinner();
         return new Promise((resolve, reject) => {
             if (image) {
                 const storageRef = ref(storage, `images/${image.name}`);
@@ -63,6 +66,7 @@ function WatchDetail() {
                     () => {
                         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL1) => {
                             setImageUrl(downloadURL1);
+                            hideSpinner();
                             resolve();
                         });
                     }
@@ -97,6 +101,7 @@ function WatchDetail() {
     }
 
     const uploadSubImage = (file: File): Promise<string> => {
+        showSpinner();
         return new Promise((resolve, reject) => {
             const storageRef = ref(storage, `images/${file.name}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
@@ -114,6 +119,7 @@ function WatchDetail() {
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                         // resolve(downloadURL);
                         resolve('https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F' + file?.name + '?alt=media')
+                        hideSpinner();
                     });
                 }
             );

@@ -15,8 +15,10 @@ import { BannerDetail, DropdownInterface, ItemDetail } from "../../../constants/
 import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
 import './banner.scss';
+import { useSpinner } from "../../../custom-hook/SpinnerContext";
 
 function Banner() {
+    const { showSpinner, hideSpinner } = useSpinner();
     const toast = useRef<Toast>(null);
     const op = useRef<OverlayPanel>(null);
     const [visibleRight, setVisibleRight] = useState(false);
@@ -158,6 +160,7 @@ function Banner() {
     };
 
     const uploadAvatar = (): Promise<void> => {
+        showSpinner();
         return new Promise((resolve, reject) => {
             if (image) {
                 const storageRef = ref(storage, `images/${image.name}`);
@@ -175,6 +178,7 @@ function Banner() {
                     () => {
                         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL1) => {
                             setImageUrl(downloadURL1);
+                            hideSpinner();
                             resolve();
                         });
                     }

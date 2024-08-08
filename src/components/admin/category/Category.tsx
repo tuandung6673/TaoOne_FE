@@ -26,6 +26,7 @@ import {
 import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
 import './Category.scss';
+import { useSpinner } from "../../../custom-hook/SpinnerContext";
 
 function Category() {
     const toast = useRef<Toast>(null);
@@ -49,6 +50,7 @@ function Category() {
     const [image, setImage] = useState<File | null>(null);
     const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
     const [imageUrl, setImageUrl] = useState<string>('');
+    const { showSpinner, hideSpinner } = useSpinner();
 
     useEffect(() => {
         fetchData();
@@ -256,6 +258,7 @@ function Category() {
     };
     
     const uploadAvatar = (): Promise<void> => {
+        showSpinner();
         return new Promise((resolve, reject) => {
             if (image) {
                 const storageRef = ref(storage, `images/${image.name}`);
@@ -273,6 +276,7 @@ function Category() {
                     () => {
                         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL1) => {
                             setImageUrl(downloadURL1);
+                            hideSpinner();
                             resolve();
                         });
                     }

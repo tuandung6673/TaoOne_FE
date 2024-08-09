@@ -1,14 +1,43 @@
 @import '../../color/colors.scss';
+
 .main {
     width: 65%;
     margin: 0 auto;
+
+    @media (min-width: 1200px) {
+        width: 80%;
+    }
+
+    @media (min-width: 1600px) {
+        width: 65%;
+    }
+
+    @media (max-width: 1200px) {
+        width: 80%;
+    }
+
+    @media (max-width: 768px) {
+        width: 95%;
+    }
+
+    @media (max-width: 576px) {
+        width: 100%;
+        padding: 0 10px;
+    }
+    margin: 0 auto;
+    padding: 0 10px;  // Add padding for small screens
+    box-sizing: border-box;  // Include padding in width calculation
 }
 
 .category {
     &_wrapper {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-gap: 40px;
+        grid-gap: 20px;
+        // Adjust grid for smaller screens
+        @media (max-width: 1200px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
 }
 
@@ -16,6 +45,7 @@
     margin-top: 20px;
     display: flex;
     flex-flow: row wrap;
+    justify-content: flex-start;  // Align items to the start
     &_item {
         cursor: pointer;
         color: #AFB7BD;
@@ -41,6 +71,9 @@
     margin: 10px 0 20px 0;
     cursor: pointer;
     text-align: right;
+    @media (max-width: 768px) {
+        text-align: left;  // Align sort to the left on small screens
+    }
     &_option {
         cursor: pointer;
         padding: 7px 45px 7px 15px;
@@ -51,4 +84,10 @@
     &_active {
         color: blue;
     }
+}
+
+// Adjust carousel image size for smaller screens
+.carousel_custom img {
+    width: 100%;  // Ensure images take up full width of container
+    height: auto;  // Maintain aspect ratio
 }

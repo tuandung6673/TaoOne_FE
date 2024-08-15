@@ -236,7 +236,7 @@ function ProductDetail() {
                 <div className="product_down">
                     <TabView>
                         <TabPanel header="Mô tả">
-                            <div dangerouslySetInnerHTML={{__html: abc}}>
+                            <div className="descrip" dangerouslySetInnerHTML={{__html: abc}}>
 
                             </div>
                         </TabPanel>

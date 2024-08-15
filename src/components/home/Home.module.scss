@@ -5,45 +5,12 @@
 .main {
     width: 65%;
     margin: 0 auto;
-
-    @media (min-width: 1200px) {
-        width: 80%;
-    }
-
-    @media (min-width: 1600px) {
-        width: 65%;
-    }
-
-    @media (max-width: 1200px) {
-        width: 80%;
-    }
-
-    @media (max-width: 768px) {
-        width: 95%;
-    }
-
-    @media (max-width: 576px) {
-        width: 100%;
-        padding: 0 10px;
-    }
 }
 
 .category {
     margin: 60px 0;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-
-    @media (max-width: 1200px) {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-
-    @media (max-width: 768px) {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    @media (max-width: 576px) {
-        grid-template-columns: 1fr;
-    }
 
     &_item {
         background: #ffffff;
@@ -70,10 +37,7 @@
 
         img {
             height: 120px;
-
-            @media (max-width: 576px) {
-                height: 100px;
-            }
+            max-width: 100%;
         }
     }
 }
@@ -86,12 +50,71 @@
         padding: 0 10px;
         margin: 0 -10px;
     }
+}
 
-    @media (max-width: 768px) {
-        margin: 50px -5px 0;
+/* Media Queries */
+@media (min-width: 1200px) {
+    .main {
+        width: 80%;
+    }
+}
+
+@media (min-width: 1600px) {
+    .main {
+        width: 65%;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main {
+        width: 80%;
+    }
+}
+
+@media (max-width: 768px) {
+    .main {
+        width: 95%;
     }
 
-    @media (max-width: 576px) {
+    .category {
+        grid-template-columns: 1fr 1fr;
+
+        &_item {
+            height: 190px;
+
+            .item_img {
+                height: 150px;
+            }
+
+            .item_name {
+                margin-top: 0;
+            }
+
+            img {
+                width: 120px;
+                height: 120px;
+                object-fit: contain;
+                margin-bottom: 15px;
+            }
+        }
+    }
+
+    .product_wrapper {
+        margin: 50px -5px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .main {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    .category_item img {
+        height: 100px;
+    }
+
+    .product_wrapper {
         margin: 30px -5px 0;
     }
 }

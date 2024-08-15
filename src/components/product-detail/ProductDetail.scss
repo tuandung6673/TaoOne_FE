@@ -140,11 +140,34 @@
     }
 }
 
+.descrip {
+    img {
+        max-width: 100%;
+        object-fit: contain;
+    }
+}
+
+.product_down {
+    .description {
+        // max-width: 100% !important;
+    }
+}
+
 /* Media Queries */
 
 @media (min-width: 576px) {
     .list_image img {
         // Optional styles here for 576px and above
+    }
+}
+
+@media (max-width: 576px) {
+    .product_right {
+        padding-left: 0;
+    }
+    .sale_percent {
+        right: 23px;
+        top: 28px;
     }
 }
 

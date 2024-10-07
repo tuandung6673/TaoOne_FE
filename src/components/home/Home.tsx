@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import queryString from 'query-string';
+import queryString from "query-string";
 import { useEffect, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -18,8 +18,8 @@ function Home() {
     const [category, setCategory] = useState<HomeInterface>();
     const navigate = useNavigate();
     const params = {
-        screen: 'home',
-    }
+        screen: "home",
+    };
 
     useEffect(() => {
         fetchSlides();
@@ -28,14 +28,14 @@ function Home() {
 
     const fetchSlides = async () => {
         try {
-            const queryParams = queryString.stringify(params)
+            const queryParams = queryString.stringify(params);
             const slideList = await ApiService.getSlideList(queryParams);
             setSlides(slideList.data.data);
         } catch (err) {
             console.error(err);
         }
     };
-    
+
     const fetchHome = async () => {
         try {
             const slideList = await ApiService.getHome();
@@ -81,16 +81,44 @@ function Home() {
                             <p className={classes.item_name}>{ctg.name}</p>
                         </div>
                     ))}
+                    {/* <Swiper
+                        spaceBetween={25}
+                        breakpoints={{
+                            1200: { slidesPerView: 4 }, // Từ 1200px trở lên, hiển thị 4 slides
+                            768: { slidesPerView: 3 }, // Từ 768px trở lên, hiển thị 3 slides
+                            576: { slidesPerView: 2 }, // Từ 576px trở lên, hiển thị 2 slides
+                            0: { slidesPerView: 1 }, // Dưới 576px, hiển thị 1 slide
+                        }}
+                        modules={[Navigation, Pagination, Scrollbar, A11y]}
+                    >
+                        {category?.categories.map((ctg: any, index: any) => (
+                            <SwiperSlide key={index}>
+                                <div
+                                    key={index}
+                                    className={classes.category_item}
+                                    onClick={() => handleAllCategory(ctg.code)}
+                                >
+                                    <div className={classes.item_img}>
+                                        <img src={ctg.img} alt={ctg.name} />
+                                    </div>
+                                    <p className={classes.item_name}>{ctg.name}</p>
+                                </div>
+                            </SwiperSlide>
+                        ))}
+                    </Swiper> */}
                 </div>
                 <div>
-                    {category?.categories.map((product : any, index : any) => (
+                    {category?.categories.map((product: any, index: any) => (
                         <div key={index} className={classes.product_wrapper}>
                             <h2 style={{ textAlign: "center" }}>
                                 {product.name}
                             </h2>
                             <Swiper
-                                spaceBetween={25}
-                                slidesPerView={4}
+                                breakpoints={{
+                                    1200: { slidesPerView: 4, spaceBetween: 25 }, // Từ 1200px trở lên, hiển thị 4 slides
+                                    768: { slidesPerView: 3, spaceBetween: 20 }, // Từ 768px trở lên, hiển thị 3 slides
+                                    0: { slidesPerView: 2, spaceBetween: 15 }, // Dưới 576px, hiển thị 1 slide
+                                }}
                                 modules={[
                                     Navigation,
                                     Pagination,
@@ -99,14 +127,19 @@ function Home() {
                                 ]}
                                 // navigation
                             >
-                                {product.products.map((item : any, index : any) => (
-                                    <SwiperSlide
-                                        key={index}
-                                        className={classes.product}
-                                    >
-                                        <ProductItem productItem={item} categoryCode={product.code}/>
-                                    </SwiperSlide>
-                                ))}
+                                {product.products.map(
+                                    (item: any, index: any) => (
+                                        <SwiperSlide
+                                            key={index}
+                                            className={classes.product}
+                                        >
+                                            <ProductItem
+                                                productItem={item}
+                                                categoryCode={product.code}
+                                            />
+                                        </SwiperSlide>
+                                    )
+                                )}
                             </Swiper>
                         </div>
                     ))}

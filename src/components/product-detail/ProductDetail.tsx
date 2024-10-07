@@ -167,6 +167,11 @@ function ProductDetail() {
                             <Swiper
                                 spaceBetween={20}
                                 slidesPerView={5}
+                                breakpoints={{
+                                    1200: { slidesPerView: 5 },  // Từ 1200px trở lên, hiển thị 4 slides
+                                    576: { slidesPerView: 4 },   // Từ 576px trở lên, hiển thị 2 slides
+                                    0: { slidesPerView: 3 }      // Dưới 576px, hiển thị 1 slide
+                                }}
                                 modules={[
                                     Navigation,
                                     Pagination,
@@ -219,7 +224,7 @@ function ProductDetail() {
                             </div>
                             <div className="bag" onClick={bagnow}>
                                 <Button
-                                    label="Thêm vào giỏ hàng"
+                                    label="Thêm giỏ hàng"
                                     icon="pi pi-shopping-bag"
                                 />
                             </div>
@@ -231,7 +236,7 @@ function ProductDetail() {
                 <div className="product_down">
                     <TabView>
                         <TabPanel header="Mô tả">
-                            <div dangerouslySetInnerHTML={{__html: abc}}>
+                            <div className="descrip" dangerouslySetInnerHTML={{__html: abc}}>
 
                             </div>
                         </TabPanel>

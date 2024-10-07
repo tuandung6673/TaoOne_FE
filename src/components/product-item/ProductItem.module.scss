@@ -5,35 +5,63 @@
     padding: 20px 0 25px 0;
     margin: 4px 0;
     user-select: none;
-    // -webkit-touch-callout: none;
-    // -webkit-user-select: none;
-    // -khtml-user-select: none;
-    // -moz-user-select: none;
-    // -ms-user-select: none;
+    @media (max-width: 576px) {
+        padding: 10px 0 15px 0;
+    }
+
     &:hover {
         cursor: pointer;
-        box-shadow: -4px -4px 8px rgb(134,134,134,0.2), 4px 4px 8px rgb(28,28,28,0.4);
-        transition: .1s ease-in-out;
+        box-shadow: -4px -4px 8px rgba(134, 134, 134, 0.2), 4px 4px 8px rgba(28, 28, 28, 0.4);
+        transition: 0.1s ease-in-out;
     }
+
     &_img {
         display: flex;
         justify-content: center;
-        img {
-            width: 250px;
-        }
         height: 250px;
+
+        @media (max-width: 576px) {
+            height: 200px;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            @media (max-width: 768px) {
+                width: 200px;
+            }
+            @media (max-width: 576px) {
+                width: 150px;
+                height: 200px;
+                object-fit: contain;
+            }
+        }
     }
+
     &_name {
         text-align: center;
         padding: 0 15px;
         min-height: 42px;
+        font-size: 16px;
+
+        @media (max-width: 576px) {
+            font-size: 15px;
+        }
     }
+
     &_price {
-        font-size: 18px;
+        font-size: 16px;
         text-align: center;
         margin-top: 30px;
         margin-bottom: 0;
         font-weight: bold;
+
+        @media (max-width: 576px) {
+            font-size: 15px;
+            margin-top: 20px;
+        }
+
         span {
             margin: 0 4px;
         }
@@ -44,6 +72,10 @@
     opacity: 0.5;
     font-size: 16px;
     text-decoration: line-through;
+
+    @media (max-width: 576px) {
+        font-size: 14px;
+    }
 }
 
 .sale_percent {
@@ -54,4 +86,21 @@
     background: red;
     border-radius: 10px;
     color: #FFFFFF;
+
+    @media (max-width: 768px) {
+        padding: 4px 8px;
+        top: 10px;
+        right: 20px;
+    }
+
+    @media (max-width: 576px) {
+        padding: 3px 6px;
+        top: 8px;
+        right: 15px;
+    }
 }
+
+// .product_img, .product_img img {
+//     box-sizing: border-box;
+// }
+

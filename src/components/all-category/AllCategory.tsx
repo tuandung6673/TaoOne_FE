@@ -198,8 +198,8 @@ function AllCategory() {
                 </div>
             </OverlayPanel>
             <div className={classes.category_wrapper}>
-                {product.map((category: ItemDetail) => (
-                    <ProductItem productItem={category} />
+                {product.map((category: ItemDetail, index : any) => (
+                    <ProductItem productItem={category} key={index} />
                 ))}
             </div>
         </div>

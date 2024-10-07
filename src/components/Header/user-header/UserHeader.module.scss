@@ -1,6 +1,15 @@
 .header {
-    height: 60px;
     background: #000000;
+    width: 100%;
+    z-index: 1000;
+    transition: all 0.3s ease;  // Add transition for smooth effect
+
+    &_fixed {
+        position: fixed;
+        top: 0;
+        left: 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);  // Optional: add shadow to distinguish fixed header
+    }
     &_main {
         width: 60%;
         height: 60px;
@@ -61,6 +70,35 @@
             &:hover {
                 background: #5e5e60;
             }
+        }
+    }
+    &_mobile {
+        display: none;
+    }
+}
+
+@media (max-width: 768px)  {
+    .header {
+        &_center {
+            display: none;
+        }
+        &_right {
+            display: none;
+        }
+        &_mobile {
+            height: 50px;
+            display: block;
+            background: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            a {
+                text-decoration: none;
+                color: #000000;
+            }
+        }
+        &_left {
+            width: 50%;
         }
     }
 }

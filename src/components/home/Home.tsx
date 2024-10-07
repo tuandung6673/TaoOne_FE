@@ -114,12 +114,10 @@ function Home() {
                                 {product.name}
                             </h2>
                             <Swiper
-                                spaceBetween={25}
                                 breakpoints={{
-                                    1200: { slidesPerView: 4 }, // Từ 1200px trở lên, hiển thị 4 slides
-                                    768: { slidesPerView: 3 }, // Từ 768px trở lên, hiển thị 3 slides
-                                    576: { slidesPerView: 2 }, // Từ 576px trở lên, hiển thị 2 slides
-                                    0: { slidesPerView: 1 }, // Dưới 576px, hiển thị 1 slide
+                                    1200: { slidesPerView: 4, spaceBetween: 25 }, // Từ 1200px trở lên, hiển thị 4 slides
+                                    768: { slidesPerView: 3, spaceBetween: 20 }, // Từ 768px trở lên, hiển thị 3 slides
+                                    0: { slidesPerView: 2, spaceBetween: 15 }, // Dưới 576px, hiển thị 1 slide
                                 }}
                                 modules={[
                                     Navigation,

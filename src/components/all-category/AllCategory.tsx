@@ -19,22 +19,34 @@ function AllCategory() {
     const [product, setProduct] = useState<ItemDetail[]>([]);
     const [categoryDetail, setCategoryDetail] = useState<CategoryDetail[]>([]);
     const [activeFilter, setActiveFilter] = useState<string>("all");
-    const [sortFilterLabel, setSortFilterLabel] =
-        useState<string>("Năm ra mắt");
-    const [sortFilterValue, setSortFilterValue] = useState<string>("year");
+    const [sortFilterLabel, setSortFilterLabel] = useState<string>("Mặc định");
+    const [sortFilterValue, setSortFilterValue] = useState<string>("");
     const { categoryName } = useParams<{ categoryName?: string }>();
     const op = useRef<OverlayPanel>(null);
     const slideParams = {
         screen: "category",
     };
-
+    
     useEffect(() => {
-        fetchSlides();
         if (categoryName) {
-            fetchCategory(categoryName, "");
+            fetchSlides();
             fetchCategoryDetail(categoryName);
         }
     }, [categoryName]);
+
+    useEffect(() => {
+        if (categoryName) {
+            const productParams = {
+                category_code: categoryName || "",
+                category_detail_id: activeFilter === "all" ? "" : activeFilter,
+                filter: "",
+                offSet: 0,
+                pageSize: 100,
+                sort: sortFilterValue,
+            };
+            fetchCategory(productParams);
+        }
+    }, [categoryName, activeFilter, sortFilterValue]);
 
     const fetchSlides = async () => {
         try {
@@ -46,19 +58,9 @@ function AllCategory() {
         }
     };
 
-    const fetchCategory = async (
-        categoryName: string,
-        categoryDetailId: string
-    ) => {
+    const fetchCategory = async (params : any) => {
         try {
-            const productParams = {
-                category_code: categoryName || "",
-                category_detail_id: categoryDetailId || "",
-                filter: "",
-                offSet: 0,
-                pageSize: 100,
-            };
-            const queryParams = queryString.stringify(productParams);
+            const queryParams = queryString.stringify(params);
             const productList = await ApiService.getProductList(queryParams);
             setProduct(productList.data.data);
         } catch (error) {
@@ -84,7 +86,6 @@ function AllCategory() {
 
     const handleFilterClick = (filterId: string) => {
         setActiveFilter(filterId);
-        fetchCategory(categoryName || "", filterId === "all" ? "" : filterId);
     };
 
     const handleSortClick = (sortId: any) => {
@@ -153,18 +154,18 @@ function AllCategory() {
             <OverlayPanel ref={op}>
                 <div
                     className={`${classes.sort_option} ${
-                        sortFilterValue === SORTFILTER.YEAR.value
+                        sortFilterValue === SORTFILTER.DEFAULT.value
                             ? classes.sort_active
                             : ""
                     }`}
-                    onClick={() => handleSortClick(SORTFILTER.YEAR)}
+                    onClick={() => handleSortClick(SORTFILTER.DEFAULT)}
                 >
-                    {sortFilterValue === SORTFILTER.YEAR.value && (
+                    {sortFilterValue === SORTFILTER.DEFAULT.value && (
                         <span style={{ marginRight: "8px" }}>
                             <i className="pi pi-check"></i>
                         </span>
                     )}
-                    {SORTFILTER.YEAR.label}
+                    {SORTFILTER.DEFAULT.label}
                 </div>
                 <div
                     className={`${classes.sort_option} ${

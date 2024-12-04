@@ -2,7 +2,7 @@
 import { environment } from "../environments/environment";
 import axiosInstance from "./api.interceptor";
 import Payment from "./../components/payment/payment";
-import { PaymentForm } from "../constants/interface";
+import { Login, PaymentForm } from "../constants/interface";
 
 const ApiService = {
     // Home
@@ -265,6 +265,19 @@ const ApiService = {
         } catch (error) {
             console.error("Error fetching slide list:", error);
             throw error; // Ném lỗi ra để xử lý sau
+        }
+    },
+    
+    // login
+    postLogin: async (data: Login) => {
+        try {
+            const response = await axiosInstance.post(
+                `${environment.baseUrl}/Login/PostLogin`,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            console.log(error);
         }
     },
 };

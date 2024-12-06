@@ -1,19 +1,47 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './Login.scss';
+import ApiService from '../../services/api.service';
+import { Toast } from 'primereact/toast';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
+    const navigate = useNavigate();
+    const toast = useRef<Toast>(null);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (event : any) => {
+    const handleSubmit = async (event : any) => {
         event.preventDefault();
         // Xử lý logic đăng nhập ở đây
         console.log('Username:', username);
         console.log('Password:', password);
+        const data = {username, password}
+        try {
+            const response = await ApiService.postLogin(data);
+            if (response.status === "success" && toast.current) {
+                localStorage.setItem("token", response.data.token);
+                toast.current.show({
+                    severity: "success",
+                    summary: "Thành công",
+                    detail: "Đăng nhập thành công !",
+                });
+                navigate('/');
+
+            } else {
+                toast.current?.show({
+                    severity: "error",
+                    summary: "Lỗi",
+                    detail: response.message || "Đăng nhập thất bại!",
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
         <div className="login-form">
+            <Toast ref={toast} />
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="username">Username:</label>

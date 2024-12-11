@@ -165,7 +165,14 @@ function Order() {
                 }
             }
         } catch (err) {
-            console.log(err);
+            if (toast.current) {
+                toast.current.show({
+                    severity: "error",
+                    summary: "Thông báo",
+                    detail: "Không thành công !",
+                    life: 2000,
+                });
+            }
         }
     };
 

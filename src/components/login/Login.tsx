@@ -13,8 +13,6 @@ const LoginForm = () => {
     const handleSubmit = async (event : any) => {
         event.preventDefault();
         // Xử lý logic đăng nhập ở đây
-        console.log('Username:', username);
-        console.log('Password:', password);
         const data = {username, password}
         try {
             const response = await ApiService.postLogin(data);

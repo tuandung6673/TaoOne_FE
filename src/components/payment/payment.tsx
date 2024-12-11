@@ -9,6 +9,7 @@ import QrLogo from "../../images/qr-code.jpg";
 import ApiService from "../../services/api.service";
 import "./payment.scss";
 import ThankYou from "../thank-you/ThankYou";
+import { BANK_INFO, TIEN_COC } from "../../constants/constants";
 
 enum PaymentMethod {
     BankTransfer = "bankTransfer", //0
@@ -55,6 +56,13 @@ function Payment() {
     const fetchDetailProduct = async (id: string) => {
         try {
             const prdDetail = await ApiService.getProductDetail(id);
+            if(!prdDetail.data && toast.current) {
+                toast.current.show({
+                    severity: "error",
+                    summary: "Thông báo",
+                    detail: "Mã sản phẩm không hợp lệ !",
+                });
+            }
             setProductDetail(prdDetail.data);
         } catch (error) {
             console.log(error);
@@ -271,11 +279,11 @@ function Payment() {
                                         <div className="description">
                                             Quý khách vui lòng chuyển tiền đặt cọc{" "}
                                             <span className="text-red-500">
-                                                500.000đ
+                                                {TIEN_COC}đ
                                             </span>{" "}
                                             đến tài khoản của chúng tôi <br></br>
-                                            Ngân hàng: MB Bank - 896667898888 -
-                                            NGUYEN TUAN DUNG
+                                            Ngân hàng: {BANK_INFO.name} - {BANK_INFO.number} -
+                                            {BANK_INFO.owner}
                                         </div>
                                         <div className="qr-small text-center">
                                             <img src={QrLogo} alt="" />
@@ -303,8 +311,8 @@ function Payment() {
                                         <div className="description">
                                             Quý khách vui lòng chuyển tiền đến tài
                                             khoản của chúng tôi <br></br>
-                                            Ngân hàng: MB Bank - 896667898888 -
-                                            NGUYEN TUAN DUNG
+                                            Ngân hàng: {BANK_INFO.name} - {BANK_INFO.number} -
+                                            {BANK_INFO.owner}
                                         </div>
                                         <div className="qr-small text-center">
                                             <img src={QrLogo} alt="" />
@@ -331,11 +339,11 @@ function Payment() {
                                         <div className="description">
                                             Quý khách vui lòng chuyển tiền đặt cọc{" "}
                                             <span className="text-red-500">
-                                                500.000đ
+                                                {TIEN_COC}đ
                                             </span>{" "}
                                             đến tài khoản của chúng tôi <br></br>
-                                            Ngân hàng: MB Bank - 896667898888 -
-                                            NGUYEN TUAN DUNG
+                                            Ngân hàng: {BANK_INFO.name} - {BANK_INFO.number} -
+                                            {BANK_INFO.owner}
                                         </div>
                                         <div className="qr-small text-center">
                                             <img src={QrLogo} alt="" />

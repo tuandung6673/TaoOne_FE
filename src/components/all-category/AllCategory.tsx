@@ -24,7 +24,8 @@ function AllCategory() {
     const { categoryName } = useParams<{ categoryName?: string }>();
     const op = useRef<OverlayPanel>(null);
     const slideParams = {
-        screen: "category",
+        // screen: categoryName || "category"
+        screen: "home"
     };
     
     useEffect(() => {
@@ -111,7 +112,7 @@ function AllCategory() {
             <div className={classes.carousel_custom}>
                 <Carousel
                     autoPlay={true}
-                    interval={10000}
+                    interval={6000}
                     infiniteLoop={true}
                     showIndicators={false}
                     showThumbs={false}

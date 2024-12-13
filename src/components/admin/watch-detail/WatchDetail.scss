@@ -17,6 +17,9 @@ input[type="file"] {
 
 .description {
     padding: 0.5rem;
+    .p-tabview-nav {
+        justify-content: start;
+    }
 }
 
 .p-dropdown {

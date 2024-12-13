@@ -14,6 +14,7 @@ import { storage } from '../../../firebase/firebaseConfig';
 import ApiService from '../../../services/api.service';
 import './WatchDetail.scss';
 import { useSpinner } from '../../../custom-hook/SpinnerContext';
+import { TabPanel, TabView } from 'primereact/tabview';
 
 function WatchDetail() {
     const navigate = useNavigate();
@@ -212,10 +213,17 @@ function WatchDetail() {
         }));
     };
     
-    const handleEditorChange = (content : any) => {
+    const handleDescriptionEditorChange = (content : any) => {
         setFormData((prev) => ({
             ...prev,
             description: content
+        }));
+    }
+
+    const handleSpecsEditorChange = (content : any) => {
+        setFormData((prev) => ({
+            ...prev,
+            specs: content
         }));
     }
 
@@ -347,7 +355,55 @@ function WatchDetail() {
                             </div>
                         </div>
                         <div className='description editor p-2 mt-3'>
-                            <Editor
+                            <TabView>
+                                <TabPanel header="Mô tả">
+                                    <Editor
+                                        apiKey='6e616i1xetsifvarffma6u3bq62jkr5tbl6gngodsp2p24pg'
+                                        onInit={(_evt, editor) => (editorRef.current = editor)}
+                                        value={formData.description}
+                                        init={{
+                                            height: 500,
+                                            menubar: false,
+                                            plugins: [
+                                                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                            ],
+                                            toolbar: 'undo redo | blocks | ' +
+                                                'bold italic forecolor | alignleft aligncenter ' +
+                                                'alignright alignjustify | bullist numlist outdent indent | ' +
+                                                'removeformat | help',
+                                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px;}',
+                                            // language: 'vi'
+                                        }}
+                                        onEditorChange={handleDescriptionEditorChange}
+                                    />
+                                </TabPanel>
+                                <TabPanel header="Thông số kĩ thuật">
+                                    <Editor
+                                        apiKey='6e616i1xetsifvarffma6u3bq62jkr5tbl6gngodsp2p24pg'
+                                        onInit={(_evt, editor) => (editorRef.current = editor)}
+                                        value={formData.specs}
+                                        init={{
+                                            height: 500,
+                                            menubar: false,
+                                            plugins: [
+                                                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                            ],
+                                            toolbar: 'undo redo | blocks | ' +
+                                                'bold italic forecolor | alignleft aligncenter ' +
+                                                'alignright alignjustify | bullist numlist outdent indent | ' +
+                                                'removeformat | help',
+                                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px;}',
+                                            // language: 'vi'
+                                        }}
+                                        onEditorChange={handleSpecsEditorChange}
+                                    />
+                                </TabPanel>
+                            </TabView>
+                            {/* <Editor
                                     apiKey='6e616i1xetsifvarffma6u3bq62jkr5tbl6gngodsp2p24pg'
                                     onInit={(_evt, editor) => (editorRef.current = editor)}
                                     value={formData.description}
@@ -367,7 +423,7 @@ function WatchDetail() {
                                         // language: 'vi'
                                     }}
                                     onEditorChange={handleEditorChange}
-                            />
+                            /> */}
                         </div>
                     </div>
                 </div>

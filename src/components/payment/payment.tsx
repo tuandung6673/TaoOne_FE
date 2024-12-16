@@ -106,7 +106,7 @@ function Payment() {
                             summary: "Thành công",
                             detail: "Đặt hàng thành công !",
                         });
-                        // setShowThankYou(true);
+                        setShowThankYou(true);
                     }
                     sendTeleMessage(data, productDetail);
                 } catch (error) {

@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Login, PaymentForm } from "../constants/interface";
 import { environment } from "../environments/environment";
 import axiosInstance from "./api.interceptor";
-import Payment from "./../components/payment/payment";
-import { Login, PaymentForm } from "../constants/interface";
 
 const ApiService = {
     // Home
@@ -224,8 +223,10 @@ const ApiService = {
     // Payment
     getPaymentList: async (queryParams: string) => {
         try {
-            const response = await axiosInstance.get(`${environment.baseUrl}/Payment/GetPaymentList?` + queryParams)    
-            return response.data;      
+            const response = await axiosInstance.get(
+                `${environment.baseUrl}/Payment/GetPaymentList?` + queryParams
+            );
+            return response.data;
         } catch (error) {
             console.log(error);
         }
@@ -258,8 +259,7 @@ const ApiService = {
     deletePayment: async (id: string) => {
         try {
             const response = await axiosInstance.delete(
-                `${environment.baseUrl}/Payment/DeletePayment?id=` +
-                    id
+                `${environment.baseUrl}/Payment/DeletePayment?id=` + id
             );
             return response.data;
         } catch (error) {
@@ -267,7 +267,7 @@ const ApiService = {
             throw error; // Ném lỗi ra để xử lý sau
         }
     },
-    
+
     // login
     postLogin: async (data: Login) => {
         try {

@@ -9,6 +9,8 @@ import QrLogo from "../../images/qr-code.jpg";
 import ApiService from "../../services/api.service";
 import "./payment.scss";
 import ThankYou from "../thank-you/ThankYou";
+import { BANK_INFO, TIEN_COC } from "../../constants/constants";
+import TelebotService from "../../services/telebot.service";
 
 enum PaymentMethod {
     BankTransfer = "bankTransfer", //0
@@ -55,6 +57,13 @@ function Payment() {
     const fetchDetailProduct = async (id: string) => {
         try {
             const prdDetail = await ApiService.getProductDetail(id);
+            if(!prdDetail.data && toast.current) {
+                toast.current.show({
+                    severity: "error",
+                    summary: "Thông báo",
+                    detail: "Mã sản phẩm không hợp lệ !",
+                });
+            }
             setProductDetail(prdDetail.data);
         } catch (error) {
             console.log(error);
@@ -73,6 +82,17 @@ function Payment() {
         return Object.keys(errors).length === 0;
     };
 
+    const sendTeleMessage = async (formData : PaymentForm, productData : ItemDetail) => {
+        try {
+            const photoUrl = productData?.img;
+            const caption = `- Model: ${productData?.name}\n\n- KH: ${formData?.name} - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}\n\n- Ghi chú: ${formData?.note}\n\n- Giá bán: ${productData?.salePrice.toLocaleString("vi-VN")} (${formData?.payment_method == 'bankTransfer' ? 'Chuyển khoản full' : 'Ship COD'})`
+            await TelebotService.postPhoto(photoUrl, caption);
+        } catch (error) {
+            console.log(error);
+        }
+        
+    }
+
     const handleSubmit = async () => {
         if (!!productDetail) {
             if (validateForm()) {
@@ -86,8 +106,9 @@ function Payment() {
                             summary: "Thành công",
                             detail: "Đặt hàng thành công !",
                         });
-                        setShowThankYou(true);
+                        // setShowThankYou(true);
                     }
+                    sendTeleMessage(data, productDetail);
                 } catch (error) {
                     console.log(error);
                 }
@@ -271,11 +292,11 @@ function Payment() {
                                         <div className="description">
                                             Quý khách vui lòng chuyển tiền đặt cọc{" "}
                                             <span className="text-red-500">
-                                                500.000đ
+                                                {TIEN_COC}đ
                                             </span>{" "}
                                             đến tài khoản của chúng tôi <br></br>
-                                            Ngân hàng: MB Bank - 896667898888 -
-                                            NGUYEN TUAN DUNG
+                                            Ngân hàng: {BANK_INFO.name} - {BANK_INFO.number} -
+                                            {BANK_INFO.owner}
                                         </div>
                                         <div className="qr-small text-center">
                                             <img src={QrLogo} alt="" />
@@ -303,8 +324,8 @@ function Payment() {
                                         <div className="description">
                                             Quý khách vui lòng chuyển tiền đến tài
                                             khoản của chúng tôi <br></br>
-                                            Ngân hàng: MB Bank - 896667898888 -
-                                            NGUYEN TUAN DUNG
+                                            Ngân hàng: {BANK_INFO.name} - {BANK_INFO.number} -
+                                            {BANK_INFO.owner}
                                         </div>
                                         <div className="qr-small text-center">
                                             <img src={QrLogo} alt="" />
@@ -312,7 +333,7 @@ function Payment() {
                                     </>
                                 )}
                             </div>
-                            <div className="options option-2">
+                            {/* <div className="options option-2">
                                 <input
                                     type="radio"
                                     id={PaymentMethod.CashPayment}
@@ -331,18 +352,18 @@ function Payment() {
                                         <div className="description">
                                             Quý khách vui lòng chuyển tiền đặt cọc{" "}
                                             <span className="text-red-500">
-                                                500.000đ
+                                                {TIEN_COC}đ
                                             </span>{" "}
                                             đến tài khoản của chúng tôi <br></br>
-                                            Ngân hàng: MB Bank - 896667898888 -
-                                            NGUYEN TUAN DUNG
+                                            Ngân hàng: {BANK_INFO.name} - {BANK_INFO.number} -
+                                            {BANK_INFO.owner}
                                         </div>
                                         <div className="qr-small text-center">
                                             <img src={QrLogo} alt="" />
                                         </div>
                                     </>
                                 )}
-                            </div>
+                            </div> */}
                         </div>
                         <div className="flex justify-content-center">
                             <div className="col-8 md:col-5 order">

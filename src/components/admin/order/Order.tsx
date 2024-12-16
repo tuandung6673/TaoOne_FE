@@ -94,7 +94,7 @@ function Order() {
     const methodTemplate = (product: any) => {
         let template;
         if (product.payment_method == 0) {
-            template = <div>CK ngân hàng</div>;
+            template = <div>Chuyển khoản ngân hàng</div>;
         } else if (product.payment_method == 1) {
             template = <div>Kiểm tra thanh toán</div>;
         } else if (product.payment_method == 2) {
@@ -165,7 +165,14 @@ function Order() {
                 }
             }
         } catch (err) {
-            console.log(err);
+            if (toast.current) {
+                toast.current.show({
+                    severity: "error",
+                    summary: "Thông báo",
+                    detail: "Không thành công !",
+                    life: 2000,
+                });
+            }
         }
     };
 

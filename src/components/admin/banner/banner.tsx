@@ -139,7 +139,14 @@ function Banner() {
                 }
             }
         } catch (err) {
-            console.log(err);
+            if (toast.current) {
+                toast.current.show({
+                    severity: "error",
+                    summary: "Thông báo",
+                    detail: "Không thành công !",
+                    life: 2000,
+                });
+            }
         }
     };
 
@@ -250,7 +257,14 @@ function Banner() {
                 fetchSlide(slideParams);
             }
         } catch (error) {
-            console.log(error);
+            if (toast.current) {
+                toast.current.show({
+                    severity: "error",
+                    summary: "Thông báo",
+                    detail: "Không thành công !",
+                    life: 2000,
+                });
+            }
         }
     }
 

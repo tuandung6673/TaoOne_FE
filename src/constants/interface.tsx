@@ -81,3 +81,8 @@ export class PaymentForm extends UserInfo {
 export interface Window {
     fbAsyncInit: () => void;
 }
+
+export class Login {
+    username: string = "";
+    password: string = "";
+}

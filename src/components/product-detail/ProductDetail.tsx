@@ -179,8 +179,8 @@ function ProductDetail() {
                                     A11y,
                                 ]}
                             >
-                                {detailData && detailData.listImages?.map((item : any) => (
-                                    <SwiperSlide onClick={() => changeImage(item)}>
+                                {detailData && detailData.listImages?.map((item : any, index : any) => (
+                                    <SwiperSlide onClick={() => changeImage(item)} key={index}>
                                         <img src={item.imgSource} alt={item.name}/>
                                     </SwiperSlide>
                                 ))}
@@ -236,17 +236,14 @@ function ProductDetail() {
                 <div className="product_down">
                     <TabView>
                         <TabPanel header="Mô tả">
-                            <div className="descrip" dangerouslySetInnerHTML={{__html: abc}}>
+                            <div className="descrip" dangerouslySetInnerHTML={{__html: `${detailData.description}`}}>
 
                             </div>
                         </TabPanel>
                         <TabPanel header="Thông số kĩ thuật">
-                            <p className="m-0">
-                                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, 
-                                eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo
-                                enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui 
-                                ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
-                            </p>
+                            <div className="descrip" dangerouslySetInnerHTML={{__html: `${detailData.specs}`}}>
+
+                            </div>
                         </TabPanel>
                     </TabView>
                 </div>

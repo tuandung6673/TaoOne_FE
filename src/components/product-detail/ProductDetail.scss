@@ -18,7 +18,8 @@
     width: 100%;
     position: relative;
     border-radius: 8px;
-    max-height: 580px;
+    height: 550px;
+    object-fit: none;
 }
 
 .product_left,
@@ -168,6 +169,10 @@
     .sale_percent {
         right: 23px;
         top: 28px;
+    }
+    .product_image {
+        max-height: 400px;
+        object-fit: none;
     }
 }
 

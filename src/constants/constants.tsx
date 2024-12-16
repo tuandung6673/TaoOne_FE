@@ -7,9 +7,9 @@ export const AllRouteType = {
 }
 
 export const SORTFILTER = {
-    YEAR : {
-        label: 'Năm ra mắt',
-        value: 'year'
+    DEFAULT : {
+        label: 'Mặc định',
+        value: ''
     },
     PRICE_ASC : {
         label: 'Giá tăng dần',
@@ -20,6 +20,14 @@ export const SORTFILTER = {
         value: 'price_desc'
     }
 }
+
+export const BANK_INFO = {
+    name: 'MB Bank',
+    number: 896667898888,
+    owner: 'NGUYEN TUAN DUNG'
+}
+
+export const TIEN_COC = '500.000'
 
 export const ROLE = {
     // user: 'user',

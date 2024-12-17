@@ -3,6 +3,7 @@ import './Login.scss';
 import ApiService from '../../services/api.service';
 import { Toast } from 'primereact/toast';
 import { useNavigate } from 'react-router-dom';
+import { ROLE } from '../../constants/constants';
 
 const LoginForm = () => {
     const navigate = useNavigate();
@@ -23,8 +24,7 @@ const LoginForm = () => {
                     summary: "Thành công",
                     detail: "Đăng nhập thành công !",
                 });
-                navigate('/');
-
+                navigate(`${ROLE.admin}`);
             } else {
                 toast.current?.show({
                     severity: "error",

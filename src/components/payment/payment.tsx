@@ -1,16 +1,18 @@
 import { Button } from "primereact/button";
+import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { BANK_INFO, TIEN_COC } from "../../constants/constants";
 import { ItemDetail, PaymentForm } from "../../constants/interface";
 import QrLogo from "../../images/qr-code.jpg";
 import ApiService from "../../services/api.service";
-import "./payment.scss";
-import ThankYou from "../thank-you/ThankYou";
-import { BANK_INFO, TIEN_COC } from "../../constants/constants";
 import TelebotService from "../../services/telebot.service";
+import VietnamUnitService from "../../services/vietnam_unit.service";
+import ThankYou from "../thank-you/ThankYou";
+import "./payment.scss";
 
 enum PaymentMethod {
     BankTransfer = "bankTransfer", //0
@@ -19,6 +21,12 @@ enum PaymentMethod {
 }
 
 function Payment() {
+    const [cityList, setCityList] = useState([]);
+    const [selectCity, setSelectCity] = useState();
+    const [proviceList, setProviceList] = useState([]);
+    const [selectProvice, setSelectProvice] = useState();
+    const [districtList, setDistrictList] = useState([]);
+    const [selectDistrict, setSelectDistrict] = useState();
     const [showThankYou, setShowThankYou] = useState(false);
     const toast = useRef<Toast>(null);
     const [productDetail, setProductDetail] = useState<ItemDetail>();
@@ -36,6 +44,7 @@ function Payment() {
     useEffect(() => {
         if (!!itemId) {
             fetchDetailProduct(itemId);
+            fetchCity();
         }
     }, []);
 
@@ -44,6 +53,110 @@ function Payment() {
     ) => {
         const { name, value } = event.target;
         setPaymentForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const fetchCity = async () => {
+        try {
+            const listCity = await VietnamUnitService.getCity();
+            const data = listCity?.data
+                .map((city: any) => ({
+                    label: city.name,
+                    value: city.code,
+                    divisionType: city.division_type, // Thêm division_type để sử dụng
+                }))
+                .sort((a: any, b: any) => {
+                    // Ưu tiên "thành phố trung ương" lên trước
+                    if (
+                        a.divisionType === "thành phố trung ương" &&
+                        b.divisionType !== "thành phố trung ương"
+                    ) {
+                        return -1;
+                    }
+                    if (
+                        a.divisionType !== "thành phố trung ương" &&
+                        b.divisionType === "thành phố trung ương"
+                    ) {
+                        return 1;
+                    }
+
+                    // Nếu cả hai cùng là "thành phố trung ương", sắp xếp theo value (số)
+                    if (
+                        a.divisionType === "thành phố trung ương" &&
+                        b.divisionType === "thành phố trung ương"
+                    ) {
+                        return a.value - b.value;
+                    }
+
+                    // Nếu cả hai cùng là "tỉnh", sắp xếp theo label (chuỗi)
+                    return a.label.localeCompare(b.label);
+                });
+            setCityList(data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchProvice = async (provice_code: any) => {
+        try {
+            const listProvice = await VietnamUnitService.getProvice(
+                provice_code
+            );
+            const data = listProvice?.data?.districts?.map((provice: any) => ({
+                label: provice.name,
+                value: provice.code,
+            }));
+            setProviceList(data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchDistrict = async (district_code: any) => {
+        try {
+            const listDistrict = await VietnamUnitService.getDistrict(
+                district_code
+            );
+            const data = listDistrict?.data?.wards?.map((wards: any) => ({
+                label: wards.name,
+                value: wards.code,
+            }));
+            setDistrictList(data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleCityChange = (e: any) => {
+        if (e) {
+            setSelectCity(e.value);
+            setPaymentForm((prev) => ({
+                ...prev,
+                tp: e.label,
+            }));
+            setDistrictList([]);
+        }
+        fetchProvice(e.value);
+    };
+
+    const handleProvideChange = (e: any) => {
+        if (e) {
+            setSelectProvice(e.value);
+            setPaymentForm((prev) => ({
+                ...prev,
+                qh: e.label,
+            }));
+        }
+        fetchDistrict(e.value);
+    };
+
+    const handleDistrictChange = (e: any) => {
+        if (e) {
+            setSelectDistrict(e.value);
+            setPaymentForm((prev) => ({
+                ...prev,
+                px: e.label,
+            }));
+        }
     };
 
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +170,7 @@ function Payment() {
     const fetchDetailProduct = async (id: string) => {
         try {
             const prdDetail = await ApiService.getProductDetail(id);
-            if(!prdDetail.data && toast.current) {
+            if (!prdDetail.data && toast.current) {
                 toast.current.show({
                     severity: "error",
                     summary: "Thông báo",
@@ -76,22 +189,36 @@ function Payment() {
         if (!paymentForm.phone) errors.phone = "(*) Số điện thoại là bắt buộc";
         if (!paymentForm.tp) errors.tp = "(*) Tỉnh/Thành phố là bắt buộc";
         if (!paymentForm.qh) errors.qh = "(*) Quận/Huyện là bắt buộc";
-        if (!paymentForm.px) errors.px = "(*) Xã/Phường là bắt buộc";
+        if (!paymentForm.px) errors.px = "(*) Phường/Xã là bắt buộc";
         if (!paymentForm.address) errors.address = "(*) Địa chỉ là bắt buộc";
         setFormError(errors);
         return Object.keys(errors).length === 0;
     };
 
-    const sendTeleMessage = async (formData : PaymentForm, productData : ItemDetail) => {
+    const sendTeleMessage = async (
+        formData: PaymentForm,
+        productData: ItemDetail
+    ) => {
         try {
             const photoUrl = productData?.img;
-            const caption = `- Model: ${productData?.name}\n\n- KH: ${formData?.name} - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}\n\n- Ghi chú: ${formData?.note}\n\n- Giá bán: ${productData?.salePrice.toLocaleString("vi-VN")} (${formData?.payment_method == 'bankTransfer' ? 'Chuyển khoản full' : 'Ship COD'})`
+            const caption = `- Model: ${productData?.name}\n\n- KH: ${
+                formData?.name
+            } - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}, ${
+                formData?.px
+            }, ${formData?.qh}, ${formData?.tp}\n\n- Ghi chú: ${
+                formData?.note
+            }\n\n- Giá bán: ${productData?.salePrice.toLocaleString(
+                "vi-VN"
+            )} (${
+                formData?.payment_method == "bankTransfer"
+                    ? "Chuyển khoản full"
+                    : "Ship COD"
+            })`;
             await TelebotService.postPhoto(photoUrl, caption);
         } catch (error) {
             console.log(error);
         }
-        
-    }
+    };
 
     const handleSubmit = async () => {
         if (!!productDetail) {
@@ -128,7 +255,9 @@ function Payment() {
     return (
         <>
             <Toast ref={toast} />
-            {showThankYou ? (<ThankYou paymentForm={paymentForm}/>) : (
+            {showThankYou ? (
+                <ThankYou paymentForm={paymentForm} />
+            ) : (
                 <div className="flex justify-content-center">
                     <div className="sm-col-12 md:col-8 lg:col-6 xl:col-4 main-form">
                         <div className="flex pm-product">
@@ -162,7 +291,9 @@ function Payment() {
                                     onChange={handleInputChange}
                                 />
                                 {formError.name && (
-                                    <div className="error">{formError.name}</div>
+                                    <div className="error">
+                                        {formError.name}
+                                    </div>
                                 )}
                             </div>
                             <div className="col-12 md:col-6">
@@ -175,7 +306,9 @@ function Payment() {
                                     onChange={handleInputChange}
                                 />
                                 {formError.phone && (
-                                    <div className="error">{formError.phone}</div>
+                                    <div className="error">
+                                        {formError.phone}
+                                    </div>
                                 )}
                             </div>
                             <div className="col-12 md:col-6">
@@ -190,12 +323,26 @@ function Payment() {
                             </div>
                             <div className="col-12 md:col-6">
                                 <div>Tỉnh/Thành phố *</div>
-                                <InputText
+                                {/* <InputText
                                     className="w-full"
                                     placeholder="Tỉnh/Thành Phố"
                                     name="tp"
                                     value={paymentForm.tp}
                                     onChange={handleInputChange}
+                                /> */}
+                                <Dropdown
+                                    className="w-full"
+                                    value={selectCity}
+                                    options={cityList}
+                                    placeholder="Chọn thành phố"
+                                    onChange={(e) =>
+                                        handleCityChange(
+                                            cityList.filter(
+                                                (item: any) =>
+                                                    item.value === e.value
+                                            )[0]
+                                        )
+                                    }
                                 />
                                 {formError.tp && (
                                     <div className="error">{formError.tp}</div>
@@ -203,25 +350,53 @@ function Payment() {
                             </div>
                             <div className="col-12 md:col-6">
                                 <div>Quận/Huyện *</div>
-                                <InputText
+                                {/* <InputText
                                     className="w-full"
                                     placeholder="Quận/Huyện"
                                     name="qh"
                                     value={paymentForm.qh}
                                     onChange={handleInputChange}
+                                /> */}
+                                <Dropdown
+                                    className="w-full"
+                                    value={selectProvice}
+                                    options={proviceList}
+                                    placeholder="Chọn quận/huyện"
+                                    onChange={(e) =>
+                                        handleProvideChange(
+                                            proviceList.filter(
+                                                (item: any) =>
+                                                    item.value === e.value
+                                            )[0]
+                                        )
+                                    }
                                 />
                                 {formError.qh && (
                                     <div className="error">{formError.qh}</div>
                                 )}
                             </div>
                             <div className="col-12 md:col-6">
-                                <div>Xã/Phường *</div>
-                                <InputText
+                                <div>Phường/Xã *</div>
+                                {/* <InputText
                                     className="w-full"
-                                    placeholder="Xã/Phường"
+                                    placeholder="Phường/Xã"
                                     name="px"
                                     value={paymentForm.px}
                                     onChange={handleInputChange}
+                                /> */}
+                                <Dropdown
+                                    className="w-full"
+                                    value={selectDistrict}
+                                    options={districtList}
+                                    placeholder="Chọn phường/xã"
+                                    onChange={(e) =>
+                                        handleDistrictChange(
+                                            districtList.filter(
+                                                (item: any) =>
+                                                    item.value === e.value
+                                            )[0]
+                                        )
+                                    }
                                 />
                                 {formError.px && (
                                     <div className="error">{formError.px}</div>
@@ -237,7 +412,9 @@ function Payment() {
                                     onChange={handleInputChange}
                                 />
                                 {formError.address && (
-                                    <div className="error">{formError.address}</div>
+                                    <div className="error">
+                                        {formError.address}
+                                    </div>
                                 )}
                             </div>
                             <div className="col-12">
@@ -287,15 +464,19 @@ function Payment() {
                                 <label htmlFor={PaymentMethod.CheckPayment}>
                                     Kiểm tra thanh toán
                                 </label>
-                                {selectedMethod === PaymentMethod.CheckPayment && (
+                                {selectedMethod ===
+                                    PaymentMethod.CheckPayment && (
                                     <>
                                         <div className="description">
-                                            Quý khách vui lòng chuyển tiền đặt cọc{" "}
+                                            Quý khách vui lòng chuyển tiền đặt
+                                            cọc{" "}
                                             <span className="text-red-500">
                                                 {TIEN_COC}đ
                                             </span>{" "}
-                                            đến tài khoản của chúng tôi <br></br>
-                                            Ngân hàng: {BANK_INFO.name} - {BANK_INFO.number} -
+                                            đến tài khoản của chúng tôi{" "}
+                                            <br></br>
+                                            Ngân hàng: {BANK_INFO.name} -{" "}
+                                            {BANK_INFO.number} -
                                             {BANK_INFO.owner}
                                         </div>
                                         <div className="qr-small text-center">
@@ -319,12 +500,14 @@ function Payment() {
                                 <label htmlFor={PaymentMethod.BankTransfer}>
                                     Chuyển khoản ngân hàng
                                 </label>
-                                {selectedMethod === PaymentMethod.BankTransfer && (
+                                {selectedMethod ===
+                                    PaymentMethod.BankTransfer && (
                                     <>
                                         <div className="description">
-                                            Quý khách vui lòng chuyển tiền đến tài
-                                            khoản của chúng tôi <br></br>
-                                            Ngân hàng: {BANK_INFO.name} - {BANK_INFO.number} -
+                                            Quý khách vui lòng chuyển tiền đến
+                                            tài khoản của chúng tôi <br></br>
+                                            Ngân hàng: {BANK_INFO.name} -{" "}
+                                            {BANK_INFO.number} -
                                             {BANK_INFO.owner}
                                         </div>
                                         <div className="qr-small text-center">
@@ -376,7 +559,7 @@ function Payment() {
                         </div>
                     </div>
                 </div>
-                )}
+            )}
             <div className="qr-code">
                 <img src={QrLogo} alt="" />
             </div>

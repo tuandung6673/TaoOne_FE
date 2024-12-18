@@ -476,7 +476,7 @@ function Payment() {
                                             đến tài khoản của chúng tôi{" "}
                                             <br></br>
                                             Ngân hàng: {BANK_INFO.name} -{" "}
-                                            {BANK_INFO.number} -
+                                            {BANK_INFO.number} -{" "}
                                             {BANK_INFO.owner}
                                         </div>
                                         <div className="qr-small text-center">
@@ -507,7 +507,7 @@ function Payment() {
                                             Quý khách vui lòng chuyển tiền đến
                                             tài khoản của chúng tôi <br></br>
                                             Ngân hàng: {BANK_INFO.name} -{" "}
-                                            {BANK_INFO.number} -
+                                            {BANK_INFO.number} -{" "}
                                             {BANK_INFO.owner}
                                         </div>
                                         <div className="qr-small text-center">

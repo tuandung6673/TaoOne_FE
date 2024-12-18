@@ -116,10 +116,13 @@ function Payment() {
             const listDistrict = await VietnamUnitService.getDistrict(
                 district_code
             );
-            const data = listDistrict?.data?.wards?.map((wards: any) => ({
+            let data = listDistrict?.data?.wards?.map((wards: any) => ({
                 label: wards.name,
                 value: wards.code,
             }));
+            if (data) {
+                data = [...data, {label: 'Khác', value: -1}]
+            }
             setDistrictList(data);
         } catch (error) {
             console.log(error);
@@ -226,16 +229,16 @@ function Payment() {
                 const data = paymentForm;
                 data.product_id = itemId;
                 try {
-                    const response = await ApiService.postPayment(data);
-                    if (response.status === "success" && toast.current) {
-                        toast.current.show({
-                            severity: "success",
-                            summary: "Thành công",
-                            detail: "Đặt hàng thành công !",
-                        });
-                        setShowThankYou(true);
-                    }
-                    sendTeleMessage(data, productDetail);
+                    // const response = await ApiService.postPayment(data);
+                    // if (response.status === "success" && toast.current) {
+                    //     toast.current.show({
+                    //         severity: "success",
+                    //         summary: "Thành công",
+                    //         detail: "Đặt hàng thành công !",
+                    //     });
+                    // }
+                    setShowThankYou(true);
+                    // sendTeleMessage(data, productDetail);
                 } catch (error) {
                     console.log(error);
                 }
@@ -335,6 +338,7 @@ function Payment() {
                                     value={selectCity}
                                     options={cityList}
                                     placeholder="Chọn thành phố"
+                                    emptyMessage="Không có dữ liệu"
                                     onChange={(e) =>
                                         handleCityChange(
                                             cityList.filter(
@@ -362,6 +366,7 @@ function Payment() {
                                     value={selectProvice}
                                     options={proviceList}
                                     placeholder="Chọn quận/huyện"
+                                    emptyMessage="Không có dữ liệu"
                                     onChange={(e) =>
                                         handleProvideChange(
                                             proviceList.filter(
@@ -389,6 +394,7 @@ function Payment() {
                                     value={selectDistrict}
                                     options={districtList}
                                     placeholder="Chọn phường/xã"
+                                    emptyMessage="Không có dữ liệu"
                                     onChange={(e) =>
                                         handleDistrictChange(
                                             districtList.filter(

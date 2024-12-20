@@ -121,7 +121,7 @@ function Payment() {
                 value: wards.code,
             }));
             if (data) {
-                data = [...data, {label: 'Khác', value: -1}]
+                data = [...data, {label: '-Khác-', value: -1}]
             }
             setDistrictList(data);
         } catch (error) {
@@ -435,7 +435,7 @@ function Payment() {
                         </div>
                         <div className="overview">
                             <div className="flex justify-content-between">
-                                <span>Tạm tính:</span>
+                                <span>Tiền hàng (tạm tính):</span>
                                 <span>
                                     {productDetail?.salePrice.toLocaleString(
                                         "vi-VN"
@@ -443,9 +443,15 @@ function Payment() {
                                     đ
                                 </span>
                             </div>
+                            <div className="flex justify-content-between mt-1">
+                                <span>Phí vận chuyển:</span>
+                                <span>
+                                    Miễn phí
+                                </span>
+                            </div>
                             <hr></hr>
                             <div className="flex justify-content-between total">
-                                <span>Tổng:</span>
+                                <span>Tổng tiền:</span>
                                 <span>
                                     {productDetail?.salePrice.toLocaleString(
                                         "vi-VN"

@@ -213,7 +213,31 @@ function ProductDetail() {
                             </div>
                         )}
                         <div className="status">
-                            Tình trạng: Còn sản phẩm
+                            <div className="status_item">
+                                <span className="status_icon pi pi pi-star-fill"></span>
+                                <span className="status_value">Sản phẩm chính hãng Apple 100%</span>
+                            </div>
+                            <div className="status_item">
+                                <span className="status_icon pi pi pi-star-fill"></span>
+                                <span className="status_value">Giá đã bao gồm VAT</span>
+                            </div>
+                            <div className="status_item">
+                                <span className="status_icon pi pi pi-star-fill"></span>
+                                <span className="status_value">Bảo hành 4/6/12 tháng</span>
+                            </div>
+                            <div className="status_item">
+                                <span className="status_icon pi pi pi-star-fill"></span>
+                                <span className="status_value">Giảm giá 10% phụ kiện khi mua kèm theo</span>
+                            </div>
+                        </div>
+                        <div className="gift">
+                            <div className="gift_header">
+                                <i className="pi pi-ticket"></i>
+                                <span>Quà tặng</span>
+                            </div>
+                            <div> - Dây đeo và dây sạc chính hãng</div>
+                            <div> - Miếng dán màn hình</div>
+                            <div> - Vệ sinh máy trọn đời</div>
                         </div>
                         <div className="product_action">
                             <div className="cart" onClick={buynow}>

@@ -85,7 +85,23 @@
 
 .status {
     margin: 10px 0;
-    color: red;
+    &_item {
+        padding: 4px 0;
+    }
+    &_icon {
+        color: #218838;
+    }
+    &_value {
+        margin-left: 6px;
+    }
+}
+
+.gift {
+    padding: 5px 15px;
+    margin: 0 5px;
+    margin-bottom: 20px ;
+    border: 2px solid #218838;
+    border-radius: 6px;
 }
 
 .product2 {

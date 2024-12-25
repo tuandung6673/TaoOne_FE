@@ -1,4 +1,4 @@
-@import '../../color/colors.scss';
+@import "../../color/colors.scss";
 
 .main-thank {
     text-align: center;
@@ -46,8 +46,8 @@
 }
 
 .main-thank .p-button:hover {
-    background-color: #218838;
-    border-color: #1e7e34;
+    background-color: $main-green-color-hover;
+    border-color: $main-green-color-hover;
 }
 
 @media (max-width: 768px) {

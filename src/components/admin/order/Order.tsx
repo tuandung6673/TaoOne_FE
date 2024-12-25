@@ -1,3 +1,4 @@
+import moment from "moment";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
@@ -12,7 +13,6 @@ import { useEffect, useRef, useState } from "react";
 import { PaymentForm } from "../../../constants/interface";
 import ApiService from "../../../services/api.service";
 import "./Order.scss";
-import moment from "moment";
 
 function Order() {
     const [selectStatus, setSelectStatus] = useState(null);
@@ -103,9 +103,9 @@ function Order() {
         return template;
     };
 
-    const dateTemplate = (product : any) => {
-        return moment(product.date).format('DD/MM/YYYY')
-    }
+    const dateTemplate = (product: any) => {
+        return moment(product.date).format("DD/MM/YYYY");
+    };
 
     const optionsTemplate = (rowData: any) => {
         return (

@@ -7,15 +7,19 @@ import { DataTable } from "primereact/datatable";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { OverlayPanel } from "primereact/overlaypanel";
-import { Sidebar } from 'primereact/sidebar';
+import { Sidebar } from "primereact/sidebar";
 import { Toast } from "primereact/toast";
 import queryString from "query-string";
 import { useEffect, useRef, useState } from "react";
-import { BannerDetail, DropdownInterface, ItemDetail } from "../../../constants/interface";
+import {
+    BannerDetail,
+    DropdownInterface,
+    ItemDetail,
+} from "../../../constants/interface";
+import { useSpinner } from "../../../custom-hook/SpinnerContext";
 import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
-import './banner.scss';
-import { useSpinner } from "../../../custom-hook/SpinnerContext";
+import "./banner.scss";
 
 function Banner() {
     const { showSpinner, hideSpinner } = useSpinner();
@@ -25,18 +29,20 @@ function Banner() {
     const op2 = useRef<OverlayPanel>(null);
     const [image, setImage] = useState<File | null>(null);
     const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
-    const [imageUrl, setImageUrl] = useState<string>('');
+    const [imageUrl, setImageUrl] = useState<string>("");
     const home = { icon: "pi pi-home", url: "" };
     const breadcrumbItems = [{ label: "Banner" }];
     const [slideParams, setSlideParams] = useState({
-        screen: ''
+        screen: "",
     });
     const [slideList, setSlideList] = useState<ItemDetail[]>([]);
     const [selectCtg, setSelectCtg] = useState(null);
     const [selectedId, setSelectedId] = useState<string>();
     const [listCtg, setListCtg] = useState<DropdownInterface[]>([]);
-    const [bannerDetail, setBannerDetail] = useState<BannerDetail>(new BannerDetail())
-    
+    const [bannerDetail, setBannerDetail] = useState<BannerDetail>(
+        new BannerDetail()
+    );
+
     useEffect(() => {
         fetchCategoryDetail();
     }, []);
@@ -59,7 +65,7 @@ function Banner() {
         try {
             const ctgDetailList = await ApiService.getCategoryList(
                 queryString.stringify({
-                    filter: '',
+                    filter: "",
                 })
             );
             const formattedList = ctgDetailList.data.data.map((item: any) => {
@@ -68,8 +74,11 @@ function Banner() {
                     value: item.code,
                 };
             });
-    
-            setListCtg([{ label: 'Trang chủ', value: 'home' }, ...formattedList]);
+
+            setListCtg([
+                { label: "Trang chủ", value: "home" },
+                ...formattedList,
+            ]);
         } catch (err) {
             console.error(err);
         }
@@ -80,7 +89,7 @@ function Banner() {
             <img
                 src={product.img}
                 alt={product.img}
-                style={{'objectFit': 'cover'}}
+                style={{ objectFit: "cover" }}
                 className="w-9rem h-3rem shadow-2 border-round"
             />
         );
@@ -115,9 +124,7 @@ function Banner() {
 
     const deleteSlide = async () => {
         try {
-            const deleteSlide = await ApiService.deleteSlide(
-                selectedId || ""
-            );
+            const deleteSlide = await ApiService.deleteSlide(selectedId || "");
             if (deleteSlide.status === "success") {
                 if (toast.current) {
                     toast.current.show({
@@ -156,11 +163,11 @@ function Banner() {
             setImage(selectedImage);
             // setAvatarImageName(image.name);
             const reader = new FileReader();
-      
+
             reader.onloadend = () => {
-              setImageUrl(reader.result as string);
+                setImageUrl(reader.result as string);
             };
-      
+
             reader.readAsDataURL(selectedImage);
             setIsChangeAvatar(true);
         }
@@ -172,9 +179,9 @@ function Banner() {
             if (image) {
                 const storageRef = ref(storage, `images/${image.name}`);
                 const uploadTask = uploadBytesResumable(storageRef, image);
-          
+
                 uploadTask.on(
-                    'state_changed',
+                    "state_changed",
                     (snapshot) => {
                         // Tiến trình tải lên
                     },
@@ -183,18 +190,20 @@ function Banner() {
                         reject(error);
                     },
                     () => {
-                        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL1) => {
-                            setImageUrl(downloadURL1);
-                            hideSpinner();
-                            resolve();
-                        });
+                        getDownloadURL(uploadTask.snapshot.ref).then(
+                            (downloadURL1) => {
+                                setImageUrl(downloadURL1);
+                                hideSpinner();
+                                resolve();
+                            }
+                        );
                     }
                 );
             } else {
                 resolve();
             }
         });
-    }
+    };
 
     const confirmDelete = () => {
         confirmDialog({
@@ -210,47 +219,59 @@ function Banner() {
 
     const fetchDetailBanner = async () => {
         try {
-            const detailBanner = await ApiService.getSlideDetail(selectedId || "")
-            setBannerDetail(detailBanner.data)
+            const detailBanner = await ApiService.getSlideDetail(
+                selectedId || ""
+            );
+            setBannerDetail(detailBanner.data);
             setImageUrl(detailBanner.data.img);
         } catch (error) {
             console.log(error);
         }
-    }
+    };
 
     const viewDetail = () => {
         fetchDetailBanner();
         setVisibleRight(true);
-    }
+    };
 
-    const handleChangeScreen = (e : any) => {
+    const handleChangeScreen = (e: any) => {
         setBannerDetail((prev) => ({
             ...prev,
-            screen: e.value
-        }))
-    } 
+            screen: e.value,
+        }));
+    };
 
-    const handleChange = (e : any) => {
+    const handleChange = (e: any) => {
         const { name, value } = e.target;
         setBannerDetail((prev) => ({
             ...prev,
-            [name]: value
+            [name]: value,
         }));
     };
 
     const handleSubmit = async () => {
-        const data : any = bannerDetail;
-        data.img = isChangeAvatar ? 'https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F' + image?.name + '?alt=media' : bannerDetail.img;
-        if(!selectedId) {
+        const data: any = bannerDetail;
+        data.img = isChangeAvatar
+            ? "https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F" +
+              image?.name +
+              "?alt=media"
+            : bannerDetail.img;
+        if (!selectedId) {
             delete data.id;
         }
         try {
             const response = await ApiService.postSlide(data);
-            if (response.status === 'success') {
+            if (response.status === "success") {
                 if (toast.current) {
-                    toast.current.show({ severity: 'success', summary: 'Thành công', detail: (!!selectedId ? 'Lưu' : 'Thêm mới') + ' thành công !' });
+                    toast.current.show({
+                        severity: "success",
+                        summary: "Thành công",
+                        detail:
+                            (!!selectedId ? "Lưu" : "Thêm mới") +
+                            " thành công !",
+                    });
                 }
-                if(isChangeAvatar) {
+                if (isChangeAvatar) {
                     await uploadAvatar();
                 }
                 setVisibleRight(false);
@@ -266,19 +287,19 @@ function Banner() {
                 });
             }
         }
-    }
+    };
 
     const handleCancel = () => {
         setSelectedId(undefined);
         setVisibleRight(false);
-    }
+    };
 
     const handleAddBanner = () => {
         setSelectedId(undefined);
         setVisibleRight(true);
         setBannerDetail(new BannerDetail());
-        setImageUrl('');
-    }
+        setImageUrl("");
+    };
 
     return (
         <>
@@ -305,9 +326,7 @@ function Banner() {
                                         className="search_advance"
                                         onClick={(e) => e.stopPropagation()}
                                     >
-                                        <div className="pb-1">
-                                            Màn hình
-                                        </div>
+                                        <div className="pb-1">Màn hình</div>
                                         <Dropdown
                                             value={selectCtg}
                                             onChange={(e) =>
@@ -323,7 +342,11 @@ function Banner() {
                                 </OverlayPanel>
                             </div>
                             <div className="add-btn">
-                                <Button onClick={handleAddBanner} label="Thêm mới" icon="pi pi-plus" />
+                                <Button
+                                    onClick={handleAddBanner}
+                                    label="Thêm mới"
+                                    icon="pi pi-plus"
+                                />
                             </div>
                         </div>
                     </div>
@@ -336,17 +359,9 @@ function Banner() {
                                 header="Hình ảnh"
                                 body={imageBodyTemplate}
                             ></Column>
-                            <Column
-                                field="screen"
-                                header="Màn hình"
-                            ></Column>
-                            <Column
-                                field="name"
-                                header="Tên"
-                            ></Column>
-                            <Column
-                                body={optionsTemplate}
-                            ></Column>
+                            <Column field="screen" header="Màn hình"></Column>
+                            <Column field="name" header="Tên"></Column>
+                            <Column body={optionsTemplate}></Column>
                         </DataTable>
                     </div>
                     {/* <div className="flex justify-content-between surface-section">
@@ -377,40 +392,66 @@ function Banner() {
                     Xóa
                 </div>
             </OverlayPanel>
-            <Sidebar visible={visibleRight} className="w-6" position="right" onHide={() => setVisibleRight(false)}>
+            <Sidebar
+                visible={visibleRight}
+                className="w-6"
+                position="right"
+                onHide={() => setVisibleRight(false)}
+            >
                 <h2>Banner</h2>
                 <div className="grid banner">
                     <div className="col-12 avatar">
-                        <input type='file' id='avatar-input' accept='image/*' onChange={onSelect}/>
-                        <label htmlFor='avatar-input'>
-                            <img className="w-full" src={imageUrl ? imageUrl : 'https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png'} alt="abcákjdh" />
+                        <input
+                            type="file"
+                            id="avatar-input"
+                            accept="image/*"
+                            onChange={onSelect}
+                        />
+                        <label htmlFor="avatar-input">
+                            <img
+                                className="w-full"
+                                src={
+                                    imageUrl
+                                        ? imageUrl
+                                        : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
+                                }
+                                alt="abcákjdh"
+                            />
                         </label>
                     </div>
                     <div className="col-6">
                         <div>Màn hình</div>
                         <Dropdown
                             value={bannerDetail.screen}
-                            className='w-full'
+                            className="w-full"
                             options={listCtg}
                             onChange={(e) => handleChangeScreen(e)}
                         />
                     </div>
                     <div className="col-6">
                         <div>Tên</div>
-                        <InputText 
-                            className='w-full'
+                        <InputText
+                            className="w-full"
                             value={bannerDetail.name}
-                            name='name'
+                            name="name"
                             onChange={(e) => handleChange(e)}
                         />
                     </div>
                 </div>
-                <div className='flex mt-5 mr-2 justify-content-end'>
-                    <div className='cancel-btn mr-2'>
-                        <Button onClick={handleCancel} label='Hủy' style={{'height': '40px'}} />
+                <div className="flex mt-5 mr-2 justify-content-end">
+                    <div className="cancel-btn mr-2">
+                        <Button
+                            onClick={handleCancel}
+                            label="Hủy"
+                            style={{ height: "40px" }}
+                        />
                     </div>
-                    <div className='save-btn'>
-                        <Button onClick={handleSubmit} label='Lưu' style={{'height': '40px'}} />
+                    <div className="save-btn">
+                        <Button
+                            onClick={handleSubmit}
+                            label="Lưu"
+                            style={{ height: "40px" }}
+                        />
                     </div>
                 </div>
             </Sidebar>

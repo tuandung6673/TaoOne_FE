@@ -1,4 +1,4 @@
-@import '../../color/colors.scss';
+@import "../../color/colors.scss";
 
 .product {
     border-bottom: 1px solid #ececec;
@@ -38,7 +38,6 @@
     margin-bottom: 20px;
     padding-bottom: 10px;
 }
-
 
 .user-info label {
     display: block;
@@ -85,7 +84,6 @@
     margin: 0;
     font-weight: 600;
 }
-
 
 .option {
     &-1 {
@@ -141,7 +139,6 @@
     }
 }
 
-
 @media (max-width: 1200px) {
     .qr-code img {
         height: 200px;
@@ -167,10 +164,10 @@
     background-color: $main-green-color;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
     &:hover {
-        background-color: #218838;
-        border-color: #1e7e34;
+        background-color: $main-green-color-hover;
+        border-color: $main-green-color-hover;
         .p-button-label {
-            color: #FFFFFF;
+            color: #ffffff;
         }
     }
 }

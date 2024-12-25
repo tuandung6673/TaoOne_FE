@@ -23,10 +23,10 @@ import {
     Category as Ctg,
     DropdownInterface,
 } from "../../../constants/interface";
+import { useSpinner } from "../../../custom-hook/SpinnerContext";
 import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
-import './Category.scss';
-import { useSpinner } from "../../../custom-hook/SpinnerContext";
+import "./Category.scss";
 
 function Category() {
     const toast = useRef<Toast>(null);
@@ -49,7 +49,7 @@ function Category() {
     const [listCtg, setListCtg] = useState<DropdownInterface[]>([]);
     const [image, setImage] = useState<File | null>(null);
     const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
-    const [imageUrl, setImageUrl] = useState<string>('');
+    const [imageUrl, setImageUrl] = useState<string>("");
     const { showSpinner, hideSpinner } = useSpinner();
 
     useEffect(() => {
@@ -179,7 +179,7 @@ function Category() {
                         life: 3000,
                     });
                 }
-                fetchData()
+                fetchData();
             } else {
                 if (toast.current) {
                     toast.current.show({
@@ -214,10 +214,10 @@ function Category() {
                     summary: "Thông báo",
                     detail: deleteCtg.message,
                     life: 3000,
-                }); 
+                });
             }
-            if(deleteCtg.status === "success") {
-                fetchData()
+            if (deleteCtg.status === "success") {
+                fetchData();
             }
         } catch (err) {
             if (toast.current) {
@@ -261,25 +261,25 @@ function Category() {
             setImage(selectedImage);
             // setAvatarImageName(image.name);
             const reader = new FileReader();
-      
+
             reader.onloadend = () => {
-              setImageUrl(reader.result as string);
+                setImageUrl(reader.result as string);
             };
-      
+
             reader.readAsDataURL(selectedImage);
             setIsChangeAvatar(true);
         }
     };
-    
+
     const uploadAvatar = (): Promise<void> => {
         showSpinner();
         return new Promise((resolve, reject) => {
             if (image) {
                 const storageRef = ref(storage, `images/${image.name}`);
                 const uploadTask = uploadBytesResumable(storageRef, image);
-          
+
                 uploadTask.on(
-                    'state_changed',
+                    "state_changed",
                     (snapshot) => {
                         // Tiến trình tải lên
                     },
@@ -288,18 +288,20 @@ function Category() {
                         reject(error);
                     },
                     () => {
-                        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL1) => {
-                            setImageUrl(downloadURL1);
-                            hideSpinner();
-                            resolve();
-                        });
+                        getDownloadURL(uploadTask.snapshot.ref).then(
+                            (downloadURL1) => {
+                                setImageUrl(downloadURL1);
+                                hideSpinner();
+                                resolve();
+                            }
+                        );
                     }
                 );
             } else {
                 resolve();
             }
         });
-    }
+    };
 
     const fetchCtgDetail = async () => {
         try {
@@ -359,7 +361,11 @@ function Category() {
 
     const handleSaveDetailCtg = async () => {
         const data: Ctg = detailCtg;
-        data.img = isChangeAvatar ? 'https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F' + image?.name + '?alt=media' : detailCtg.img;
+        data.img = isChangeAvatar
+            ? "https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F" +
+              image?.name +
+              "?alt=media"
+            : detailCtg.img;
         if (!selectedId) {
             delete data.id;
         }
@@ -372,10 +378,11 @@ function Category() {
                         severity: "success",
                         summary: "Thành công",
                         detail:
-                            (!!selectedId ? "Lưu" : "Thêm mới") + " thành công !",
+                            (!!selectedId ? "Lưu" : "Thêm mới") +
+                            " thành công !",
                     });
                 }
-                if(isChangeAvatar) {
+                if (isChangeAvatar) {
                     await uploadAvatar();
                 }
                 setVisibleRight(false);
@@ -420,15 +427,15 @@ function Category() {
         setSelectedId(undefined);
         setVisibleRight(true);
         setDetailCtg(new Ctg());
-        setImageUrl('');
+        setImageUrl("");
     };
 
     const addCtgDetail = () => {
         setVisibleLeft(true);
-        const newData : CategoryDetail = new CategoryDetail();
+        const newData: CategoryDetail = new CategoryDetail();
         newData.category_id = selectedId || "";
-        setDetailDetailCtg(newData)
-    }
+        setDetailDetailCtg(newData);
+    };
 
     const rowExpansionTemplate = (data: any) => {
         return (
@@ -536,7 +543,10 @@ function Category() {
             <OverlayPanel ref={op}>
                 <div className="sort_option" onClick={addCtgDetail}>
                     <span className="mr-2">
-                        <i className="pi pi-plus" style={{'color': '#007bff'}}></i>
+                        <i
+                            className="pi pi-plus"
+                            style={{ color: "#007bff" }}
+                        ></i>
                     </span>
                     Thêm
                 </div>
@@ -562,9 +572,22 @@ function Category() {
                 <h2>Loại</h2>
                 <div className="grid catgory">
                     <div className="col-12 avatar">
-                        <input type='file' id='avatar-input' accept='image/*' onChange={onSelect}/>
-                        <label htmlFor='avatar-input'>
-                            <img className="w-full" src={imageUrl ? imageUrl : 'https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png'} alt="abcákjdh" />
+                        <input
+                            type="file"
+                            id="avatar-input"
+                            accept="image/*"
+                            onChange={onSelect}
+                        />
+                        <label htmlFor="avatar-input">
+                            <img
+                                className="w-full"
+                                src={
+                                    imageUrl
+                                        ? imageUrl
+                                        : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
+                                }
+                                alt="abcákjdh"
+                            />
                         </label>
                     </div>
                     <div className="col-6">

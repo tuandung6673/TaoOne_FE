@@ -1,0 +1,47 @@
+.main_footer {
+    background: #000000;
+    margin-top: 15px;
+    @media (min-width: 1600px) {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%; /* Đảm bảo footer chiếm toàn bộ chiều rộng màn hình */
+        z-index: 1000; /* Đặt footer nằm trên các phần tử khác nếu cần */
+        margin: 0;
+    }
+}
+.footer {
+    width: 65%;
+    margin: 0 auto;
+    color: #ffffff;
+    padding: 8px 0;
+
+    @media (min-width: 1600px) {
+        width: 65%;
+    }
+
+    @media (min-width: 1200px) and (max-width: 1599px) {
+        width: 80%;
+    }
+
+    @media (max-width: 1199px) and (min-width: 769px) {
+        width: 80%;
+    }
+
+    @media (max-width: 768px) and (min-width: 577px) {
+        width: 95%;
+    }
+
+    @media (max-width: 576px) {
+        width: 100%;
+        padding: 0 10px;
+        display: block;
+        text-align: center;
+        .footer_item {
+            padding: 8px 0;
+        }
+    }
+    box-sizing: border-box; // Include padding in width calculation
+    display: flex;
+    justify-content: space-between;
+}

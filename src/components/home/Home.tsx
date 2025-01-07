@@ -107,7 +107,7 @@ function Home() {
                         ))}
                     </Swiper> */}
                 </div>
-                <div>
+                <div className={classes.categories}>
                     {category?.categories.map((product: any, index: any) => (
                         <div key={index} className={classes.product_wrapper}>
                             <h2 style={{ textAlign: "center" }}>

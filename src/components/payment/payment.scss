@@ -154,6 +154,12 @@
     }
 }
 
+@media (min-width: 1600px) {
+    .qr-code {
+        bottom: 45px;
+    }
+}
+
 .p-inputtextarea {
     padding: 5px !important;
     min-height: 55px;

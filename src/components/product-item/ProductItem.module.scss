@@ -1,6 +1,6 @@
 .product {
     position: relative;
-    background: #FFFFFF;
+    background: #ffffff;
     border-radius: 20px;
     padding: 20px 0 25px 0;
     margin: 4px 0;
@@ -11,7 +11,8 @@
 
     &:hover {
         cursor: pointer;
-        box-shadow: -4px -4px 8px rgba(134, 134, 134, 0.2), 4px 4px 8px rgba(28, 28, 28, 0.4);
+        box-shadow: -4px -4px 8px rgba(134, 134, 134, 0.2),
+            4px 4px 8px rgba(28, 28, 28, 0.4);
         transition: 0.1s ease-in-out;
     }
 
@@ -42,8 +43,14 @@
     &_name {
         text-align: center;
         padding: 0 15px;
-        min-height: 42px;
+        height: 4em;
         font-size: 16px;
+
+        -webkit-box-orient: vertical;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         @media (max-width: 576px) {
             font-size: 15px;
@@ -58,7 +65,7 @@
         font-weight: bold;
 
         @media (max-width: 576px) {
-            font-size: 15px;
+            font-size: 13px;
             margin-top: 20px;
         }
 
@@ -74,7 +81,7 @@
     text-decoration: line-through;
 
     @media (max-width: 576px) {
-        font-size: 14px;
+        font-size: 13px;
     }
 }
 
@@ -85,7 +92,7 @@
     padding: 6px 12px;
     background: red;
     border-radius: 10px;
-    color: #FFFFFF;
+    color: #ffffff;
 
     @media (max-width: 768px) {
         padding: 4px 8px;
@@ -99,8 +106,3 @@
         right: 15px;
     }
 }
-
-// .product_img, .product_img img {
-//     box-sizing: border-box;
-// }
-

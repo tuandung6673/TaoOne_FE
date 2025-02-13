@@ -224,35 +224,37 @@ function Payment() {
     };
 
     const handleSubmit = async () => {
-        if (!!productDetail) {
-            if (validateForm()) {
-                const data = paymentForm;
-                data.product_id = itemId;
-                try {
-                    const response = await ApiService.postPayment(data);
-                    if (response.status === "success" && toast.current) {
-                        toast.current.show({
-                            severity: "success",
-                            summary: "Thành công",
-                            detail: "Đặt hàng thành công !",
-                        });
-                    }
-                    setShowThankYou(true);
-                    sendTeleMessage(data, productDetail);
-                } catch (error) {
-                    console.log(error);
-                }
-            }
-        } else {
-            // Ngăn chặn ng dùng sửa id ko hợp lệ trên url rồi submit linh tinh
-            if (toast.current) {
-                toast.current.show({
-                    severity: "error",
-                    summary: "Thông báo",
-                    detail: "Mã sản phẩm không hợp lệ !",
-                });
-            }
-        }
+        setShowThankYou(true);
+
+        // if (!!productDetail) {
+        //     if (validateForm()) {
+        //         const data = paymentForm;
+        //         data.product_id = itemId;
+        //         try {
+        //             const response = await ApiService.postPayment(data);
+        //             if (response.status === "success" && toast.current) {
+        //                 toast.current.show({
+        //                     severity: "success",
+        //                     summary: "Thành công",
+        //                     detail: "Đặt hàng thành công !",
+        //                 });
+        //             }
+        //             setShowThankYou(true);
+        //             sendTeleMessage(data, productDetail);
+        //         } catch (error) {
+        //             console.log(error);
+        //         }
+        //     }
+        // } else {
+        //     // Ngăn chặn ng dùng sửa id ko hợp lệ trên url rồi submit linh tinh
+        //     if (toast.current) {
+        //         toast.current.show({
+        //             severity: "error",
+        //             summary: "Thông báo",
+        //             detail: "Mã sản phẩm không hợp lệ !",
+        //         });
+        //     }
+        // }
     };
 
     return (

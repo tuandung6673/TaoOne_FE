@@ -16,6 +16,7 @@ import {
     ItemDetail,
 } from "../../../constants/interface";
 import { useSpinner } from "../../../custom-hook/SpinnerContext";
+import { environment } from "../../../environments/environment";
 import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
 import "./WatchDetail.scss";
@@ -494,7 +495,7 @@ function WatchDetail() {
                             <TabView>
                                 <TabPanel header="Mô tả">
                                     <Editor
-                                        apiKey="6e616i1xetsifvarffma6u3bq62jkr5tbl6gngodsp2p24pg"
+                                        apiKey={environment.tinyKey}
                                         onInit={(_evt, editor) =>
                                             (editorRef.current = editor)
                                         }
@@ -538,7 +539,7 @@ function WatchDetail() {
                                 </TabPanel>
                                 <TabPanel header="Thông số kĩ thuật">
                                     <Editor
-                                        apiKey="6e616i1xetsifvarffma6u3bq62jkr5tbl6gngodsp2p24pg"
+                                        apiKey={environment.tinyKey}
                                         onInit={(_evt, editor) =>
                                             (editorRef.current = editor)
                                         }
@@ -580,7 +581,7 @@ function WatchDetail() {
                                 </TabPanel>
                             </TabView>
                             {/* <Editor
-                                    apiKey='6e616i1xetsifvarffma6u3bq62jkr5tbl6gngodsp2p24pg'
+                                    apiKey={environment.tinyKey}
                                     onInit={(_evt, editor) => (editorRef.current = editor)}
                                     value={formData.description}
                                     init={{

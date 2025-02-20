@@ -19,7 +19,8 @@
     position: relative;
     border-radius: 8px;
     height: 550px;
-    object-fit: none;
+    // object-fit: none;
+    object-fit: contain;
 }
 
 .product_left,

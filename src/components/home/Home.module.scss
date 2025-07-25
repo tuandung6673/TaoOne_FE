@@ -1,0 +1,126 @@
+.homeWrapper {
+    background: #f5f5f7;
+}
+
+.main {
+    width: 65%;
+    margin: 0 auto;
+}
+
+// .categories {
+//     @media (min-width: 1600px) {
+//         margin-bottom: 60px;
+//     }
+// }
+
+.category {
+    margin: 60px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+    &_item {
+        background: #ffffff;
+        margin: 10px;
+        border-radius: 20px;
+        height: 220px;
+
+        &:hover {
+            box-shadow: -4px -4px 8px rgba(134, 134, 134, 0.2),
+                4px 4px 8px rgba(28, 28, 28, 0.4);
+            transition: 0.1s ease-in-out;
+        }
+
+        .item_img {
+            height: 165px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .item_name {
+            text-align: center;
+        }
+
+        img {
+            height: 120px;
+            max-width: 100%;
+        }
+    }
+}
+
+.product_wrapper {
+    padding: 0 10px;
+    margin: 80px -10px 0;
+
+    > div {
+        padding: 0 10px;
+        margin: 0 -10px;
+    }
+}
+
+/* Media Queries */
+@media (min-width: 1200px) {
+    .main {
+        width: 80%;
+    }
+}
+
+@media (min-width: 1600px) {
+    .main {
+        width: 65%;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main {
+        width: 80%;
+    }
+}
+
+@media (max-width: 768px) {
+    .main {
+        width: 95%;
+    }
+
+    .category {
+        grid-template-columns: 1fr 1fr;
+
+        &_item {
+            height: 190px;
+
+            .item_img {
+                height: 150px;
+            }
+
+            .item_name {
+                margin-top: 0;
+            }
+
+            img {
+                width: 120px;
+                height: 120px;
+                object-fit: contain;
+                margin-bottom: 15px;
+            }
+        }
+    }
+
+    .product_wrapper {
+        margin: 50px -5px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .main {
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    .category_item img {
+        height: 100px;
+    }
+
+    .product_wrapper {
+        margin: 30px -5px 0;
+    }
+}

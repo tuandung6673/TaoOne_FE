@@ -1,0 +1,87 @@
+@import "../../color/colors.scss";
+
+.main {
+    width: 65%;
+    margin: 0 auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+
+    @media (min-width: 1200px) and (max-width: 1599px) {
+        width: 80%;
+    }
+
+    @media (max-width: 1200px) and (min-width: 769px) {
+        width: 80%;
+    }
+
+    @media (max-width: 768px) and (min-width: 577px) {
+        width: 95%;
+    }
+
+    @media (max-width: 576px) {
+        width: 100%;
+    }
+}
+
+.category {
+    &_wrapper {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 20px;
+        // Adjust grid for smaller screens
+        @media (max-width: 1200px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+}
+
+.filter {
+    margin-top: 20px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start; // Align items to the start
+    &_item {
+        cursor: pointer;
+        color: #afb7bd;
+        margin-right: 30px;
+        border-bottom: 1px solid transparent;
+        padding: 10px 1px;
+        &:hover {
+            color: #000000;
+            border-bottom: 1px solid #000000;
+            transition: 0.15s;
+        }
+    }
+    :first-child {
+        margin-left: 0;
+    }
+    .active {
+        color: #000000;
+        border-bottom: 1px solid #000000;
+    }
+}
+
+.sort {
+    margin: 10px 0 20px 0;
+    cursor: pointer;
+    text-align: right;
+    @media (max-width: 768px) {
+        text-align: left; // Align sort to the left on small screens
+    }
+    &_option {
+        cursor: pointer;
+        padding: 7px 45px 7px 15px;
+        &:hover {
+            background: #afb7bd;
+        }
+    }
+    &_active {
+        color: blue;
+    }
+}
+
+// Adjust carousel image size for smaller screens
+.carousel_custom img {
+    width: 100%; // Ensure images take up full width of container
+    height: auto; // Maintain aspect ratio
+}

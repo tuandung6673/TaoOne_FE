@@ -1,0 +1,17 @@
+.wrapper {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.sort_option {
+    cursor: pointer;
+    padding: 7px 45px 7px 15px;
+    &:hover {
+        background: #afb7bd;
+    }
+}
+
+.search_advance {
+    width: 300px;
+    padding: 5px 15px;
+}

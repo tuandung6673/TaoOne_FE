@@ -1,0 +1,22 @@
+.main {
+    width: 65%;
+    margin: 0 auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+
+    @media (min-width: 1200px) and (max-width: 1599px) {
+        width: 80%;
+    }
+
+    @media (max-width: 1200px) and (min-width: 769px) {
+        width: 80%;
+    }
+
+    @media (max-width: 768px) and (min-width: 577px) {
+        width: 95%;
+    }
+
+    @media (max-width: 576px) {
+        width: 100%;
+    }
+}

@@ -3,26 +3,43 @@ import './NewsList.scss';
 import { NewsDetail } from '../../constants/interface';
 import ApiService from '../../services/api.service';
 import queryString from 'query-string';
+import { Paginator } from 'primereact/paginator';
 
 const NewsList = () => {
     const [newsList, setNewsList] = useState<NewsDetail[]>([]);
-    const params = {
+    const [params, setParams] = useState({
         filter: '',
-        status: 1
-    }
+        status: 1,
+        offSet: 0,
+        pageSize: 10
+    });
+    const [first, setFirst] = useState(0);
+    const [rows, setRows] = useState(10);
+    const [recordsTotal, setRecordsTotal] = useState(0);
     useEffect(() => {
         fetchNews();
-    }, [])
+    }, [params])
 
     const fetchNews = async () => {
         try {
             const queryParams = queryString.stringify(params);
             const response = await ApiService.getNewsList(queryParams);
+            setRecordsTotal(response.data.recordsTotal);
             setNewsList(response.data.data);
         } catch (error) {
             console.log(error);
         }
     }
+
+    const onPageChange = (event: any) => {
+        setRows(event.rows);
+        setFirst(event.first);
+        setParams((prevParams) => ({
+            ...prevParams,
+            offSet: event.first,
+            pageSize: event.rows,
+        }));
+    };
 
     return (
         <div className="main news-list-container">
@@ -53,6 +70,15 @@ const NewsList = () => {
                         <p className="news-summary">{news.excerpt}</p>
                     </div>
                 ))}
+            </div>
+            <div className='paginator-container'>
+                <Paginator
+                    first={first}
+                    rows={rows}
+                    totalRecords={recordsTotal}
+                    rowsPerPageOptions={[10, 20, 30]}
+                    onPageChange={onPageChange}
+                />
             </div>
         </div>
     )

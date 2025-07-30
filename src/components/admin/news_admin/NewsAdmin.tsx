@@ -1,4 +1,4 @@
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import he from 'he';
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
@@ -7,45 +7,38 @@ import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 import { DataTable } from "primereact/datatable";
 import { InputText } from "primereact/inputtext";
 import { OverlayPanel } from "primereact/overlaypanel";
-import { Sidebar } from "primereact/sidebar";
+import { Paginator } from "primereact/paginator";
 import { Toast } from "primereact/toast";
-import type { Editor as TinyMCEEditor } from "tinymce";
-import { Editor } from "@tinymce/tinymce-react";
 import queryString from "query-string";
 import { useEffect, useRef, useState } from "react";
-import { ItemDetail, NewsDetail } from "../../../constants/interface";
-import { useSpinner } from "../../../custom-hook/SpinnerContext";
-import { storage } from "../../../firebase/firebaseConfig";
-import ApiService from "../../../services/api.service";
-import he from 'he';
 import { useNavigate } from "react-router-dom";
+import { ItemDetail } from "../../../constants/interface";
+import ApiService from "../../../services/api.service";
 
 const NewsAdmin = () => {
     const navigate = useNavigate();
-    const editorRef = useRef<TinyMCEEditor | null>(null);
-    const { showSpinner, hideSpinner } = useSpinner();
     const toast = useRef<Toast>(null);
     const op = useRef<OverlayPanel>(null);
-    const [visibleRight, setVisibleRight] = useState(false);
-    const [image, setImage] = useState<File | null>(null);
-    const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
-    const [imageUrl, setImageUrl] = useState<string>("");
     const home = { icon: "pi pi-home", url: "" };
     const breadcrumbItems = [{ label: "Tin tức" }];
     const [newsParams, setNewsParams] = useState({
         filter: "",
+        status: null,
+        offSet: 0,
+        pageSize: 10
     });
     const [newsList, setNewsList] = useState<ItemDetail[]>([]);
     const [selectedId, setSelectedId] = useState<string>();
-    const [newsDetail, setNewsDetail] = useState<NewsDetail>(
-        new NewsDetail()
-    );
     const [searchValue, setSearchValue] = useState("");
+    const [recordsTotal, setRecordsTotal] = useState(0);
+    const [first, setFirst] = useState(0);
+    const [rows, setRows] = useState(10);
 
-    const fetchNews = async (slideParams: any) => {
+    const fetchNews = async (newsParams: any) => {
         try {
-            const queryParams = queryString.stringify(slideParams);
+            const queryParams = queryString.stringify(newsParams);
             const newsList = await ApiService.getNewsList(queryParams);
+            setRecordsTotal(newsList.data.recordsTotal);
             setNewsList(newsList.data.data);
         } catch (err) {
             console.error(err);
@@ -82,13 +75,13 @@ const NewsAdmin = () => {
     };
 
     const accept = () => {
-        deleteSlide();
+        deleteNews();
     };
 
-    const deleteSlide = async () => {
+    const deleteNews = async () => {
         try {
-            const deleteSlide = await ApiService.deleteSlide(selectedId || "");
-            if (deleteSlide.status === "success") {
+            const deleteNews = await ApiService.deleteNews(selectedId || "");
+            if (deleteNews.status === "success") {
                 if (toast.current) {
                     toast.current.show({
                         severity: "success",
@@ -120,56 +113,8 @@ const NewsAdmin = () => {
         }
     };
 
-    const onSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const selectedImage = e.target.files[0];
-            setImage(selectedImage);
-            // setAvatarImageName(image.name);
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                setImageUrl(reader.result as string);
-            };
-
-            reader.readAsDataURL(selectedImage);
-            setIsChangeAvatar(true);
-        }
-    };
-
-    const showHomeTemplate = (product: any) => {
+    const showStatusTemplate = (product: any) => {
         return <Checkbox checked={product.status == "1"}></Checkbox>;
-    };
-
-    const uploadAvatar = (): Promise<void> => {
-        showSpinner();
-        return new Promise((resolve, reject) => {
-            if (image) {
-                const storageRef = ref(storage, `images/${image.name}`);
-                const uploadTask = uploadBytesResumable(storageRef, image);
-
-                uploadTask.on(
-                    "state_changed",
-                    (snapshot) => {
-                        // Tiến trình tải lên
-                    },
-                    (error) => {
-                        console.error("Upload failed", error);
-                        reject(error);
-                    },
-                    () => {
-                        getDownloadURL(uploadTask.snapshot.ref).then(
-                            (downloadURL1) => {
-                                setImageUrl(downloadURL1);
-                                hideSpinner();
-                                resolve();
-                            }
-                        );
-                    }
-                );
-            } else {
-                resolve();
-            }
-        });
     };
 
     const confirmDelete = () => {
@@ -184,82 +129,12 @@ const NewsAdmin = () => {
         });
     };
 
-    const fetchDetailNews = async () => {
-        try {
-            const detailBanner = await ApiService.getNewsDetail(
-                selectedId || ""
-            );
-            setNewsDetail(detailBanner.data);
-            setImageUrl(detailBanner.data.thumbnailUrl);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
     const viewDetail = () => {
-        fetchDetailNews();
         navigate(`/admin/news/${selectedId}`);
-        // setVisibleRight(true);
-    };
-
-    const handleChange = (e: any) => {
-        const { name, checked, value } = e.target;
-        setNewsDetail((prev) => ({
-            ...prev,
-            [name]: value != null ? value : checked ? 1 : 0,
-        }));
-    };
-
-    const handleSubmit = async () => {
-        const data: any = newsDetail;
-        data.thumbnailUrl = isChangeAvatar
-            ? "https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F" +
-            image?.name +
-            "?alt=media"
-            : newsDetail.thumbnailUrl;
-        if (!selectedId) {
-            delete data.id;
-        }
-        try {
-            const response = await ApiService.postNews(data);
-            if (response.status === "success") {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "success",
-                        summary: "Thành công",
-                        detail:
-                            (!!selectedId ? "Lưu" : "Thêm mới") +
-                            " thành công !",
-                    });
-                }
-                if (isChangeAvatar) {
-                    await uploadAvatar();
-                }
-                setVisibleRight(false);
-                fetchNews(newsParams);
-            }
-        } catch (error) {
-            if (toast.current) {
-                toast.current.show({
-                    severity: "error",
-                    summary: "Thông báo",
-                    detail: "Không thành công !",
-                    life: 2000,
-                });
-            }
-        }
-    };
-
-    const handleCancel = () => {
-        setSelectedId(undefined);
-        setVisibleRight(false);
     };
 
     const handleAddBanner = () => {
-        setSelectedId(undefined);
-        setVisibleRight(true);
-        setNewsDetail(new NewsDetail());
-        setImageUrl("");
+
     };
 
     const searchHandler = () => {
@@ -275,25 +150,21 @@ const NewsAdmin = () => {
         }
     };
 
-    const handleExpertEditorChange = (content: any) => {
-        setNewsDetail((prev) => ({
-            ...prev,
-            excerpt: content,
-        }));
-    };
-
-    const handleContentEditorChange = (content: any) => {
-        setNewsDetail((prev) => ({
-            ...prev,
-            contentHtml: content,
-        }));
-    };
-
     const stripHtmlAndDecode = (html: string) => {
         // Bỏ thẻ HTML
         const stripped = html.replace(/<\/?[^>]+(>|$)/g, '');
         // Decode HTML entities
         return he.decode(stripped);
+    };
+
+    const onPageChange = (event: any) => {
+        setRows(event.rows);
+        setFirst(event.first);
+        setNewsParams((prevParams) => ({
+            ...prevParams,
+            offSet: event.first,
+            pageSize: event.rows,
+        }));
     };
 
     return (
@@ -351,10 +222,22 @@ const NewsAdmin = () => {
                             <Column
                                 field="status"
                                 header="Hiển thị"
-                                body={showHomeTemplate}
+                                body={showStatusTemplate}
                             ></Column>
                             <Column body={optionsTemplate}></Column>
                         </DataTable>
+                    </div>
+                    <div className="flex justify-content-between surface-section">
+                        <div className="flex align-items-center pl-3">
+                            Tổng số {recordsTotal} bản ghi
+                        </div>
+                        <Paginator
+                            first={first}
+                            rows={rows}
+                            totalRecords={recordsTotal}
+                            rowsPerPageOptions={[10, 20, 30]}
+                            onPageChange={onPageChange}
+                        />
                     </div>
                 </div>
             </div>
@@ -372,170 +255,6 @@ const NewsAdmin = () => {
                     Xóa
                 </div>
             </OverlayPanel>
-            {/* detail */}
-            <Sidebar
-                visible={visibleRight}
-                className="w-4"
-                position="right"
-                onHide={() => setVisibleRight(false)}
-            >
-                <h2>Tin tức</h2>
-                <div className="grid banner">
-                    <div className="col-12 avatar">
-                        <input
-                            type="file"
-                            id="avatar-input"
-                            accept="image/*"
-                            onChange={onSelect}
-                        />
-                        <label htmlFor="avatar-input">
-                            <img
-                                className="w-full"
-                                src={
-                                    imageUrl
-                                        ? imageUrl
-                                        : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
-                                }
-                                alt="abcákjdh"
-                            />
-                        </label>
-                    </div>
-                    <div className="col-12">
-                        <div>Tiêu đề</div>
-                        <InputText
-                            className="w-full"
-                            value={newsDetail.title}
-                            name="title"
-                            onChange={(e) => handleChange(e)}
-                        />
-                    </div>
-                    <div className="col-12">
-                        <div>Slug</div>
-                        <InputText
-                            className="w-full"
-                            value={newsDetail.slug}
-                            name="slug"
-                            onChange={(e) => handleChange(e)}
-                        />
-                    </div>
-                    <div className="col-12">
-                        <div>Hiển thị</div>
-                        <Checkbox
-                            name="status"
-                            onChange={(e) => handleChange(e)}
-                            checked={
-                                newsDetail.status === 1 ? true : false
-                            }
-                        ></Checkbox>
-                    </div>
-                    <div className="col-12">
-                        <div>Mô tả ngắn</div>
-                        <Editor
-                            apiKey={process.env.REACT_APP_TINY_KEY}
-                            onInit={(_evt, editor) =>
-                                (editorRef.current = editor)
-                            }
-                            value={newsDetail.excerpt}
-                            init={{
-                                height: 300,
-                                menubar: false,
-                                plugins: [
-                                    "advlist",
-                                    "autolink",
-                                    "lists",
-                                    "link",
-                                    "image",
-                                    "charmap",
-                                    "preview",
-                                    "anchor",
-                                    "searchreplace",
-                                    "visualblocks",
-                                    "code",
-                                    "fullscreen",
-                                    "insertdatetime",
-                                    "media",
-                                    "table",
-                                    "code",
-                                    "help",
-                                    "wordcount",
-                                ],
-                                toolbar:
-                                    "undo redo | blocks | " +
-                                    "bold italic forecolor | alignleft aligncenter " +
-                                    "alignright alignjustify | bullist numlist outdent indent | " +
-                                    "removeformat | help",
-                                content_style:
-                                    "body { font-family:Helvetica,Arial,sans-serif; font-size:14px;}",
-                                // language: 'vi'
-                            }}
-                            onEditorChange={
-                                handleExpertEditorChange
-                            }
-                        />
-                    </div>
-                    <div className="col-12">
-                        <div>Nội dung Bài viết</div>
-                        <Editor
-                            apiKey={process.env.REACT_APP_TINY_KEY}
-                            onInit={(_evt, editor) =>
-                                (editorRef.current = editor)
-                            }
-                            value={newsDetail.contentHtml}
-                            init={{
-                                height: 500,
-                                menubar: false,
-                                plugins: [
-                                    "advlist",
-                                    "autolink",
-                                    "lists",
-                                    "link",
-                                    "image",
-                                    "charmap",
-                                    "preview",
-                                    "anchor",
-                                    "searchreplace",
-                                    "visualblocks",
-                                    "code",
-                                    "fullscreen",
-                                    "insertdatetime",
-                                    "media",
-                                    "table",
-                                    "code",
-                                    "help",
-                                    "wordcount",
-                                ],
-                                toolbar:
-                                    "undo redo | blocks | " +
-                                    "bold italic forecolor | alignleft aligncenter " +
-                                    "alignright alignjustify | bullist numlist outdent indent | " +
-                                    "removeformat | help",
-                                content_style:
-                                    "body { font-family:Helvetica,Arial,sans-serif; font-size:14px;}",
-                                // language: 'vi'
-                            }}
-                            onEditorChange={
-                                handleContentEditorChange
-                            }
-                        />
-                    </div>
-                </div>
-                <div className="flex mt-5 mr-2 justify-content-end">
-                    <div className="cancel-btn mr-2">
-                        <Button
-                            onClick={handleCancel}
-                            label="Hủy"
-                            style={{ height: "40px" }}
-                        />
-                    </div>
-                    <div className="save-btn">
-                        <Button
-                            onClick={handleSubmit}
-                            label="Lưu"
-                            style={{ height: "40px" }}
-                        />
-                    </div>
-                </div>
-            </Sidebar>
         </>
     );
 }

@@ -1,3 +1,5 @@
+@import '../../color/colors.scss';
+
 .main {
     width: 65%;
     margin: 0 auto;
@@ -84,4 +86,29 @@
     font-size: 1rem;
     color: #666;
   }
+}
+
+.paginator-container {
+    margin-top: 10px;
+    .p-paginator {
+                background: transparent;
+    }
+    .p-inputwrapper  {
+        display: none;
+    }
+    .p-paginator-page {
+        background-color: #fff;
+        border: 1px solid #e9ecef;
+        padding: 4px 8px;
+        margin: 0 4px;
+        cursor: pointer;
+        &:hover {
+            background-color: $main-green-color;
+            color: #fff;
+        }
+    }
+    .p-highlight {
+        background-color: $main-green-color;
+        color: #fff;
+    }
 }

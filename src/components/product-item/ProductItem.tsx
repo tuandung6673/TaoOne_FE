@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router";
-import { ItemDetail } from "../../constants/interface";
-import classes from "./ProductItem.module.scss";
-import { useParams } from "react-router-dom";
 import { Button } from "primereact/button";
-import { useCart } from "../../custom-hook/CartContext";
 import { Toast } from "primereact/toast";
 import { useRef } from "react";
+import { useNavigate } from "react-router";
+import { useParams } from "react-router-dom";
+import { ItemDetail } from "../../constants/interface";
+import { useCart } from "../../custom-hook/CartContext";
+import classes from "./ProductItem.module.scss";
 
 interface Props {
     productItem: ItemDetail;

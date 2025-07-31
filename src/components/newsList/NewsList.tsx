@@ -4,6 +4,7 @@ import { NewsDetail } from '../../constants/interface';
 import ApiService from '../../services/api.service';
 import queryString from 'query-string';
 import { Paginator } from 'primereact/paginator';
+import he from 'he';
 
 const NewsList = () => {
     const [newsList, setNewsList] = useState<NewsDetail[]>([]);
@@ -39,6 +40,19 @@ const NewsList = () => {
             offSet: event.first,
             pageSize: event.rows,
         }));
+        
+        // Scroll to top of page when page changes
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    };
+
+    const stripHtmlAndDecode = (html: string) => {
+        // Bỏ thẻ HTML
+        const stripped = html.replace(/<\/?[^>]+(>|$)/g, '');
+        // Decode HTML entities
+        return he.decode(stripped);
     };
 
     return (
@@ -53,7 +67,7 @@ const NewsList = () => {
                             className="featured-image"
                         />
                     )}
-                    <p className="featured-summary">{newsList[0].excerpt}</p>
+                    <p className="featured-summary">{stripHtmlAndDecode(newsList[0].excerpt)}</p>
                 </div>
             )}
             <div className="news-list">
@@ -67,7 +81,7 @@ const NewsList = () => {
                                 className="news-image"
                             />
                         )}
-                        <p className="news-summary">{news.excerpt}</p>
+                        <p className="news-summary">{stripHtmlAndDecode(news.excerpt)}</p>
                     </div>
                 ))}
             </div>

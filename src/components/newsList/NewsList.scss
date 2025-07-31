@@ -56,8 +56,18 @@
 
 .news-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
+  // Responsive adjustments
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
 .news-item {
@@ -111,4 +121,10 @@
         background-color: $main-green-color;
         color: #fff;
     }
+    @media (max-width: 576px) {
+        .p-paginator-prev, .p-paginator-next {
+            display: none;
+        }
+    }
 }
+

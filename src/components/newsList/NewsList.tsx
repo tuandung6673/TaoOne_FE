@@ -5,8 +5,10 @@ import ApiService from '../../services/api.service';
 import queryString from 'query-string';
 import { Paginator } from 'primereact/paginator';
 import he from 'he';
+import { useNavigate } from 'react-router-dom';
 
 const NewsList = () => {
+    const navigate = useNavigate();
     const [newsList, setNewsList] = useState<NewsDetail[]>([]);
     const [params, setParams] = useState({
         filter: '',
@@ -55,10 +57,14 @@ const NewsList = () => {
         return he.decode(stripped);
     };
 
+    const handleNewsClick = (slug: string) => {
+        navigate(`/news/${slug}`);
+    }
+
     return (
         <div className="main news-list-container">
             {newsList.length > 0 && (
-                <div className="featured-news">
+                <div className="featured-news" onClick={() => handleNewsClick(newsList[0].slug)}>
                     <h2 className="featured-title">{newsList[0].title}</h2>
                     {(newsList[0].coverImageUrl || newsList[0].thumbnailUrl) && (
                         <img
@@ -72,7 +78,7 @@ const NewsList = () => {
             )}
             <div className="news-list">
                 {newsList.slice(1).map((news) => (
-                    <div className="news-item" key={news.id}>
+                    <div className="news-item" key={news.id} onClick={() => handleNewsClick(news.slug)}>
                         <h3 className="news-title">{news.title}</h3>
                         {(news.coverImageUrl || news.thumbnailUrl) && (
                             <img

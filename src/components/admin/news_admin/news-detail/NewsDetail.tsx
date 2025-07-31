@@ -12,6 +12,8 @@ import { useSpinner } from "../../../../custom-hook/SpinnerContext";
 import { storage } from "../../../../firebase/firebaseConfig";
 import ApiService from "../../../../services/api.service";
 import { BreadCrumb } from "primereact/breadcrumb";
+import queryString from 'query-string';
+
 
 const NewsAdminDetail = () => {
     const navigate = useNavigate();
@@ -30,6 +32,10 @@ const NewsAdminDetail = () => {
         { label: !!newsId ? "Chi tiết" : "Thêm mới" },
     ];
     const home = { icon: "pi pi-home", url: "" };
+    const newsDetailParams = {
+        id: newsId,
+        slug: ""
+    }
 
     useEffect(() => {
         if (!!newsId) {
@@ -37,10 +43,11 @@ const NewsAdminDetail = () => {
         }
     }, [newsId]);
 
-    const fetchDetailNews = async (newsId : string) => {
+    const fetchDetailNews = async (queryParams: string) => {
         try {
+            const queryParam = queryString.stringify(newsDetailParams);
             const detailBanner = await ApiService.getNewsDetail(
-                newsId || ""
+                queryParam
             );
             setNewsDetail(detailBanner.data);
             setImageUrl(detailBanner.data.thumbnailUrl);
@@ -172,7 +179,7 @@ const NewsAdminDetail = () => {
         <>
             <Toast ref={toast} />
             <div className="grid banner detail-wrapper">
-            <div className="header mb-3 w-full">
+                <div className="header mb-3 w-full">
                     <BreadCrumb
                         model={breadcrumbItems}
                         home={home}

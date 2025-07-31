@@ -293,10 +293,10 @@ const ApiService = {
         }
     },
 
-    getNewsDetail: async (id: string) => {
+    getNewsDetail: async (queryParams: string) => {
         try {
             const response = await axiosInstance.get(
-                `${process.env.REACT_APP_BASE_URL}/News/GetNewsDetail?id=` + id
+                `${process.env.REACT_APP_BASE_URL}/News/GetNewsDetail?` + queryParams
             );
             return response.data; // Trả về dữ liệu từ API
         } catch (error) {

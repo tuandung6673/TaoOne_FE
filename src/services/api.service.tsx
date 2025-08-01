@@ -329,6 +329,18 @@ const ApiService = {
             throw error; // Ném lỗi ra để xử lý sau
         }
     },
+
+    getNewsRelated: async (queryParams: string) => {
+        try {
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_BASE_URL}/News/GetNewsRelate?` + queryParams
+            );
+            return response.data; // Trả về dữ liệu từ API
+        } catch (error) {
+            console.error("Error fetching slide list:", error);
+            throw error; // Ném lỗi ra để xử lý sau
+        }
+    }
 };
 
 export default ApiService;

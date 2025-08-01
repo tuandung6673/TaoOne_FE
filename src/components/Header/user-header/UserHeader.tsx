@@ -14,18 +14,31 @@ function UserHeader() {
   const cartOverlayRef = useRef<OverlayPanel>(null);
 
   useEffect(() => {
+    let scrollTimeout: NodeJS.Timeout;
+    
     const handleScroll = () => {
+      // Clear any existing timeout
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+      
       if (window.scrollY > 100) {
         // Change 100 to the desired scroll distance
         setIsFixed(true);
       } else {
-        setIsFixed(false);
+        // Add a small delay for smoother transition when scrolling back up
+        scrollTimeout = setTimeout(() => {
+          setIsFixed(false);
+        }, 50); // Small delay for smoother transition
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
     };
   }, []);
 

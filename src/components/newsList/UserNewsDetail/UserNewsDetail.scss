@@ -112,6 +112,12 @@ html {
     scroll-behavior: smooth;
 }
 
+.news-content {
+    h2 {
+        color: $main-green-color;
+    }
+}
+
 .toc {
     background: #e5f2ec;
     margin: 30px 0;

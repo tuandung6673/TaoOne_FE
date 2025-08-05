@@ -347,22 +347,6 @@ const NewsAdminDetail = () => {
                     />
                 </div>
             </div>
-            <div className="flex mt-5 mr-2 justify-content-end">
-                <div className="cancel-btn mr-2">
-                    <Button
-                        onClick={handleCancel}
-                        label="Hủy"
-                        style={{ height: "40px" }}
-                    />
-                </div>
-                <div className="save-btn">
-                    <Button
-                        onClick={handleSubmit}
-                        label="Lưu"
-                        style={{ height: "40px" }}
-                    />
-                </div>
-            </div>
         </>
     )
 }

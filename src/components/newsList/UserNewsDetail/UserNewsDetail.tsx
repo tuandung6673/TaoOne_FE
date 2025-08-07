@@ -1,11 +1,11 @@
-import { BreadCrumb } from 'primereact/breadcrumb';
-import './UserNewsDetail.scss';
-import ApiService from '../../../services/api.service';
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from 'react';
-import queryString from 'query-string';
-import { NewsDetail } from '../../../constants/interface';
 import moment from "moment";
+import { BreadCrumb } from 'primereact/breadcrumb';
+import queryString from 'query-string';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from "react-router-dom";
+import { NewsDetail } from '../../../constants/interface';
+import ApiService from '../../../services/api.service';
+import './UserNewsDetail.scss';
 
 const UserNewsDetail = () => {
     const navigate = useNavigate();
@@ -86,7 +86,6 @@ const UserNewsDetail = () => {
 
     return (
         <div className="main">
-
             <div className='header w-full'>
                 <BreadCrumb
                     model={breadcrumbItems}
@@ -101,7 +100,7 @@ const UserNewsDetail = () => {
                     </div>
                     <b className='news-excerpt' dangerouslySetInnerHTML={{ __html: newsDetail?.excerpt! }}>
                     </b>
-                    <nav className="toc">
+                    {tocItems.length > 0 && <nav className="toc">
                         <div className='toc-title'>Mục lục</div>
                         <div className='toc-list'>
                             {tocItems.map((item) => (
@@ -110,7 +109,7 @@ const UserNewsDetail = () => {
                                 </div>
                             ))}
                         </div>
-                    </nav>
+                    </nav>}
                     <div className='news-image w-full'>
                         <img src={newsDetail?.thumbnailUrl} alt={newsDetail?.title} />
                     </div>

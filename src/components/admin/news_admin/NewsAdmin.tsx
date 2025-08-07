@@ -134,7 +134,8 @@ const NewsAdmin = () => {
     };
 
     const handleAddBanner = () => {
-
+        const currentPath = window.location.pathname;
+        navigate(`${currentPath}/them-moi`);
     };
 
     const searchHandler = () => {

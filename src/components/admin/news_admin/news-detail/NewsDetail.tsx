@@ -95,8 +95,7 @@ const NewsAdminDetail = () => {
     };
 
     const handleCancel = () => {
-        // setSelectedId(undefined);
-        // setVisibleRight(false);
+        navigate(-1);
     };
 
     const uploadAvatar = (): Promise<void> => {
@@ -243,6 +242,7 @@ const NewsAdminDetail = () => {
                         className="w-full"
                         value={newsDetail.slug}
                         name="slug"
+                        disabled={!!newsId}
                         onChange={(e) => handleChange(e)}
                     />
                 </div>

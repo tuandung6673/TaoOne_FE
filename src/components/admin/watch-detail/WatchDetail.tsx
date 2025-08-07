@@ -133,8 +133,8 @@ function WatchDetail() {
                             // resolve(downloadURL);
                             resolve(
                                 "https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F" +
-                                    file?.name +
-                                    "?alt=media"
+                                file?.name +
+                                "?alt=media"
                             );
                             hideSpinner();
                         }
@@ -244,17 +244,10 @@ function WatchDetail() {
         }));
     };
 
-    const handleDescriptionEditorChange = (content: any) => {
+    const handleEditorChange = (content: any, key: string) => {
         setFormData((prev) => ({
             ...prev,
-            description: content,
-        }));
-    };
-
-    const handleSpecsEditorChange = (content: any) => {
-        setFormData((prev) => ({
-            ...prev,
-            specs: content,
+            [key]: content,
         }));
     };
 
@@ -266,8 +259,8 @@ function WatchDetail() {
         const data: any = formData;
         data.img = isChangeAvatar
             ? "https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F" +
-              image?.name +
-              "?alt=media"
+            image?.name +
+            "?alt=media"
             : formData.img;
         delete data.category_code;
         delete data.category_detail_name;
@@ -532,7 +525,7 @@ function WatchDetail() {
                                             // language: 'vi'
                                         }}
                                         onEditorChange={
-                                            handleDescriptionEditorChange
+                                            (content) => handleEditorChange(content, 'description')
                                         }
                                     />
                                 </TabPanel>
@@ -575,7 +568,7 @@ function WatchDetail() {
                                                 "body { font-family:Helvetica,Arial,sans-serif; font-size:14px;}",
                                             // language: 'vi'
                                         }}
-                                        onEditorChange={handleSpecsEditorChange}
+                                        onEditorChange={(content) => handleEditorChange(content, 'specs')}
                                     />
                                 </TabPanel>
                             </TabView>

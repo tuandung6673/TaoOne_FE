@@ -80,22 +80,11 @@ const NewsAdminDetail = () => {
         }
     };
 
-    const handleExpertEditorChange = (content: any) => {
+    const handleEditorChange = (content: any, key: 'excerpt' | 'contentHtml') => {
         setNewsDetail((prev) => ({
             ...prev,
-            excerpt: content,
+            [key]: content,
         }));
-    };
-
-    const handleContentEditorChange = (content: any) => {
-        setNewsDetail((prev) => ({
-            ...prev,
-            contentHtml: content,
-        }));
-    };
-
-    const handleCancel = () => {
-        navigate(-1);
     };
 
     const uploadAvatar = (): Promise<void> => {
@@ -130,7 +119,6 @@ const NewsAdminDetail = () => {
         });
     };
 
-
     const handleSubmit = async () => {
         const data: any = newsDetail;
         data.thumbnailUrl = isChangeAvatar
@@ -148,25 +136,27 @@ const NewsAdminDetail = () => {
                     toast.current.show({
                         severity: "success",
                         summary: "Thành công",
-                        detail:
-                            (!!newsId ? "Lưu" : "Thêm mới") +
-                            " thành công !",
+                        detail: response.message
                     });
                 }
                 if (isChangeAvatar) {
                     await uploadAvatar();
                 }
-                navigate(-1);
+                // Add delay to show toast before navigation
+                setTimeout(() => {
+                    navigate(-1);
+                }, 500);
+            } else {
+                if (toast.current) {
+                    toast.current.show({
+                        severity: "error",
+                        summary: "Thông báo",
+                        detail: response.message,
+                        life: 2000,
+                    });
+                }
             }
         } catch (error) {
-            if (toast.current) {
-                toast.current.show({
-                    severity: "error",
-                    summary: "Thông báo",
-                    detail: "Không thành công !",
-                    life: 2000,
-                });
-            }
         }
     };
 
@@ -297,7 +287,7 @@ const NewsAdminDetail = () => {
                             // language: 'vi'
                         }}
                         onEditorChange={
-                            handleExpertEditorChange
+                            (content) => handleEditorChange(content, 'excerpt')
                         }
                     />
                 </div>
@@ -342,7 +332,7 @@ const NewsAdminDetail = () => {
                             // language: 'vi'
                         }}
                         onEditorChange={
-                            handleContentEditorChange
+                            (content) => handleEditorChange(content, 'contentHtml')
                         }
                     />
                 </div>

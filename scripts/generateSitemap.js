@@ -7,6 +7,7 @@ const links = [
     { url: "/ipad", changefreq: "monthly", priority: 0.8 },
     { url: "/macbook", changefreq: "monthly", priority: 0.8 },
     { url: "/airpods", changefreq: "monthly", priority: 0.8 },
+    { url: "/news", changefreq: "monthly", priority: 0.8 },
 ];
 
 const sitemapStream = new SitemapStream({ hostname: "https://taoone.vn" });

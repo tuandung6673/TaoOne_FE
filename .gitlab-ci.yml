@@ -49,6 +49,6 @@ deploy:
     after_script:
         - docker logout $CI_REGISTRY
     tags:
-        - taoone-shared-syshub-dev1-shell
+        - taoone-shared-dev-shell
     only: 
         - tags

@@ -1,8 +1,11 @@
+import './AdminHeader.scss';
 
 import { Menubar } from 'primereact/menubar';
 import { AllRouteType, ROLE } from '../../../constants/constants';
-
-function AdminHeader () {
+import { Button } from 'primereact/button';
+import { useNavigate } from 'react-router-dom';
+function AdminHeader() {
+    const navigate = useNavigate();
     const items = [
         {
             label: 'Sản phẩm',
@@ -64,8 +67,13 @@ function AdminHeader () {
 
     return (
         <>
-            <div>
-                <Menubar model={items}/>
+            <div className='header-admin'>
+                <div className='menu-admin'>
+                    <Menubar model={items} />
+                </div>
+                <div className='login-admin'>
+                    <Button label='Đăng nhập' onClick={() => navigate('/login')} />
+                </div>
             </div>
         </>
     )

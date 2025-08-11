@@ -1,0 +1,20 @@
+.header-admin {
+    position: relative;
+    height: 58px;
+}
+
+.menu-admin {
+    position: absolute;
+    left: 0;
+    width: 100%;
+}
+
+.login-admin {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    height: 38px;
+    .p-button {
+        height: 100% !important;
+    }
+}

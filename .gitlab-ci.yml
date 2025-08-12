@@ -14,7 +14,7 @@ build:
     before_script:
         - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     script: 
-        - docker build -t $IMAGE_VERSION .
+        - docker build --env-file ${ENV_PATH} -t $IMAGE_VERSION .
     after_script:
         - docker logout $CI_REGISTRY
     tags:
@@ -45,7 +45,7 @@ deploy:
         - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     script: 
         -   docker pull $IMAGE_VERSION
-        -   sudo docker rm -f ${REPOSITORY}-${CI_PROJECT_NAME}; sudo docker run --env-file ${ENV_PATH} --name ${REPOSITORY}-${CI_PROJECT_NAME} -dp 7777:7777 $IMAGE_VERSION
+        -   sudo docker rm -f ${REPOSITORY}-${CI_PROJECT_NAME}; sudo docker run --name ${REPOSITORY}-${CI_PROJECT_NAME} -dp 7777:7777 $IMAGE_VERSION
     after_script:
         - docker logout $CI_REGISTRY
     tags:

@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react';
-import './Login.scss';
-import ApiService from '../../services/api.service';
 import { Toast } from 'primereact/toast';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROLE } from '../../constants/constants';
+import bg from '../../images/trees.png';
+import ApiService from '../../services/api.service';
+import './Login.scss';
 
 const LoginForm = () => {
     const navigate = useNavigate();
@@ -11,10 +12,10 @@ const LoginForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = async (event : any) => {
+    const handleSubmit = async (event: any) => {
         event.preventDefault();
         // Xử lý logic đăng nhập ở đây
-        const data = {username, password}
+        const data = { username, password }
         try {
             const response = await ApiService.postLogin(data);
             if (response.status === "success" && toast.current) {
@@ -38,31 +39,36 @@ const LoginForm = () => {
     };
 
     return (
-        <div className="login-form">
+        <div className='login-container'>
             <Toast ref={toast} />
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="username">Username:</label>
-                    <input
-                        type="text"
-                        id="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Login</button>
-            </form>
+            <div className="login-bg">
+                <img src={bg} alt="bg" />
+            </div>
+            <div className="login-form">
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label htmlFor="username">Tài khoản:</label>
+                        <input
+                            type="text"
+                            id="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Mật khẩu:</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
         </div>
     );
 };

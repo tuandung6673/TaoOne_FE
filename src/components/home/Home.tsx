@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import queryString from "query-string";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import "swiper/css";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss/navigation";
+import { Toast } from "primereact/toast";
 import { HomeInterface } from "../../constants/interface";
 import ApiService from "../../services/api.service";
 import ProductItem from "../product-item/ProductItem";
@@ -17,6 +18,7 @@ function Home() {
     const [slides, setSlides] = useState<any>();
     const [category, setCategory] = useState<HomeInterface>();
     const navigate = useNavigate();
+    const toast = useRef<Toast>(null);
     const params = {
         screen: "home",
     };
@@ -49,8 +51,19 @@ function Home() {
         navigate("/" + ctgName);
     };
 
+    const handleAddToCart = (productName: string) => {
+        if (toast.current) {
+            toast.current.show({
+                severity: "success",
+                summary: "Thành công",
+                detail: `Đã thêm ${productName} vào giỏ hàng!`,
+            });
+        }
+    };
+
     return (
         <div className={classes.homeWrapper}>
+            <Toast ref={toast} position="top-right" />
             <div className={classes.carousel}>
                 <Carousel
                     autoPlay={true}
@@ -81,31 +94,6 @@ function Home() {
                             <p className={classes.item_name}>{ctg.name}</p>
                         </div>
                     ))}
-                    {/* <Swiper
-                        spaceBetween={25}
-                        breakpoints={{
-                            1200: { slidesPerView: 4 }, // Từ 1200px trở lên, hiển thị 4 slides
-                            768: { slidesPerView: 3 }, // Từ 768px trở lên, hiển thị 3 slides
-                            576: { slidesPerView: 2 }, // Từ 576px trở lên, hiển thị 2 slides
-                            0: { slidesPerView: 1 }, // Dưới 576px, hiển thị 1 slide
-                        }}
-                        modules={[Navigation, Pagination, Scrollbar, A11y]}
-                    >
-                        {category?.categories.map((ctg: any, index: any) => (
-                            <SwiperSlide key={index}>
-                                <div
-                                    key={index}
-                                    className={classes.category_item}
-                                    onClick={() => handleAllCategory(ctg.code)}
-                                >
-                                    <div className={classes.item_img}>
-                                        <img src={ctg.img} alt={ctg.name} />
-                                    </div>
-                                    <p className={classes.item_name}>{ctg.name}</p>
-                                </div>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper> */}
                 </div>
                 <div className={classes.categories}>
                     {category?.categories.map((product: any, index: any) => (
@@ -136,6 +124,7 @@ function Home() {
                                             <ProductItem
                                                 productItem={item}
                                                 categoryCode={product.code}
+                                                onAddToCart={handleAddToCart}
                                             />
                                         </SwiperSlide>
                                     )

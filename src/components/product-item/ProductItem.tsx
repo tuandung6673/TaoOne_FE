@@ -1,6 +1,4 @@
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
-import { useRef } from "react";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { ItemDetail } from "../../constants/interface";
@@ -10,13 +8,13 @@ import classes from "./ProductItem.module.scss";
 interface Props {
     productItem: ItemDetail;
     categoryCode?: string;
+    onAddToCart?: (productName: string) => void;
 }
 
-function ProductItem({ productItem, categoryCode }: Props) {
+function ProductItem({ productItem, categoryCode, onAddToCart }: Props) {
     const navigate = useNavigate();
     const { categoryName } = useParams<{ categoryName?: string }>();
     const { addToCart } = useCart();
-    const toast = useRef<Toast>(null);
     
     const directProductDetail = (productId: string) => {
         if(categoryName) {
@@ -39,18 +37,14 @@ function ProductItem({ productItem, categoryCode }: Props) {
             category_detail_name: productItem.category_detail_name
         });
         
-        if (toast.current) {
-            toast.current.show({
-                severity: "success",
-                summary: "Thành công",
-                detail: "Đã thêm sản phẩm vào giỏ hàng!",
-            });
+        // Call the callback to show toast from parent component
+        if (onAddToCart) {
+            onAddToCart(productItem.name || "");
         }
     };
 
     return (
         <div className={classes.product} onClick={() => directProductDetail(productItem.id)}>
-            <Toast ref={toast} />
             {productItem.price !== productItem.salePrice && (
                 <span className={classes.sale_percent}>
                     -{((1 - productItem.salePrice / productItem.price) * 100).toFixed(0)}%

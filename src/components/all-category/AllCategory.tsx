@@ -1,4 +1,5 @@
 import { OverlayPanel } from "primereact/overlaypanel";
+import { Toast } from "primereact/toast";
 import queryString from "query-string";
 import { useEffect, useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
@@ -25,6 +26,7 @@ function AllCategory() {
     const [queryParams] = useSearchParams();
     const ctgDetailId = queryParams.get('ctgDetail')
     const op = useRef<OverlayPanel>(null);
+    const toast = useRef<Toast>(null);
     const slideParams = {
         screen: categoryName || "home"
         // screen: "home"
@@ -100,17 +102,28 @@ function AllCategory() {
         setSortFilterValue(sortId?.value);
     };
 
+    const handleAddToCart = (productName: string) => {
+        if (toast.current) {
+            toast.current.show({
+                severity: "success",
+                summary: "Thành công",
+                detail: `Đã thêm ${productName} vào giỏ hàng!`,
+            });
+        }
+    };
+
     return (
         <div className={classes.main}>
+            <Toast ref={toast} position="top-right" />
             <h1>
                 {categoryName === AllRouteType.watch
-                    ? "Apple Watch"
+                    ? "Đồng hồ"
                     : categoryName === AllRouteType.ipad
                         ? "iPad"
-                        : categoryName === AllRouteType.airpods
-                            ? "Airpods"
-                            : categoryName === AllRouteType.macbook
-                                ? "Macbook"
+                        : categoryName === AllRouteType.macbook
+                            ? "Macbook"
+                            : categoryName === AllRouteType.airpods
+                                ? "AirPods"
                                 : categoryName === AllRouteType.accessories
                                     ? "Phụ kiện"
                                     : ""}
@@ -202,7 +215,11 @@ function AllCategory() {
             </OverlayPanel>
             <div className={classes.category_wrapper}>
                 {product.map((category: ItemDetail, index: any) => (
-                    <ProductItem productItem={category} key={index} />
+                    <ProductItem 
+                        productItem={category} 
+                        key={index} 
+                        onAddToCart={handleAddToCart}
+                    />
                 ))}
             </div>
         </div>

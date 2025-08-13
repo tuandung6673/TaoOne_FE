@@ -9,9 +9,12 @@ import { OverlayPanel } from "primereact/overlaypanel";
 function UserHeader() {
   const { clearCart } = useCart();
   const [isFixed, setIsFixed] = useState(false);
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { getCartCount, cartItems, removeFromCart, updateQuantity, getCartTotal } = useCart();
   const navigate = useNavigate();
   const cartOverlayRef = useRef<OverlayPanel>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let scrollTimeout: NodeJS.Timeout;
@@ -74,6 +77,37 @@ function UserHeader() {
     // }
   };
 
+  const handleSearchClick = () => {
+    setIsSearchActive(true);
+    // Focus the input after a short delay to ensure it's rendered
+    setTimeout(() => {
+      if (searchInputRef.current) {
+        searchInputRef.current.focus();
+      }
+    }, 100);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // Handle search logic here
+      navigate(`/search?filter=${encodeURIComponent(searchQuery)}`);
+      // Hide the search input after navigation
+      handleSearchClose();
+    }
+  };
+
+  const handleSearchClose = () => {
+    setIsSearchActive(false);
+    setSearchQuery("");
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      handleSearchClose();
+    }
+  };
+
   return (
     <>
       <div className={`${classes.header} ${isFixed ? classes.header_fixed : ''}`}>
@@ -128,12 +162,6 @@ function UserHeader() {
             </ul>
           </div>
           <div className={`${classes.header_right}`}>
-            <span className={classes.item}>
-              <i
-                className="pi pi-search"
-                style={{ color: "white" }}
-              ></i>
-            </span>
             <span
               className={`${classes.item} ${classes.cart_item}`}
               onClick={handleCartClick}
@@ -148,6 +176,43 @@ function UserHeader() {
                 </span>
               )}
             </span>
+            
+            {/* Search Input - Appears to the right when active */}
+            {isSearchActive ? (
+              <div className={classes.search_container_right}>
+                <form onSubmit={handleSearchSubmit} className={classes.search_form}>
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Tìm kiếm sản phẩm..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleSearchKeyDown}
+                    className={classes.search_input}
+                  />
+                  <button type="submit" className={classes.search_submit}>
+                    <i className="pi pi-search"></i>
+                  </button>
+                  <button 
+                    type="button" 
+                    className={classes.search_close}
+                    onClick={handleSearchClose}
+                  >
+                    <i className="pi pi-times"></i>
+                  </button>
+                </form>
+              </div>
+            ) : (
+              <span 
+                className={classes.item}
+                onClick={handleSearchClick}
+              >
+                <i
+                  className="pi pi-search"
+                  style={{ color: "white" }}
+                ></i>
+              </span>
+            )}
           </div>
           <div className={`${classes.cart_mobile}`}>
             <button

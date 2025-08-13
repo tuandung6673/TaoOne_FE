@@ -22,6 +22,7 @@ import NewsAdmin from './components/admin/news_admin/NewsAdmin';
 import NewsList from './components/newsList/NewsList';
 import NewsAdminDetail from './components/admin/news_admin/news-detail/NewsDetail';
 import UserNewsDetail from './components/newsList/UserNewsDetail/UserNewsDetail';
+import UserSearch from './components/user-search/UserSearch';
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
               <Route path=':categoryName/:itemId' element={<ProductDetail />} />
               <Route path='news' element={<NewsList />} />
               <Route path='news/:newsSlug' element={<UserNewsDetail />} />
+              <Route path='search' element={<UserSearch />} />
             </Route>
           </Routes>
         </Router>

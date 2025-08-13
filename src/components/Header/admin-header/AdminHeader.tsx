@@ -63,7 +63,11 @@ function AdminHeader() {
             url: ROLE.admin + '/' + AllRouteType.news
         }
     ];
-    // const start = <h2>Quản trị</h2>;
+
+    const handleLogin = () => {
+        navigate('/login');
+        localStorage.removeItem('token');
+    }
 
     return (
         <>
@@ -72,7 +76,7 @@ function AdminHeader() {
                     <Menubar model={items} />
                 </div>
                 <div className='login-admin'>
-                    <Button label='Đăng nhập' onClick={() => navigate('/login')} />
+                    <Button label='Đăng nhập' onClick={() => handleLogin()} />
                 </div>
             </div>
         </>

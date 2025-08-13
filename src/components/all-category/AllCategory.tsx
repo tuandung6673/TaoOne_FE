@@ -49,7 +49,7 @@ function AllCategory() {
                 pageSize: 100,
                 sort: sortFilterValue,
             };
-            fetchCategory(productParams);
+            fetchProduct(productParams);
         }
     }, [categoryName, activeFilter, sortFilterValue]);
 
@@ -63,7 +63,7 @@ function AllCategory() {
         }
     };
 
-    const fetchCategory = async (params: any) => {
+    const fetchProduct = async (params: any) => {
         try {
             const queryParams = queryString.stringify(params);
             const productList = await ApiService.getProductList(queryParams);
@@ -117,7 +117,7 @@ function AllCategory() {
             <Toast ref={toast} position="top-right" />
             <h1>
                 {categoryName === AllRouteType.watch
-                    ? "Đồng hồ"
+                    ? "Apple Watch"
                     : categoryName === AllRouteType.ipad
                         ? "iPad"
                         : categoryName === AllRouteType.macbook

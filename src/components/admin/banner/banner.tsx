@@ -341,7 +341,7 @@ function Banner() {
                                             }
                                             options={listCtg}
                                             showClear
-                                            placeholder="Select"
+                                            placeholder="Lựa chọn"
                                             className="w-full"
                                             // onClick={(e) => e.stopPropagation()}
                                         />
@@ -427,7 +427,7 @@ function Banner() {
                                         ? imageUrl
                                         : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
                                 }
-                                alt="abcákjdh"
+                                alt={imageUrl || "error"}
                             />
                         </label>
                     </div>

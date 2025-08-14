@@ -213,7 +213,7 @@ const NewsAdminDetail = () => {
                                     ? imageUrl
                                     : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
                             }
-                            alt="abcákjdh"
+                            alt={imageUrl || "error"}
                         />
                     </label>
                 </div>

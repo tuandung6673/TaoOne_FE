@@ -242,7 +242,7 @@ function Order() {
                                                 changeCtgHanlder(e)
                                             }
                                             options={statusOptions}
-                                            placeholder="Select"
+                                            placeholder="Lựa chọn"
                                             className="w-full"
                                         />
                                     </div>

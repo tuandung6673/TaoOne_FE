@@ -284,7 +284,7 @@ function Watch() {
                                             }
                                             options={listCtg}
                                             showClear
-                                            placeholder="Select"
+                                            placeholder="Lựa chọn"
                                             className="w-full"
                                             // onClick={(e) => e.stopPropagation()}
                                         />

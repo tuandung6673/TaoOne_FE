@@ -20,7 +20,7 @@ function ProductItem({ productItem, categoryCode, onAddToCart }: Props) {
         if(categoryName) {
             navigate(`${productId}`)
         } else {
-            navigate(`${categoryCode}/${productId}`)
+            navigate(`/${categoryCode}/${productId}`)
         }
     }
 

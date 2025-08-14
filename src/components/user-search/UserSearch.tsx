@@ -14,9 +14,9 @@ import classes from "./UserSearch.module.scss";
 
 const UserSearch = () => {
     const [queryParams] = useSearchParams();
+    const filter = queryParams.get('filter');
     const [banner, setBanner] = useState<BannerDetail[]>([]);
     const toast = useRef<Toast>(null);
-    const filter = queryParams.get('filter');
     const [sortFilterLabel, setSortFilterLabel] = useState<string>("Mặc định");
     const [sortFilterValue, setSortFilterValue] = useState<string>("");
     const [product, setProduct] = useState<any[]>([]);
@@ -48,7 +48,6 @@ const UserSearch = () => {
             const queryParams = queryString.stringify(productParams);
             const productList = await ApiService.getProductList(queryParams);
             setProduct(productList.data.data);
-            console.log(productList.data.data);
         } catch (error) {
             console.error(error);
         }
@@ -159,6 +158,7 @@ const UserSearch = () => {
                     <ProductItem
                         productItem={category}
                         key={index}
+                        categoryCode={category.category_code}
                         onAddToCart={handleAddToCart}
                     />
                 ))}

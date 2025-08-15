@@ -7,6 +7,29 @@ input[type="file"] {
         border-radius: 10px;
         box-shadow: 0 0 3px #b4b4b4;
         padding: 0.5rem;
+        padding-bottom: 0;
+        
+        .avatar-preview {
+            border-radius: 8px;
+            overflow: hidden;
+            
+            img {
+                width: 100%;
+                height: auto;
+                display: block;
+            }
+        }
+        
+        .p-button {
+            margin-top: 0.5rem;
+            background: #007bff;
+            border-color: #007bff;
+            
+            &:hover {
+                background: #0056b3;
+                border-color: #0056b3;
+            }
+        }
     }
 }
 

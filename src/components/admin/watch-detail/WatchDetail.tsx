@@ -18,6 +18,7 @@ import {
 import { useSpinner } from "../../../custom-hook/SpinnerContext";
 import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
+import ImagePickerDialog from "../../PickerDialog/ImagePickerDialog";
 import "./WatchDetail.scss";
 
 function WatchDetail() {
@@ -26,6 +27,7 @@ function WatchDetail() {
     const [image, setImage] = useState<File | null>(null);
     const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
     const [imageUrl, setImageUrl] = useState<string>("");
+    const [showImagePicker, setShowImagePicker] = useState<boolean>(false);
     const [formData, setFormData] = useState<ItemDetail>(new ItemDetail());
     const [categoryList, setCategoryList] = useState<Category[]>([]);
     const [categoryDetailList, setCategoryDetailList] = useState<
@@ -55,6 +57,29 @@ function WatchDetail() {
             reader.readAsDataURL(selectedImage);
             setIsChangeAvatar(true);
         }
+    };
+
+    const handleImageSelect = (selectedImageUrl: string) => {
+        setImageUrl(selectedImageUrl);
+        setIsChangeAvatar(true);
+        // Set a dummy file object to maintain compatibility with existing logic
+        setImage(new File([], selectedImageUrl));
+
+        if (toast.current) {
+            toast.current.show({
+                severity: "success",
+                summary: "Thành công",
+                detail: "Đã chọn ảnh từ thư viện!",
+            });
+        }
+    };
+
+    const openImagePicker = () => {
+        setShowImagePicker(true);
+    };
+
+    const handleImagePickerHide = () => {
+        setShowImagePicker(false);
     };
 
     const uploadAvatar = (): Promise<void> => {
@@ -258,9 +283,7 @@ function WatchDetail() {
     const handleSubmit = async () => {
         const data: any = formData;
         data.img = isChangeAvatar
-            ? "https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F" +
-            image?.name +
-            "?alt=media"
+            ? image?.name
             : formData.img;
         delete data.category_code;
         delete data.category_detail_name;
@@ -280,9 +303,9 @@ function WatchDetail() {
                             " thành công !",
                     });
                 }
-                if (isChangeAvatar) {
-                    await uploadAvatar();
-                }
+                // if (isChangeAvatar) {
+                //     await uploadAvatar();
+                // }
                 navigate(-1);
             }
         } catch (error) {
@@ -340,13 +363,7 @@ function WatchDetail() {
                 <div className="grid">
                     <div className="col-12 md:col-3">
                         <div className="avatar">
-                            <input
-                                type="file"
-                                id="avatar-input"
-                                accept="image/*"
-                                onChange={onSelect}
-                            />
-                            <label htmlFor="avatar-input">
+                            <div className="avatar-preview">
                                 <img
                                     className="w-full"
                                     src={
@@ -356,7 +373,15 @@ function WatchDetail() {
                                     }
                                     alt={imageUrl || "error"}
                                 />
-                            </label>
+                            </div>
+                            <Button
+                                label="Chọn ảnh từ thư viện"
+                                icon="pi pi-image"
+                                onClick={openImagePicker}
+                                className="w-full mb-2"
+                                loading={showImagePicker}
+                                disabled={showImagePicker}
+                            />
                         </div>
                         <div className="grid mt-3">
                             {formData &&
@@ -597,6 +622,14 @@ function WatchDetail() {
                     </div>
                 </div>
             </div>
+
+            {/* Image Picker Dialog */}
+            <ImagePickerDialog
+                visible={showImagePicker}
+                onHide={handleImagePickerHide}
+                onImageSelect={handleImageSelect}
+                title="Chọn ảnh từ thư viện"
+            />
         </>
     );
 }

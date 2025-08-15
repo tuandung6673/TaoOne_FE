@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Toast } from "primereact/toast";
 import queryString from "query-string";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +9,6 @@ import "swiper/css";
 import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss/navigation";
-import { Toast } from "primereact/toast";
 import { HomeInterface } from "../../constants/interface";
 import ApiService from "../../services/api.service";
 import ProductItem from "../product-item/ProductItem";
@@ -80,6 +80,7 @@ function Home() {
                     ))}
                 </Carousel>
             </div>
+            
             <div className={classes.main}>
                 <div className={classes.category}>
                     {category?.categories.map((ctg : any, index : any) => (

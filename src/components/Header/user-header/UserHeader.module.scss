@@ -134,7 +134,7 @@
 
 // Cart OverlayPanel Styles - Desktop Only
 .cart_overlay_panel {
-    max-width: 350px !important;
+    max-width: 450px !important;
     width: 80vw !important;
     
     .p-overlaypanel-content {
@@ -203,6 +203,7 @@
 }
 
 .item_image_overlay {
+    max-width: 50px;
     flex-shrink: 0;
     
     img {
@@ -216,6 +217,7 @@
 }
 
 .item_details_overlay {
+    max-width: calc(100% - 100px - 50px);
     flex: 1;
     
     h4 {
@@ -224,9 +226,9 @@
         font-weight: 600;
         color: #333;
         line-height: 1.3;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        // overflow: hidden;
+        // text-overflow: ellipsis;
+        // white-space: nowrap;
     }
     
     .item_price_overlay {
@@ -282,10 +284,11 @@
 }
 
 .item_total_overlay {
+    width: 100px;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 6px;
+    gap: 10px;
     
     span {
         font-size: 14px;

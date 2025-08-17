@@ -22,6 +22,7 @@ import { useSpinner } from "../../../custom-hook/SpinnerContext";
 import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
 import "./banner.scss";
+import ImagePickerDialog from "../../PickerDialog/ImagePickerDialog";
 
 function Banner() {
     const { showSpinner, hideSpinner } = useSpinner();
@@ -41,6 +42,7 @@ function Banner() {
     const [slideList, setSlideList] = useState<ItemDetail[]>([]);
     const [selectCtg, setSelectCtg] = useState(null);
     const [selectedId, setSelectedId] = useState<string>();
+    const [showImagePicker, setShowImagePicker] = useState<boolean>(false);
     const [listCtg, setListCtg] = useState<DropdownInterface[]>([]);
     const [bannerDetail, setBannerDetail] = useState<BannerDetail>(
         new BannerDetail()
@@ -177,39 +179,7 @@ function Banner() {
     };
 
     const showHomeTemplate = (product: any) => {
-            return <Checkbox checked={product.status == "1"}></Checkbox>;
-        };
-
-    const uploadAvatar = (): Promise<void> => {
-        showSpinner();
-        return new Promise((resolve, reject) => {
-            if (image) {
-                const storageRef = ref(storage, `images/${image.name}`);
-                const uploadTask = uploadBytesResumable(storageRef, image);
-
-                uploadTask.on(
-                    "state_changed",
-                    (snapshot) => {
-                        // Tiến trình tải lên
-                    },
-                    (error) => {
-                        console.error("Upload failed", error);
-                        reject(error);
-                    },
-                    () => {
-                        getDownloadURL(uploadTask.snapshot.ref).then(
-                            (downloadURL1) => {
-                                setImageUrl(downloadURL1);
-                                hideSpinner();
-                                resolve();
-                            }
-                        );
-                    }
-                );
-            } else {
-                resolve();
-            }
-        });
+        return <Checkbox checked={product.status == "1"}></Checkbox>;
     };
 
     const confirmDelete = () => {
@@ -259,9 +229,7 @@ function Banner() {
     const handleSubmit = async () => {
         const data: any = bannerDetail;
         data.img = isChangeAvatar
-            ? "https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F" +
-              image?.name +
-              "?alt=media"
+            ? image?.name
             : bannerDetail.img;
         if (!selectedId) {
             delete data.id;
@@ -277,9 +245,6 @@ function Banner() {
                             (!!selectedId ? "Lưu" : "Thêm mới") +
                             " thành công !",
                     });
-                }
-                if (isChangeAvatar) {
-                    await uploadAvatar();
                 }
                 setVisibleRight(false);
                 fetchSlide(slideParams);
@@ -306,6 +271,21 @@ function Banner() {
         setVisibleRight(true);
         setBannerDetail(new BannerDetail());
         setImageUrl("");
+    };
+
+    const openImagePicker = () => {
+        setShowImagePicker(true);
+    };
+
+    const handleImagePickerHide = () => {
+        setShowImagePicker(false);
+    };
+
+    const handleImageSelect = (selectedImageUrl: string) => {
+        setImageUrl(selectedImageUrl);
+        setIsChangeAvatar(true);
+        // Set a dummy file object to maintain compatibility with existing logic
+        setImage(new File([], selectedImageUrl));
     };
 
     return (
@@ -343,7 +323,7 @@ function Banner() {
                                             showClear
                                             placeholder="Lựa chọn"
                                             className="w-full"
-                                            // onClick={(e) => e.stopPropagation()}
+                                        // onClick={(e) => e.stopPropagation()}
                                         />
                                     </div>
                                 </OverlayPanel>
@@ -413,23 +393,24 @@ function Banner() {
                 <h2>Banner</h2>
                 <div className="grid banner">
                     <div className="col-12 avatar">
-                        <input
+                        {/* <input
                             type="file"
                             id="avatar-input"
                             accept="image/*"
                             onChange={onSelect}
+                        /> */}
+                        {/* <label htmlFor="avatar-input"> */}
+                        <img
+                            onClick={() => openImagePicker()}
+                            className="w-full"
+                            src={
+                                imageUrl
+                                    ? imageUrl
+                                    : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
+                            }
+                            alt={imageUrl || "error"}
                         />
-                        <label htmlFor="avatar-input">
-                            <img
-                                className="w-full"
-                                src={
-                                    imageUrl
-                                        ? imageUrl
-                                        : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
-                                }
-                                alt={imageUrl || "error"}
-                            />
-                        </label>
+                        {/* </label> */}
                     </div>
                     <div className="col-6">
                         <div>Màn hình</div>
@@ -476,6 +457,12 @@ function Banner() {
                         />
                     </div>
                 </div>
+                <ImagePickerDialog
+                    visible={showImagePicker}
+                    onHide={handleImagePickerHide}
+                    onImageSelect={handleImageSelect}
+                    title="Chọn ảnh từ thư viện"
+                />
             </Sidebar>
         </>
     );

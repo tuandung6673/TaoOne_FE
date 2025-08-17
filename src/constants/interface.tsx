@@ -53,7 +53,7 @@ export class Category {
     id?: string = "";
     code: string = "";
     name: string = "";
-    img: string = "";
+    img: any = "";
     order: number = 0;
     status: number = 0;
     is_show_home: number = 0;

@@ -28,6 +28,8 @@ function WatchDetail() {
     const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
     const [imageUrl, setImageUrl] = useState<string>("");
     const [showImagePicker, setShowImagePicker] = useState<boolean>(false);
+    const [showSubImagePicker, setShowSubImagePicker] = useState<boolean>(false);
+    const [selectedSubImageIndex, setSelectedSubImageIndex] = useState<number>(-1);
     const [formData, setFormData] = useState<ItemDetail>(new ItemDetail());
     const [categoryList, setCategoryList] = useState<Category[]>([]);
     const [categoryDetailList, setCategoryDetailList] = useState<
@@ -64,14 +66,6 @@ function WatchDetail() {
         setIsChangeAvatar(true);
         // Set a dummy file object to maintain compatibility with existing logic
         setImage(new File([], selectedImageUrl));
-
-        if (toast.current) {
-            toast.current.show({
-                severity: "success",
-                summary: "Thành công",
-                detail: "Đã chọn ảnh từ thư viện!",
-            });
-        }
     };
 
     const openImagePicker = () => {
@@ -82,37 +76,67 @@ function WatchDetail() {
         setShowImagePicker(false);
     };
 
-    const uploadAvatar = (): Promise<void> => {
-        showSpinner();
-        return new Promise((resolve, reject) => {
-            if (image) {
-                const storageRef = ref(storage, `images/${image.name}`);
-                const uploadTask = uploadBytesResumable(storageRef, image);
-
-                uploadTask.on(
-                    "state_changed",
-                    (snapshot) => {
-                        // Tiến trình tải lên
-                    },
-                    (error) => {
-                        console.error("Upload failed", error);
-                        reject(error);
-                    },
-                    () => {
-                        getDownloadURL(uploadTask.snapshot.ref).then(
-                            (downloadURL1) => {
-                                setImageUrl(downloadURL1);
-                                hideSpinner();
-                                resolve();
-                            }
-                        );
-                    }
-                );
-            } else {
-                resolve();
-            }
-        });
+    const handleSubImagePickerHide = () => {
+        setShowSubImagePicker(false);
+        setSelectedSubImageIndex(-1);
     };
+
+    const openSubImagePicker = (index: number) => {
+        setSelectedSubImageIndex(index);
+        setShowSubImagePicker(true);
+    };
+
+    const handleSubImageSelect = (selectedImageUrl: string) => {
+        if (selectedSubImageIndex === -1) {
+            // Adding new image
+            const newListImages = [
+                ...formData.listImages,
+                { imgSource: selectedImageUrl },
+            ];
+            setFormData({ ...formData, listImages: newListImages });
+        } else {
+            // Updating existing image
+            const newListImages = [...formData.listImages];
+            newListImages[selectedSubImageIndex] = {
+                ...newListImages[selectedSubImageIndex],
+                imgSource: selectedImageUrl,
+            };
+            setFormData({ ...formData, listImages: newListImages });
+        }
+        handleSubImagePickerHide();
+    };
+
+    // const uploadAvatar = (): Promise<void> => {
+    //     showSpinner();
+    //     return new Promise((resolve, reject) => {
+    //         if (image) {
+    //             const storageRef = ref(storage, `images/${image.name}`);
+    //             const uploadTask = uploadBytesResumable(storageRef, image);
+
+    //             uploadTask.on(
+    //                 "state_changed",
+    //                 (snapshot) => {
+    //                     // Tiến trình tải lên
+    //                 },
+    //                 (error) => {
+    //                     console.error("Upload failed", error);
+    //                     reject(error);
+    //                 },
+    //                 () => {
+    //                     getDownloadURL(uploadTask.snapshot.ref).then(
+    //                         (downloadURL1) => {
+    //                             setImageUrl(downloadURL1);
+    //                             hideSpinner();
+    //                             resolve();
+    //                         }
+    //                     );
+    //                 }
+    //             );
+    //         } else {
+    //             resolve();
+    //         }
+    //     });
+    // };
 
     useEffect(() => {
         if (!!productId) {
@@ -169,43 +193,6 @@ function WatchDetail() {
         });
     };
 
-    const handleSubImageChange = async (
-        index: number,
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            try {
-                const downloadURL = await uploadSubImage(file);
-                const newListImages = [...formData.listImages];
-                newListImages[index] = {
-                    ...newListImages[index],
-                    imgSource: downloadURL,
-                };
-                setFormData({ ...formData, listImages: newListImages });
-            } catch (error) {
-                console.error("Error uploading image", error);
-            }
-        }
-    };
-
-    const handleAddSubImage = async (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            try {
-                const downloadURL = await uploadSubImage(file);
-                const newListImages = [
-                    ...formData.listImages,
-                    { imgSource: downloadURL },
-                ];
-                setFormData({ ...formData, listImages: newListImages });
-            } catch (error) {
-                console.error("Error uploading image", error);
-            }
-        }
-    };
 
     const fetchCategory = async (queryParams = "") => {
         try {
@@ -383,38 +370,22 @@ function WatchDetail() {
                                 disabled={showImagePicker}
                             />
                         </div>
-                        <div className="grid mt-3">
+                        <div className="grid mt-2">
                             {formData &&
                                 formData.listImages?.map((item: any, index) => (
                                     <div
                                         className="col-4 sub-image"
                                         key={index}
                                     >
-                                        <input
-                                            type="file"
-                                            id={`file-input-${index}`}
-                                            accept="image/*"
-                                            onChange={(event) =>
-                                                handleSubImageChange(
-                                                    index,
-                                                    event
-                                                )
+                                        <img
+                                            onClick={() => openSubImagePicker(index)}
+                                            src={
+                                                item.imgSource
+                                                    ? item.imgSource
+                                                    : "https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"
                                             }
+                                            alt=""
                                         />
-                                        <label
-                                            htmlFor={`file-input-${index}`}
-                                            className="addimage cursor-pointer"
-                                        >
-                                            <img
-                                                className="w-full h-full"
-                                                src={
-                                                    item.imgSource
-                                                        ? item.imgSource
-                                                        : "https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"
-                                                }
-                                                alt=""
-                                            />
-                                        </label>
                                         <button
                                             className="delete-button"
                                             onClick={() =>
@@ -426,21 +397,12 @@ function WatchDetail() {
                                     </div>
                                 ))}
                             {formData && formData.listImages?.length < 6 && (
-                                <div className="col-4 sub-image add-image">
-                                    <input
-                                        type="file"
-                                        id="file-input"
-                                        accept="image/*"
-                                        onChange={handleAddSubImage}
-                                    />
-                                    <label
-                                        htmlFor="file-input"
-                                        className="flex justify-content-center align-items-center w-full h-full cursor-pointer"
+                                <div className="col-4 sub-image add-image cursor-pointer" onClick={() => openSubImagePicker(-1)}>
+                                    <div
+                                        className="flex justify-content-center align-items-center h-full"
                                     >
-                                        <span className="w-full flex justify-content-center align-items-center">
-                                            <i className="pi pi-plus text-3xl"></i>
-                                        </span>
-                                    </label>
+                                        <i className="pi pi-plus text-3xl"></i>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -597,38 +559,23 @@ function WatchDetail() {
                                     />
                                 </TabPanel>
                             </TabView>
-                            {/* <Editor
-                                    apiKey={process.env.REACT_APP_TINY_KEY}
-                                    onInit={(_evt, editor) => (editorRef.current = editor)}
-                                    value={formData.description}
-                                    init={{
-                                        height: 500,
-                                        menubar: false,
-                                        plugins: [
-                                            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                                        ],
-                                        toolbar: 'undo redo | blocks | ' +
-                                            'bold italic forecolor | alignleft aligncenter ' +
-                                            'alignright alignjustify | bullist numlist outdent indent | ' +
-                                            'removeformat | help',
-                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px;}',
-                                        // language: 'vi'
-                                    }}
-                                    onEditorChange={handleEditorChange}
-                            /> */}
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Image Picker Dialog */}
+            {/* Image Picker Dialogs */}
             <ImagePickerDialog
                 visible={showImagePicker}
                 onHide={handleImagePickerHide}
                 onImageSelect={handleImageSelect}
                 title="Chọn ảnh từ thư viện"
+            />
+            <ImagePickerDialog
+                visible={showSubImagePicker}
+                onHide={handleSubImagePickerHide}
+                onImageSelect={handleSubImageSelect}
+                title="Chọn ảnh phụ từ thư viện"
             />
         </>
     );

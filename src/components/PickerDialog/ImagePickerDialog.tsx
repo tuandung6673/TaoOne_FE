@@ -1,7 +1,8 @@
-import { getDownloadURL, getMetadata, listAll, ref } from 'firebase/storage';
+import { getDownloadURL, getMetadata, listAll, ref, uploadBytesResumable } from 'firebase/storage';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useSpinner } from '../../custom-hook/SpinnerContext';
 import { storage } from '../../firebase/firebaseConfig';
 import classes from './ImagePickerDialog.module.scss';
 
@@ -30,18 +31,21 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
   onImageSelect,
   title = 'Chọn ảnh'
 }) => {
+  const { showSpinner, hideSpinner } = useSpinner();
   const [images, setImages] = useState<ImageItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'date' | 'name' | 'size'>('date');
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const loadImages = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Check if we have valid cached images
       const now = Date.now();
+      // cache already exist
       if (imageCache.length > 0 && (now - cacheTimestamp) < CACHE_DURATION) {
         const sortedImages = sortImages(imageCache, sortBy);
         setImages(sortedImages);
@@ -51,7 +55,7 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
 
       const folderRef = ref(storage, "images");
       const result = await listAll(folderRef);
-      
+
       // Get metadata for each file to get last modified date and size
       const imagePromises = result.items.map(async (itemRef) => {
         try {
@@ -59,7 +63,6 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
             getDownloadURL(itemRef),
             getMetadata(itemRef)
           ]);
-          
           return {
             url,
             name: itemRef.name,
@@ -78,13 +81,13 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
           };
         }
       });
-      
+
       const imageItems = await Promise.all(imagePromises);
-      
+
       // Update cache
       imageCache = imageItems;
       cacheTimestamp = now;
-      
+
       // Sort and set images
       const sortedImages = sortImages(imageItems, sortBy);
       setImages(sortedImages);
@@ -98,7 +101,7 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
 
   const sortImages = (imageList: ImageItem[], sortType: 'date' | 'name' | 'size'): ImageItem[] => {
     const sorted = [...imageList];
-    
+
     switch (sortType) {
       case 'date':
         return sorted.sort((a, b) => b.lastModified - a.lastModified); // Newest first
@@ -148,41 +151,75 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
     return date.toLocaleDateString('vi-VN', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
+      // hour: '2-digit',
+      // minute: '2-digit',
+      // second: '2-digit'
     });
+  };
+
+  // add new image
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      showSpinner();
+
+      const storageRef = ref(storage, `images/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on('state_changed',
+        (snapshot) => {
+        },
+        (error) => {
+          hideSpinner();
+        },
+        async () => {
+          if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+          }
+          handleRefresh();
+          hideSpinner();
+        }
+      );
+    } catch (error) {
+      setError('Có lỗi xảy ra. Vui lòng thử lại.');
+      hideSpinner();
+    }
   };
 
   const footer = (
     <div className="flex justify-content-between align-items-center">
       <div className="flex align-items-center gap-2">
-        <Button 
-          label="Ngày" 
-          icon="pi pi-calendar" 
+        <Button
+          label="Ngày"
+          icon="pi pi-calendar"
           size="small"
           className={sortBy === 'date' ? 'p-button-primary' : 'p-button-outlined'}
           onClick={() => handleSortChange('date')}
         />
-        <Button 
-          label="Tên" 
-          icon="pi pi-sort-alpha-down" 
+        <Button
+          label="Tên"
+          icon="pi pi-sort-alpha-down"
           size="small"
           className={sortBy === 'name' ? 'p-button-primary' : 'p-button-outlined'}
           onClick={() => handleSortChange('name')}
         />
       </div>
       <div className="flex align-items-center gap-2">
-        <Button 
-          label="Làm mới" 
-          icon="pi pi-refresh" 
+        <Button
+          label=""
+          icon="pi pi-refresh"
           onClick={handleRefresh}
           className="p-button-outlined p-button-sm"
           disabled={loading}
         />
-        <Button 
-          label="Hủy" 
-          icon="pi pi-times" 
-          onClick={onHide} 
-          className="p-button-text" 
+        <Button
+          label="Hủy"
+          icon="pi pi-times"
+          onClick={onHide}
+          className="p-button-text"
         />
       </div>
     </div>
@@ -191,17 +228,14 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
   const header = (
     <div className="flex justify-content-between align-items-center w-full">
       <span>{title}</span>
-      <div style={{ width: '130px' }}>
-        <Button 
-          label="Thêm mới" 
-          icon="pi pi-plus" 
+      <div style={{ width: '130px', marginRight: '10px' }}>
+        <Button
+          label="Thêm mới"
+          icon="pi pi-plus"
           size="small"
           className={classes['add-new-btn']}
           onClick={() => {
-            // You can add your logic here for adding new images
-            console.log('Thêm mới clicked');
-            // For example, you could open a file upload dialog
-            // or navigate to an upload page
+            fileInputRef.current?.click();
           }}
         />
       </div>
@@ -213,11 +247,19 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
       visible={visible}
       onHide={onHide}
       header={header}
+      draggable={false}
       footer={footer}
-      style={{ width: '90vw', maxWidth: '1000px' }}
+      style={{ width: '90vw', maxWidth: '1100px' }}
       modal
       className={classes.imagePickerDialog}
     >
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
+        accept="image/*"
+      />
       {loading ? (
         <div className={classes.loading}>
           <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem' }}></i>
@@ -227,9 +269,9 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
         <div className={classes.error}>
           <i className="pi pi-exclamation-triangle" style={{ fontSize: '2rem', color: '#f44336' }}></i>
           <p>{error}</p>
-          <Button 
-            label="Thử lại" 
-            icon="pi pi-refresh" 
+          <Button
+            label="Thử lại"
+            icon="pi pi-refresh"
             onClick={loadImages}
             className="p-button-outlined"
           />

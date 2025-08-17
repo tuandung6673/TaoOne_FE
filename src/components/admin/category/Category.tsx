@@ -27,6 +27,7 @@ import { useSpinner } from "../../../custom-hook/SpinnerContext";
 import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
 import "./Category.scss";
+import ImagePickerDialog from "../../PickerDialog/ImagePickerDialog";
 
 function Category() {
     const toast = useRef<Toast>(null);
@@ -37,12 +38,11 @@ function Category() {
 
     const [selectedId, setSelectedId] = useState<string>();
     const [selectedDetailId, setSelectedDetailId] = useState<string>();
-
+    const [disableDetail, setDisableDetail] = useState<boolean>(false);
     const [detailCtg, setDetailCtg] = useState<Ctg>(new Ctg());
     const [detailDetailCtg, setDetailDetailCtg] = useState<CategoryDetail>(
         new CategoryDetail()
     );
-
     const [combinedData, setCombinedData] = useState([]);
     const [visibleRight, setVisibleRight] = useState(false);
     const [visibleLeft, setVisibleLeft] = useState(false);
@@ -50,6 +50,8 @@ function Category() {
     const [image, setImage] = useState<File | null>(null);
     const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
     const [imageUrl, setImageUrl] = useState<string>("");
+    const [showImagePicker, setShowImagePicker] = useState<boolean>(false);
+
     const { showSpinner, hideSpinner } = useSpinner();
 
     useEffect(() => {
@@ -102,8 +104,8 @@ function Category() {
         return categories.map((category: any) => {
             const childs = categoryDetails
                 ? categoryDetails.filter(
-                      (detail: any) => detail.category_id === category.id
-                  )
+                    (detail: any) => detail.category_id === category.id
+                )
                 : [];
             return {
                 ...category,
@@ -146,6 +148,7 @@ function Category() {
                 onClick={(e) => {
                     op.current?.toggle(e);
                     setSelectedId(rowData.id);
+                    setDisableDetail(true);
                 }}
             >
                 <i className="pi pi-ellipsis-v"></i>
@@ -160,6 +163,7 @@ function Category() {
                 onClick={(e) => {
                     op2.current?.toggle(e);
                     setSelectedDetailId(rowData.id);
+                    setDisableDetail(true);
                 }}
             >
                 <i className="pi pi-ellipsis-v"></i>
@@ -326,12 +330,12 @@ function Category() {
         }
     };
 
-    const changeCtgHanlder = (e: any) => {
-        setDetailDetailCtg((prevParams) => ({
-            ...prevParams,
-            category_id: e.value ? e.value : "",
-        }));
-    };
+    // const changeCtgHanlder = (e: any) => {
+    //     setDetailDetailCtg((prevParams) => ({
+    //         ...prevParams,
+    //         category_id: e.value ? e.value : "",
+    //     }));
+    // };
 
     const viewCtgDetail = () => {
         fetchCtgDetail();
@@ -362,9 +366,7 @@ function Category() {
     const handleSaveDetailCtg = async () => {
         const data: Ctg = detailCtg;
         data.img = isChangeAvatar
-            ? "https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F" +
-              image?.name +
-              "?alt=media"
+            ? image?.name
             : detailCtg.img;
         if (!selectedId) {
             delete data.id;
@@ -479,6 +481,21 @@ function Category() {
         );
     };
 
+    const openImagePicker = () => {
+        setShowImagePicker(true);
+    };
+
+    const handleImagePickerHide = () => {
+        setShowImagePicker(false);
+    };
+
+    const handleImageSelect = (selectedImageUrl: string) => {
+        setImageUrl(selectedImageUrl);
+        setIsChangeAvatar(true);
+        // Set a dummy file object to maintain compatibility with existing logic
+        setImage(new File([], selectedImageUrl));
+    };
+
     return (
         <>
             <Toast ref={toast} />
@@ -572,23 +589,16 @@ function Category() {
                 <h2>Loại</h2>
                 <div className="grid catgory">
                     <div className="col-12 avatar">
-                        <input
-                            type="file"
-                            id="avatar-input"
-                            accept="image/*"
-                            onChange={onSelect}
+                        <img
+                            className="w-full"
+                            onClick={() => openImagePicker()}
+                            src={
+                                imageUrl
+                                    ? imageUrl
+                                    : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
+                            }
+                            alt={imageUrl || "error"}
                         />
-                        <label htmlFor="avatar-input">
-                            <img
-                                className="w-full"
-                                src={
-                                    imageUrl
-                                        ? imageUrl
-                                        : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
-                                }
-                                alt={imageUrl || "error"}
-                            />
-                        </label>
                     </div>
                     <div className="col-6">
                         <div>Mã</div>
@@ -648,6 +658,12 @@ function Category() {
                         <Button label="Lưu" style={{ height: "40px" }} />
                     </div>
                 </div>
+                <ImagePickerDialog
+                    visible={showImagePicker}
+                    onHide={handleImagePickerHide}
+                    onImageSelect={handleImageSelect}
+                    title="Chọn ảnh từ thư viện"
+                />
             </Sidebar>
 
             <Dialog
@@ -666,8 +682,8 @@ function Category() {
                             className="w-full"
                             options={listCtg}
                             value={detailDetailCtg.category_id}
-                            onChange={(e) => changeCtgHanlder(e)}
-                            disabled={!!selectedDetailId}
+                            // onChange={(e) => changeCtgHanlder(e)}
+                            disabled={true}
                         />
                     </div>
                     <div className="col-12">

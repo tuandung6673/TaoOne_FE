@@ -72,9 +72,11 @@ function UserHeader() {
 
   const handleClearCart = () => {
     clearCart();
-    // if (cartOverlayRef.current) {
-    //   cartOverlayRef.current.hide();
-    // }
+    setTimeout(() => {
+      if (cartOverlayRef.current) {
+        cartOverlayRef.current.hide();
+      }
+    }, 200);
   };
 
   const handleSearchClick = () => {
@@ -262,6 +264,7 @@ function UserHeader() {
         className={classes.cart_overlay_panel}
         dismissable={true}
         showCloseIcon={false}
+        style={{ transform: 'translateX(-50px)' }}
       >
         <div className={classes.cart_overlay_content}>
           <div className={classes.cart_overlay_header}>

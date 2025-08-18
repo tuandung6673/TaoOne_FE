@@ -23,6 +23,7 @@ import NewsList from './components/newsList/NewsList';
 import NewsAdminDetail from './components/admin/news_admin/news-detail/NewsDetail';
 import UserNewsDetail from './components/newsList/UserNewsDetail/UserNewsDetail';
 import UserSearch from './components/user-search/UserSearch';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -31,17 +32,20 @@ function App() {
         <Spinner />
         <Router>
           <Routes>
-            <Route path={ROLE.admin} element={<AdminLayout />}>
-              <Route path='banner' element={<Banner />}></Route>
-              <Route path='category' element={<Category />}></Route>
-              {/* banner detail + category + category_detail */}
-              <Route path=':categoryName' element={<Watch />}></Route>
-              <Route path=':categoryName/them-moi' element={<WatchDetail />}></Route>
-              <Route path=':categoryName/:productId' element={<WatchDetail />}></Route>
-              <Route path='order' element={<Order />}></Route>
-              <Route path='news' element={<NewsAdmin />}></Route>
-              <Route path='news/them-moi' element={<NewsAdminDetail />}></Route>
-              <Route path='news/:newsId' element={<NewsAdminDetail />}></Route>
+            <Route path={ROLE.admin} element={<ProtectedRoute />}>
+              <Route element={<AdminLayout />}>
+                <Route index element={<Order />}></Route>
+                <Route path='banner' element={<Banner />}></Route>
+                <Route path='category' element={<Category />}></Route>
+                {/* banner detail + category + category_detail */}
+                <Route path=':categoryName' element={<Watch />}></Route>
+                <Route path=':categoryName/them-moi' element={<WatchDetail />}></Route>
+                <Route path=':categoryName/:productId' element={<WatchDetail />}></Route>
+                <Route path='order' element={<Order />}></Route>
+                <Route path='news' element={<NewsAdmin />}></Route>
+                <Route path='news/them-moi' element={<NewsAdminDetail />}></Route>
+                <Route path='news/:newsId' element={<NewsAdminDetail />}></Route>
+              </Route>
             </Route>
             <Route path='login' element={<LoginForm />}>
             </Route>

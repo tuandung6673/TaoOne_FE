@@ -14,6 +14,16 @@
     top: 10px;
     right: 20px;
     height: 38px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    
+    .username-display {
+        color: #333;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    
     .p-button {
         height: 100% !important;
     }

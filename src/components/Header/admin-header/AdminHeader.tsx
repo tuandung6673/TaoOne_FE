@@ -4,8 +4,18 @@ import { Menubar } from 'primereact/menubar';
 import { AllRouteType, ROLE } from '../../../constants/constants';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
 function AdminHeader() {
     const navigate = useNavigate();
+    const [username, setUsername] = useState<string>('');
+
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('username');
+        if (storedUsername) {
+            setUsername(storedUsername);
+        }
+    }, []);
     const items = [
         {
             label: 'Sản phẩm',
@@ -64,9 +74,10 @@ function AdminHeader() {
         }
     ];
 
-    const handleLogin = () => {
-        navigate('/login');
+    const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        navigate('/login');
     }
 
     return (
@@ -76,7 +87,10 @@ function AdminHeader() {
                     <Menubar model={items} />
                 </div>
                 <div className='login-admin'>
-                    <Button label='Đăng nhập' onClick={() => handleLogin()} />
+                    {username && (
+                        <span className='username-display'>Xin chào, {username}</span>
+                    )}
+                    <Button label='Đăng xuất' onClick={() => handleLogout()} />
                 </div>
             </div>
         </>

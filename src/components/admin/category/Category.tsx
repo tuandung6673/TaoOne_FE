@@ -38,7 +38,6 @@ function Category() {
 
     const [selectedId, setSelectedId] = useState<string>();
     const [selectedDetailId, setSelectedDetailId] = useState<string>();
-    const [disableDetail, setDisableDetail] = useState<boolean>(false);
     const [detailCtg, setDetailCtg] = useState<Ctg>(new Ctg());
     const [detailDetailCtg, setDetailDetailCtg] = useState<CategoryDetail>(
         new CategoryDetail()
@@ -148,7 +147,6 @@ function Category() {
                 onClick={(e) => {
                     op.current?.toggle(e);
                     setSelectedId(rowData.id);
-                    setDisableDetail(true);
                 }}
             >
                 <i className="pi pi-ellipsis-v"></i>
@@ -163,7 +161,6 @@ function Category() {
                 onClick={(e) => {
                     op2.current?.toggle(e);
                     setSelectedDetailId(rowData.id);
-                    setDisableDetail(true);
                 }}
             >
                 <i className="pi pi-ellipsis-v"></i>

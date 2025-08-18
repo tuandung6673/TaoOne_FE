@@ -1,5 +1,5 @@
 import { Toast } from 'primereact/toast';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROLE } from '../../constants/constants';
 import bg from '../../images/trees.png';
@@ -12,6 +12,17 @@ const LoginForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
+    // Redirect if already logged in
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token && token.trim() !== '') {
+            navigate(ROLE.admin);
+        } else {
+            // Clear any stale data
+            localStorage.removeItem('username');
+        }
+    }, [navigate]);
+
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         // Xử lý logic đăng nhập ở đây
@@ -20,6 +31,7 @@ const LoginForm = () => {
             const response = await ApiService.postLogin(data);
             if (response.status === "success" && toast.current) {
                 localStorage.setItem("token", response.data.token);
+                localStorage.setItem("username", username);
                 toast.current.show({
                     severity: "success",
                     summary: "Thành công",

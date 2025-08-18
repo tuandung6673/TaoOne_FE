@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { isJwtExpired } from '../utils/auth';
+import { isJwtExpired } from '../../utils/auth';
 
 interface ProtectedRouteProps {
     redirectPath?: string;

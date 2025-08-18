@@ -23,7 +23,7 @@ import NewsList from './components/newsList/NewsList';
 import NewsAdminDetail from './components/admin/news_admin/news-detail/NewsDetail';
 import UserNewsDetail from './components/newsList/UserNewsDetail/UserNewsDetail';
 import UserSearch from './components/user-search/UserSearch';
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
 
 function App() {
   return (

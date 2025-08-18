@@ -1,4 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import { isJwtExpired } from '../utils/auth';
 
 interface ProtectedRouteProps {
     redirectPath?: string;
@@ -22,6 +23,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         localStorage.removeItem('username');
         return <Navigate to={redirectPath} replace />;
     }
+
+    // If token is a JWT and expired, force login
+    // if (isJwtExpired(token)) {
+    //     localStorage.removeItem('token');
+    //     localStorage.removeItem('username');
+    //     return <Navigate to={redirectPath} replace />;
+    // }
 
     return <Outlet />;
 };

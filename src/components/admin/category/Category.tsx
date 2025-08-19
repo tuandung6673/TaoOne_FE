@@ -394,7 +394,7 @@ function Category() {
 
     const submitDetailDetail = async () => {
         const data: any = detailDetailCtg;
-        if (!selectedDetailId || selectedDetailId == "") {
+        if (!selectedDetailId || selectedDetailId == "" || data.id == "" || !data.id) {
             delete data.id;
         }
         try {

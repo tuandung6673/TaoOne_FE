@@ -100,6 +100,7 @@ function AllCategory() {
     const handleSortClick = (sortId: any) => {
         setSortFilterLabel(sortId?.label);
         setSortFilterValue(sortId?.value);
+        op.current?.hide();
     };
 
     const handleAddToCart = (productName: string) => {
@@ -152,10 +153,24 @@ function AllCategory() {
                 >
                     Tất cả
                 </div>
+                {/* for small/mobile screen */}
+                <div className={classes.filter_scrollable}>
+                    {categoryDetail.map((detail: CategoryDetail) => (
+                        <div
+                            className={`${classes.filter_item} ${activeFilter === detail.id ? classes.active : ""
+                                }`}
+                            key={detail.id}
+                            onClick={() => handleFilterClick(detail.id)}
+                        >
+                            {detail.name}
+                        </div>
+                    ))}
+                </div>
+                {/* for large screen */}
                 {categoryDetail.map((detail: CategoryDetail) => (
                     <div
                         className={`${classes.filter_item} ${activeFilter === detail.id ? classes.active : ""
-                            }`}
+                            } ${classes.filter_item_large_screen}`}
                         key={detail.id}
                         onClick={() => handleFilterClick(detail.id)}
                     >
@@ -172,8 +187,8 @@ function AllCategory() {
             <OverlayPanel ref={op}>
                 <div
                     className={`${classes.sort_option} ${sortFilterValue === SORTFILTER.DEFAULT.value
-                            ? classes.sort_active
-                            : ""
+                        ? classes.sort_active
+                        : ""
                         }`}
                     onClick={() => handleSortClick(SORTFILTER.DEFAULT)}
                 >
@@ -186,8 +201,8 @@ function AllCategory() {
                 </div>
                 <div
                     className={`${classes.sort_option} ${sortFilterValue === SORTFILTER.PRICE_ASC.value
-                            ? classes.sort_active
-                            : ""
+                        ? classes.sort_active
+                        : ""
                         }`}
                     onClick={() => handleSortClick(SORTFILTER.PRICE_ASC)}
                 >
@@ -200,8 +215,8 @@ function AllCategory() {
                 </div>
                 <div
                     className={`${classes.sort_option} ${sortFilterValue === SORTFILTER.PRICE_DESC.value
-                            ? classes.sort_active
-                            : ""
+                        ? classes.sort_active
+                        : ""
                         }`}
                     onClick={() => handleSortClick(SORTFILTER.PRICE_DESC)}
                 >
@@ -215,9 +230,9 @@ function AllCategory() {
             </OverlayPanel>
             <div className={classes.category_wrapper}>
                 {product.map((category: ItemDetail, index: any) => (
-                    <ProductItem 
-                        productItem={category} 
-                        key={index} 
+                    <ProductItem
+                        productItem={category}
+                        key={index}
                         onAddToCart={handleAddToCart}
                     />
                 ))}

@@ -40,12 +40,58 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start; // Align items to the start
+    
+    @media (max-width: 768px) {
+        flex-wrap: nowrap; // Prevent wrapping on mobile
+        overflow-x: auto; // Enable horizontal scrolling
+        overflow-y: hidden; // Hide vertical overflow
+        -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
+        scrollbar-width: none; // Hide scrollbar on Firefox
+        -ms-overflow-style: none; // Hide scrollbar on IE/Edge
+        
+        &::-webkit-scrollbar {
+            display: none; // Hide scrollbar on WebKit browsers
+        }
+    }
+
+    &_scrollable {
+        display: none;
+    }
+    @media (max-width: 768px) {
+        &_scrollable {
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -ms-overflow-style: none; // Hide scrollbar on IE/Edge
+            scrollbar-width: none; // Hide scrollbar on Firefox
+        }
+        &_item_large_screen {
+            display: none;
+        }
+    }
+    
     &_item {
         cursor: pointer;
         color: #afb7bd;
         margin-right: 30px;
         border-bottom: 1px solid transparent;
         padding: 10px 1px;
+        
+        @media (max-width: 768px) {
+            flex-shrink: 0; // Prevent items from shrinking on mobile
+            white-space: nowrap; // Prevent text wrapping
+            margin-right: 15px;
+            // &:first-child {
+            //     position: sticky;
+            //     left: 0;
+            //     z-index: 10;
+            //     margin-right: 15px; // Space after the fixed item
+            //     flex-shrink: 0; // Prevent shrinking
+            // }
+        }
+        
         &:hover {
             color: #000000;
             border-bottom: 1px solid #000000;

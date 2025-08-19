@@ -53,7 +53,7 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
         return;
       }
 
-      const folderRef = ref(storage, "images");
+      const folderRef = ref(storage, process.env.REACT_APP_FIREBASE_IMAGE_FILE);
       const result = await listAll(folderRef);
 
       // Get metadata for each file to get last modified date and size
@@ -166,7 +166,7 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
     try {
       showSpinner();
 
-      const storageRef = ref(storage, `images/${file.name}`);
+      const storageRef = ref(storage, `${process.env.REACT_APP_FIREBASE_IMAGE_FILE}/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on('state_changed',

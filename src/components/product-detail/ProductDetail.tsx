@@ -13,10 +13,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss/navigation";
 import { AllRouteType, CAM_KET, QUA_TANG } from "../../constants/constants";
 import { ItemDetail } from "../../constants/interface";
+import { useCart } from "../../custom-hook/CartContext";
 import GiftIcon from "../../icons/giftbox.png";
 import saleLogo from "../../images/sale_tag_2.png";
 import ApiService from "../../services/api.service";
-import { useCart } from "../../custom-hook/CartContext";
 import "./ProductDetail.scss";
 
 function ProductDetail() {

@@ -1,5 +1,4 @@
 import { Editor } from "@tinymce/tinymce-react";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
@@ -15,15 +14,12 @@ import {
     CategoryDetail,
     ItemDetail,
 } from "../../../constants/interface";
-import { useSpinner } from "../../../custom-hook/SpinnerContext";
-import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
 import ImagePickerDialog from "../../PickerDialog/ImagePickerDialog";
 import "./WatchDetail.scss";
 
 function WatchDetail() {
     const navigate = useNavigate();
-    const { showSpinner, hideSpinner } = useSpinner();
     const [image, setImage] = useState<File | null>(null);
     const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
     const [imageUrl, setImageUrl] = useState<string>("");
@@ -44,22 +40,6 @@ function WatchDetail() {
         { label: !!productId ? "Chi tiết" : "Thêm mới" },
     ];
     const home = { icon: "pi pi-home", url: "" };
-
-    const onSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const selectedImage = e.target.files[0];
-            setImage(selectedImage);
-            // setAvatarImageName(image.name);
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                setImageUrl(reader.result as string);
-            };
-
-            reader.readAsDataURL(selectedImage);
-            setIsChangeAvatar(true);
-        }
-    };
 
     const handleImageSelect = (selectedImageUrl: string) => {
         setImageUrl(selectedImageUrl);
@@ -106,38 +86,6 @@ function WatchDetail() {
         handleSubImagePickerHide();
     };
 
-    // const uploadAvatar = (): Promise<void> => {
-    //     showSpinner();
-    //     return new Promise((resolve, reject) => {
-    //         if (image) {
-    //             const storageRef = ref(storage, `images/${image.name}`);
-    //             const uploadTask = uploadBytesResumable(storageRef, image);
-
-    //             uploadTask.on(
-    //                 "state_changed",
-    //                 (snapshot) => {
-    //                     // Tiến trình tải lên
-    //                 },
-    //                 (error) => {
-    //                     console.error("Upload failed", error);
-    //                     reject(error);
-    //                 },
-    //                 () => {
-    //                     getDownloadURL(uploadTask.snapshot.ref).then(
-    //                         (downloadURL1) => {
-    //                             setImageUrl(downloadURL1);
-    //                             hideSpinner();
-    //                             resolve();
-    //                         }
-    //                     );
-    //                 }
-    //             );
-    //         } else {
-    //             resolve();
-    //         }
-    //     });
-    // };
-
     useEffect(() => {
         if (!!productId) {
             fetchDetailProduct(productId);
@@ -160,39 +108,6 @@ function WatchDetail() {
             console.log(error);
         }
     };
-
-    const uploadSubImage = (file: File): Promise<string> => {
-        showSpinner();
-        return new Promise((resolve, reject) => {
-            const storageRef = ref(storage, `images/${file.name}`);
-            const uploadTask = uploadBytesResumable(storageRef, file);
-
-            uploadTask.on(
-                "state_changed",
-                (snapshot) => {
-                    // Tiến trình tải lên
-                },
-                (error) => {
-                    console.error("Upload failed", error);
-                    reject(error);
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then(
-                        (downloadURL) => {
-                            // resolve(downloadURL);
-                            resolve(
-                                "https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F" +
-                                file?.name +
-                                "?alt=media"
-                            );
-                            hideSpinner();
-                        }
-                    );
-                }
-            );
-        });
-    };
-
 
     const fetchCategory = async (queryParams = "") => {
         try {

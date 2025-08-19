@@ -1,9 +1,11 @@
 import { Editor } from "@tinymce/tinymce-react";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
+import queryString from 'query-string';
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Editor as TinyMCEEditor } from "tinymce";
@@ -11,8 +13,7 @@ import { NewsDetail } from "../../../../constants/interface";
 import { useSpinner } from "../../../../custom-hook/SpinnerContext";
 import { storage } from "../../../../firebase/firebaseConfig";
 import ApiService from "../../../../services/api.service";
-import { BreadCrumb } from "primereact/breadcrumb";
-import queryString from 'query-string';
+import ImagePickerDialog from "../../../PickerDialog/ImagePickerDialog";
 
 
 const NewsAdminDetail = () => {
@@ -22,6 +23,7 @@ const NewsAdminDetail = () => {
     const toast = useRef<Toast>(null);
     const [image, setImage] = useState<File | null>(null);
     const [imageUrl, setImageUrl] = useState<string>("");
+    const [showImagePicker, setShowImagePicker] = useState<boolean>(false);
     const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
     const [newsDetail, setNewsDetail] = useState<NewsDetail>(
         new NewsDetail()
@@ -122,9 +124,7 @@ const NewsAdminDetail = () => {
     const handleSubmit = async () => {
         const data: any = newsDetail;
         data.thumbnailUrl = isChangeAvatar
-            ? "https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/images%2F" +
-            image?.name +
-            "?alt=media"
+            ? image?.name
             : newsDetail.thumbnailUrl;
         if (!newsId) {
             delete data.id;
@@ -158,6 +158,21 @@ const NewsAdminDetail = () => {
             }
         } catch (error) {
         }
+    };
+
+    const handleImagePickerHide = () => {
+        setShowImagePicker(false);
+    };
+
+    const handleImageSelect = (selectedImageUrl: string) => {
+        setImageUrl(selectedImageUrl);
+        setIsChangeAvatar(true);
+        // Set a dummy file object to maintain compatibility with existing logic
+        setImage(new File([], selectedImageUrl));
+    };
+
+    const openImagePicker = () => {
+        setShowImagePicker(true);
     };
 
     const handleBack = () => {
@@ -199,23 +214,16 @@ const NewsAdminDetail = () => {
                     </div>
                 </div>
                 <div className="col-12 avatar">
-                    <input
-                        type="file"
-                        id="avatar-input"
-                        accept="image/*"
-                        onChange={onSelect}
+                    <img
+                        className="w-full"
+                        onClick={() => openImagePicker()}
+                        src={
+                            imageUrl
+                                ? imageUrl
+                                : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
+                        }
+                        alt={imageUrl || "error"}
                     />
-                    <label htmlFor="avatar-input">
-                        <img
-                            className="w-full"
-                            src={
-                                imageUrl
-                                    ? imageUrl
-                                    : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
-                            }
-                            alt={imageUrl || "error"}
-                        />
-                    </label>
                 </div>
                 <div className="col-12">
                     <div>Tiêu đề</div>
@@ -337,6 +345,12 @@ const NewsAdminDetail = () => {
                     />
                 </div>
             </div>
+            <ImagePickerDialog
+                visible={showImagePicker}
+                onHide={handleImagePickerHide}
+                onImageSelect={handleImageSelect}
+                title="Chọn ảnh từ thư viện"
+            />
         </>
     )
 }

@@ -211,7 +211,7 @@
     }
     .product_image {
         max-height: 370px;
-        object-fit: none;
+        object-fit: cover;
     }
     .breadcrumb {
         display: none;

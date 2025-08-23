@@ -67,7 +67,7 @@ function Watch() {
 
     useEffect(() => {
         if (!!slideParams.category_code) fetchWatch(slideParams);
-    }, [slideParams, searchValue, rows, first]);
+    }, [slideParams, rows, first]);
 
     const fetchWatch = async (slideParams: any) => {
         try {

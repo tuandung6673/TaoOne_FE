@@ -66,6 +66,7 @@ const UserSearch = () => {
     const handleSortClick = (sortId: any) => {
         setSortFilterLabel(sortId?.label);
         setSortFilterValue(sortId?.value);
+        op.current?.hide();
     };
 
     const handleAddToCart = (productName: string) => {

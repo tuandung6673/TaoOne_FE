@@ -121,7 +121,7 @@ function Payment() {
                 value: wards.code,
             }));
             if (data) {
-                data = [...data, {label: '-Khác-', value: -1}]
+                data = [...data, { label: '-Khác-', value: -1 }]
             }
             setDistrictList(data);
         } catch (error) {
@@ -204,19 +204,15 @@ function Payment() {
     ) => {
         try {
             const photoUrl = productData?.img;
-            const caption = `- Model: ${productData?.name}\n\n- KH: ${
-                formData?.name
-            } - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}, ${
-                formData?.px
-            }, ${formData?.qh}, ${formData?.tp}\n\n- Ghi chú: ${
-                formData?.note
-            }\n\n- Giá bán: ${productData?.salePrice.toLocaleString(
-                "vi-VN"
-            )} (${
-                formData?.payment_method == "bankTransfer"
+            const caption = `- Model: ${productData?.name}\n\n- KH: ${formData?.name
+                } - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}, ${formData?.px
+                }, ${formData?.qh}, ${formData?.tp}\n\n- Ghi chú: ${formData?.note
+                }\n\n- Giá bán: ${productData?.salePrice.toLocaleString(
+                    "vi-VN"
+                )} (${formData?.payment_method == "bankTransfer"
                     ? "Chuyển khoản full"
                     : "Ship COD"
-            })`;
+                })`;
             await TelebotService.postPhoto(photoUrl, caption);
         } catch (error) {
             console.log(error);
@@ -409,7 +405,7 @@ function Payment() {
                                 )}
                             </div>
                             <div className="col-12 md:col-6">
-                                <div>Địa chỉ *</div>
+                                <div>Địa chỉ (cũ) *</div>
                                 <InputText
                                     className="w-full"
                                     placeholder="Địa chỉ của bạn"
@@ -478,24 +474,24 @@ function Payment() {
                                 </label>
                                 {selectedMethod ===
                                     PaymentMethod.CheckPayment && (
-                                    <>
-                                        <div className="description">
-                                            Quý khách vui lòng chuyển tiền đặt
-                                            cọc{" "}
-                                            <span className="text-red-500">
-                                                {TIEN_COC}đ
-                                            </span>{" "}
-                                            đến tài khoản của chúng tôi{" "}
-                                            <br></br>
-                                            Ngân hàng: {BANK_INFO.name} -{" "}
-                                            {BANK_INFO.number} -{" "}
-                                            {BANK_INFO.owner}
-                                        </div>
-                                        <div className="qr-small text-center">
-                                            <img src={QrLogo} alt="" />
-                                        </div>
-                                    </>
-                                )}
+                                        <>
+                                            <div className="description">
+                                                Quý khách vui lòng chuyển tiền đặt
+                                                cọc{" "}
+                                                <span className="text-red-500">
+                                                    {TIEN_COC}đ
+                                                </span>{" "}
+                                                đến tài khoản của chúng tôi{" "}
+                                                <br></br>
+                                                Ngân hàng: {BANK_INFO.name} -{" "}
+                                                {BANK_INFO.number} -{" "}
+                                                {BANK_INFO.owner}
+                                            </div>
+                                            <div className="qr-small text-center">
+                                                <img src={QrLogo} alt="" />
+                                            </div>
+                                        </>
+                                    )}
                             </div>
                             <div className="options option-2">
                                 <input
@@ -514,19 +510,19 @@ function Payment() {
                                 </label>
                                 {selectedMethod ===
                                     PaymentMethod.BankTransfer && (
-                                    <>
-                                        <div className="description">
-                                            Quý khách vui lòng chuyển tiền đến
-                                            tài khoản của chúng tôi <br></br>
-                                            Ngân hàng: {BANK_INFO.name} -{" "}
-                                            {BANK_INFO.number} -{" "}
-                                            {BANK_INFO.owner}
-                                        </div>
-                                        <div className="qr-small text-center">
-                                            <img src={QrLogo} alt="" />
-                                        </div>
-                                    </>
-                                )}
+                                        <>
+                                            <div className="description">
+                                                Quý khách vui lòng chuyển tiền <span className="text-red-500">{productDetail?.salePrice.toLocaleString(
+                                                    "vi-VN"
+                                                )}</span> đến
+                                                tài khoản của chúng tôi <br></br>
+                                                Ngân hàng: {BANK_INFO.name} - {BANK_INFO.number} - {BANK_INFO.owner}
+                                            </div>
+                                            <div className="qr-small text-center">
+                                                <img src={QrLogo} alt="" />
+                                            </div>
+                                        </>
+                                    )}
                             </div>
                             {/* <div className="options option-2">
                                 <input

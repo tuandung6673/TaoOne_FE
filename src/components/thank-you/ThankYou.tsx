@@ -54,6 +54,7 @@ function ThankYou({ paymentForm }: Props) {
                 <div>Đơn hàng đã được đặt thành công!</div>
                 <div>
                     Chúng tôi sẽ sớm liên hệ với bạn để xác nhận đơn hàng này
+                    {/* TáoOne sẽ sớm liên hệ với Anh/Chị để xác nhận đơn hàng này */}
                 </div>
                 <div className="button-wrapper">
                     <Button label="Quay về Trang chủ" onClick={handleBackHome}/>

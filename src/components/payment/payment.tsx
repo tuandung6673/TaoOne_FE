@@ -5,8 +5,10 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 import { BANK_INFO, TIEN_COC } from "../../constants/constants";
-import { ItemDetail, PaymentForm } from "../../constants/interface";
+import { CartItem, ItemDetail, PaymentForm } from "../../constants/interface";
+import { useCart } from "../../custom-hook/CartContext";
 import QrLogo from "../../images/qr-code.jpg";
 import ApiService from "../../services/api.service";
 import TelebotService from "../../services/telebot.service";
@@ -40,12 +42,13 @@ function Payment() {
         PaymentMethod.CheckPayment
     );
     const { itemId } = useParams<{ itemId?: string }>();
+    const { cartItems, clearCart } = useCart();
 
     useEffect(() => {
         if (!!itemId) {
             fetchDetailProduct(itemId);
-            fetchCity();
         }
+        fetchCity();
     }, []);
 
     const handleInputChange = (
@@ -53,6 +56,12 @@ function Payment() {
     ) => {
         const { name, value } = event.target;
         setPaymentForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleClearCart = () => {
+        setTimeout(() => {
+            clearCart();
+        }, 500);
     };
 
     const fetchCity = async () => {
@@ -200,19 +209,21 @@ function Payment() {
 
     const sendTeleMessage = async (
         formData: PaymentForm,
-        productData: ItemDetail
+        singleProduct?: ItemDetail,
+        multiProducts?: CartItem[]
     ) => {
         try {
-            const photoUrl = productData?.img;
-            const caption = `- Model: ${productData?.name}\n\n- KH: ${formData?.name
-                } - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}, ${formData?.px
-                }, ${formData?.qh}, ${formData?.tp}\n\n- Ghi chú: ${formData?.note
-                }\n\n- Giá bán: ${productData?.salePrice.toLocaleString(
-                    "vi-VN"
-                )} (${formData?.payment_method == "bankTransfer"
-                    ? "Chuyển khoản full"
-                    : "Ship COD"
-                })`;
+            let photoUrl = singleProduct?.img || multiProducts?.[0]?.img;
+            let caption = "";
+            if (singleProduct) {
+                caption = `- Model: ${singleProduct?.name}\n\n- KH: ${formData?.name} - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}, ${formData?.px}, ${formData?.qh}, ${formData?.tp}\n\n- Ghi chú: ${formData?.note}\n\n- Giá bán: ${singleProduct?.salePrice.toLocaleString("vi-VN")} (${formData?.payment_method == "bankTransfer" ? "Chuyển khoản full" : "Ship COD"})`;
+            } else if (multiProducts && multiProducts.length > 0) {
+                const itemsText = multiProducts
+                    .map((it) => `• ${it.name} x ${it.quantity} = ${(it.salePrice * it.quantity).toLocaleString("vi-VN")}đ`)
+                    .join("\n");
+                const total = multiProducts.reduce((sum, it) => sum + it.salePrice * it.quantity, 0);
+                caption = `- Đơn hàng nhiều sản phẩm:\n${itemsText}\n\n- Tổng: ${total.toLocaleString("vi-VN")}đ\n\n- KH: ${formData?.name} - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}, ${formData?.px}, ${formData?.qh}, ${formData?.tp}\n\n- Ghi chú: ${formData?.note}\n\n(${formData?.payment_method == "bankTransfer" ? "Chuyển khoản full" : "Ship COD"})`;
+            }
             await TelebotService.postPhoto(photoUrl, caption);
         } catch (error) {
             console.log(error);
@@ -220,33 +231,83 @@ function Payment() {
     };
 
     const handleSubmit = async () => {
-        if (!!productDetail) {
-            if (validateForm()) {
-                const data = paymentForm;
-                data.product_id = itemId;
-                try {
-                    const response = await ApiService.postPayment(data);
-                    if (response.status === "success" && toast.current) {
-                        toast.current.show({
-                            severity: "success",
-                            summary: "Thành công",
-                            detail: "Đặt hàng thành công !",
-                        });
-                    }
-                    setShowThankYou(true);
-                    sendTeleMessage(data, productDetail);
-                } catch (error) {
-                    console.log(error);
+        if (!validateForm()) return;
+
+        const data: any = { ...paymentForm };
+        if (!data.date) {
+            delete data.date;
+        }
+        const payment_id = uuidv4();
+        data.id = payment_id;
+        // Single product (from URL)
+        if (!!itemId && !!productDetail) {
+            data.products = [{
+                payment_id: payment_id,
+                product_id: itemId,
+                product_name: productDetail.name || "",
+                img: productDetail.img || "",
+                quantity: 1,
+                price: productDetail.price || 0,
+                salePrice: productDetail.salePrice || 0
+            }];
+            data.total_bill = productDetail.salePrice;
+            try {
+                const response = await ApiService.postPayment(data);
+                if (response.status === "success" && toast.current) {
+                    toast.current.show({
+                        severity: "success",
+                        summary: "Thành công",
+                        detail: "Đặt hàng thành công !",
+                    });
                 }
+                setShowThankYou(true);
+                // sendTeleMessage(data, productDetail);
+            } catch (error) {
+                console.log(error);
             }
-        } else {
-            // Ngăn chặn ng dùng sửa id ko hợp lệ trên url rồi submit linh tinh
-            if (toast.current) {
-                toast.current.show({
-                    severity: "error",
-                    summary: "Thông báo",
-                    detail: "Mã sản phẩm không hợp lệ !",
-                });
+            return;
+        }
+
+        // Multiple products (from cart)
+        if (!itemId) {
+
+            if (!cartItems || cartItems.length === 0) {
+                if (toast.current) {
+                    toast.current.show({
+                        severity: "warn",
+                        summary: "Thông báo",
+                        detail: "Giỏ hàng trống!",
+                    });
+                }
+                return;
+            }
+
+            const total = cartItems.reduce((sum, it) => sum + it.salePrice * it.quantity, 0);
+            data.products = cartItems.map((it) => ({
+                payment_id: payment_id,
+                product_id: it.id,
+                product_name: it.name,
+                img: it.img,
+                quantity: it.quantity,
+                price: it.price || 0,
+                salePrice: it.salePrice || 0
+            }));
+            data.total_bill = total;
+
+            try {
+                const response = await ApiService.postPayment(data);
+                if (response.status === "success" && toast.current) {
+                    toast.current.show({
+                        severity: "success",
+                        summary: "Thành công",
+                        detail: "Đặt hàng thành công !",
+                    });
+                }
+                setShowThankYou(true);
+                // sendTeleMessage(data, undefined, cartItems);
+                handleClearCart();
+            } catch (error) {
+                console.log(error);
             }
         }
     };
@@ -259,26 +320,49 @@ function Payment() {
             ) : (
                 <div className="flex justify-content-center">
                     <div className="sm-col-12 md:col-8 lg:col-6 xl:col-4 main-form">
-                        <div className="flex pm-product">
-                            <div className="col-3">
-                                <img
-                                    style={{ width: "100%" }}
-                                    src={productDetail?.img}
-                                    alt={productDetail?.name}
-                                />
+                        {!!itemId && productDetail && (
+                            <div className="flex pm-product">
+                                <div className="col-3">
+                                    <img
+
+                                        src={productDetail?.img}
+                                        alt={productDetail?.name}
+                                    />
+                                </div>
+                                <div className="col-6">
+                                    <div>{productDetail?.name}</div>
+                                </div>
+                                <div className="col-3 text-right font-bold">
+                                    <span>
+                                        {productDetail?.salePrice.toLocaleString(
+                                            "vi-VN"
+                                        )}
+                                        đ
+                                    </span>
+                                </div>
                             </div>
-                            <div className="col-6">
-                                <div>{productDetail?.name}</div>
+                        )}
+                        {!itemId && cartItems && cartItems.length > 0 && (
+                            <div>
+                                {cartItems.map((it) => (
+                                    <div className="flex pm-product" key={it.id}>
+                                        <div className="col-3 p-0">
+                                            <img src={it.img} alt={it.name} />
+                                        </div>
+                                        <div className="col-6">
+                                            <div className="font-medium">{it.name}</div>
+                                            <div className="mt-1 text-sm">
+                                                <div>Đơn giá: {it.salePrice.toLocaleString("vi-VN")}đ</div>
+                                                <div>SL: {it.quantity}</div>
+                                            </div>
+                                        </div>
+                                        <div className="col-3 text-right font-bold">
+                                            {(it.salePrice * it.quantity).toLocaleString("vi-VN")}đ
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                            <div className="col-3 text-right font-bold">
-                                <span>
-                                    {productDetail?.salePrice.toLocaleString(
-                                        "vi-VN"
-                                    )}
-                                    đ
-                                </span>
-                            </div>
-                        </div>
+                        )}
                         <div className="grid user-info">
                             <div className="col-12">
                                 <div>Họ và tên *</div>
@@ -433,9 +517,9 @@ function Payment() {
                             <div className="flex justify-content-between">
                                 <span>Tiền hàng (tạm tính):</span>
                                 <span>
-                                    {productDetail?.salePrice.toLocaleString(
-                                        "vi-VN"
-                                    )}
+                                    {!!itemId && productDetail
+                                        ? productDetail?.salePrice.toLocaleString("vi-VN")
+                                        : (cartItems?.reduce((sum, it) => sum + it.salePrice * it.quantity, 0) || 0).toLocaleString("vi-VN")}
                                     đ
                                 </span>
                             </div>
@@ -445,13 +529,17 @@ function Payment() {
                                     Miễn phí
                                 </span>
                             </div>
+                            <div className="flex justify-content-between mt-1">
+                                <span>Tổng số lượng:</span>
+                                <span>{cartItems?.reduce((count, it) => count + it.quantity, 0) || 0}</span>
+                            </div>
                             <hr></hr>
                             <div className="flex justify-content-between total">
                                 <span>Tổng tiền:</span>
                                 <span>
-                                    {productDetail?.salePrice.toLocaleString(
-                                        "vi-VN"
-                                    )}
+                                    {!!itemId && productDetail
+                                        ? productDetail?.salePrice.toLocaleString("vi-VN")
+                                        : (cartItems?.reduce((sum, it) => sum + it.salePrice * it.quantity, 0) || 0).toLocaleString("vi-VN")}
                                     đ
                                 </span>
                             </div>
@@ -512,9 +600,7 @@ function Payment() {
                                     PaymentMethod.BankTransfer && (
                                         <>
                                             <div className="description">
-                                                Quý khách vui lòng chuyển tiền <span className="text-red-500">{productDetail?.salePrice.toLocaleString(
-                                                    "vi-VN"
-                                                )}</span> đến
+                                                Quý khách vui lòng chuyển tiền <span className="text-red-500">{((!!itemId && productDetail) ? productDetail?.salePrice : (cartItems?.reduce((sum, it) => sum + it.salePrice * it.quantity, 0) || 0)).toLocaleString("vi-VN")}</span> đến
                                                 tài khoản của chúng tôi <br></br>
                                                 Ngân hàng: {BANK_INFO.name} - {BANK_INFO.number} - {BANK_INFO.owner}
                                             </div>

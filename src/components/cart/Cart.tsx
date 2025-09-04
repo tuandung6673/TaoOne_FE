@@ -43,7 +43,7 @@ function Cart() {
         
         // For now, navigate to payment with the first item
         // In a real app, you might want to create a multi-item checkout
-        navigate("/thanh-toan/" + cartItems[0].id);
+        navigate("/thanh-toan-gio-hang");
     };
 
     const handleClearCart = () => {

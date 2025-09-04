@@ -53,6 +53,7 @@ function App() {
               <Route index element={<Home />} />
               <Route path='cart' element={<Cart />} />
               <Route path='thanh-toan/:itemId' element={<Payment/>} />
+              <Route path='thanh-toan-gio-hang' element={<Payment/>} />
               <Route path=':categoryName' element={<AllCategory />} />
               <Route path=':categoryName/:itemId' element={<ProductDetail />} />
               <Route path='news' element={<NewsList />} />

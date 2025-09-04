@@ -84,10 +84,10 @@ export class NewsDetail {
 }
 
 export class PaymentForm extends UserInfo {
+    id?: string | undefined = undefined;
     payment_method: string = "";
     note: string = "";
-    product_id?: string = "";
-    product_name?: string = "";
+    products?: CartItem[] = [];
     status?: number = 0;
     total_bill?:number = 0;
     date?:string = "";

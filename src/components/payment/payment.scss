@@ -24,8 +24,12 @@
 .pm-product {
     align-items: center;
     margin-bottom: 10px;
+    max-height: 150px;
     img {
         border-radius: 8px;
+        width: 100%;
+        object-fit: cover;
+        max-height: 150px;
     }
     span {
         display: block;

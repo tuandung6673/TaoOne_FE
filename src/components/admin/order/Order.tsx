@@ -3,7 +3,7 @@ import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import { DataTable } from "primereact/datatable";
+import { DataTable, DataTableExpandedRows, DataTableValueArray } from "primereact/datatable";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { OverlayPanel } from "primereact/overlaypanel";
@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import { PaymentForm } from "../../../constants/interface";
 import ApiService from "../../../services/api.service";
 import "./Order.scss";
+import { Paginator } from "primereact/paginator";
 
 function Order() {
     const [selectStatus, setSelectStatus] = useState(null);
@@ -38,6 +39,10 @@ function Order() {
         offSet: 0,
         pageSize: 10,
     });
+    const [recordsTotal, setRecordsTotal] = useState(0);
+    const [first, setFirst] = useState(0);
+    const [rows, setRows] = useState(10);
+
 
     useEffect(() => {
         fetchOrder(orderParams);
@@ -52,15 +57,30 @@ function Order() {
         op2.current?.toggle(e);
     };
 
+    const onPageChange = (event: any) => {
+        setRows(event.rows);
+        setFirst(event.first);
+        setOrderParams((prevParams) => ({
+            ...prevParams,
+            offSet: event.first,
+            pageSize: event.rows,
+        }));
+    };
+
     const fetchOrder = async (orderParams: any) => {
         try {
             const queryParams = queryString.stringify(orderParams);
             const slideList = await ApiService.getPaymentList(queryParams);
             setOrderList(slideList.data.data);
+            setRecordsTotal(slideList.data.recordsTotal);
         } catch (err) {
             console.error(err);
         }
     };
+
+    const [expandedRows, setExpandedRows] = useState<
+        DataTableExpandedRows | DataTableValueArray | undefined
+    >(undefined);
 
     const searchHandler = () => {
         setOrderParams((prevParams) => ({
@@ -124,7 +144,7 @@ function Order() {
     const priceFormatTemplate = (rowData: any) => {
         return (
             <span className="total-bill ">
-                {rowData.total_bill.toLocaleString("vi-VN")}
+                {rowData.toLocaleString("vi-VN")}
             </span>
         );
     };
@@ -196,6 +216,42 @@ function Order() {
         }
     };
 
+    const imageBodyTemplate = (product: any) => {
+        return (
+            <img
+                src={product.img}
+                alt={product.img}
+                style={{ objectFit: "contain" }}
+                className="w-3rem h-3rem shadow-2 border-round"
+            />
+        );
+    };
+
+    const rowExpansionTemplate = (data: any) => {
+        return (
+            <>
+                <DataTable value={data.products} scrollable={false}>
+                    <Column field="img" header="Hình ảnh" body={imageBodyTemplate} style={{ width: "11rem" }}></Column>
+                    <Column field="product_name" header="Sản phẩm" style={{ width: "700px" }}></Column>
+                    <Column
+                        header="Số lượng"
+                        field="quantity"
+                        style={{ width: "200px" }}
+                    ></Column>
+                    <Column
+                        header="Đơn giá"
+                        field="salePrice"
+                        body={(rowData) => priceFormatTemplate(rowData.salePrice)}
+                    ></Column>
+                </DataTable>
+            </>
+        );
+    };
+
+    const allowExpansion = (rowData: any) => {
+        return rowData.products?.length > 0;
+    };
+
     return (
         <>
             <Toast ref={toast} />
@@ -254,10 +310,16 @@ function Order() {
                 <div className="card">
                     <DataTable
                         value={orderList}
-                        responsiveLayout="scroll"
+                        expandedRows={expandedRows}
+                        onRowToggle={(e) => setExpandedRows(e.data)}
+                        rowExpansionTemplate={rowExpansionTemplate}
                         scrollable
-                        rowHover={true}
                     >
+                        <Column
+                            expander={allowExpansion}
+                            style={{ width: "5rem" }}
+                            frozen
+                        />
                         <Column
                             style={{ minWidth: "120px" }}
                             field="phone"
@@ -265,16 +327,10 @@ function Order() {
                             frozen
                         ></Column>
                         <Column
-                            style={{ minWidth: "300px" }}
-                            field="product_name"
-                            header="Tên SP"
-                            frozen
-                        ></Column>
-                        <Column
                             style={{ minWidth: "100px" }}
                             field="total_bill"
                             header="Tổng HĐ"
-                            body={(rowData) => priceFormatTemplate(rowData)}
+                            body={(rowData) => priceFormatTemplate(rowData.total_bill)}
                             frozen
                         ></Column>
                         <Column
@@ -283,29 +339,24 @@ function Order() {
                             header="Tên KH"
                         ></Column>
                         <Column
-                            style={{ minWidth: "400px" }}
+                            style={{ minWidth: "500px" }}
                             field="address"
                             header="Địa chỉ"
                         ></Column>
                         <Column
-                            style={{ minWidth: "140px" }}
+                            style={{ minWidth: "180px" }}
                             field="tp"
                             header="T.Phố"
                         ></Column>
                         <Column
-                            style={{ minWidth: "140px" }}
+                            style={{ minWidth: "180px" }}
                             field="qh"
                             header="Q.Huyện"
                         ></Column>
                         <Column
-                            style={{ minWidth: "140px" }}
+                            style={{ minWidth: "180px" }}
                             field="px"
                             header="P.Xã"
-                        ></Column>
-                        <Column
-                            style={{ minWidth: "140px" }}
-                            field="note"
-                            header="Ghi chú"
                         ></Column>
                         <Column
                             style={{ minWidth: "140px" }}
@@ -318,6 +369,11 @@ function Order() {
                             field="payment_method"
                             header="Thanh toán"
                             body={methodTemplate}
+                        ></Column>
+                        <Column
+                            style={{ minWidth: "400px" }}
+                            field="note"
+                            header="Ghi chú"
                         ></Column>
                         <Column
                             style={{ minWidth: "140px" }}
@@ -334,6 +390,18 @@ function Order() {
                             alignFrozen="right"
                         ></Column>
                     </DataTable>
+                </div>
+                <div className="flex justify-content-between surface-section">
+                    <div className="flex align-items-center pl-3">
+                        Tổng số {recordsTotal} bản ghi
+                    </div>
+                    <Paginator
+                        first={first}
+                        rows={rows}
+                        totalRecords={recordsTotal}
+                        rowsPerPageOptions={[10, 20, 30]}
+                        onPageChange={onPageChange}
+                    />
                 </div>
                 <OverlayPanel ref={op}>
                     <div

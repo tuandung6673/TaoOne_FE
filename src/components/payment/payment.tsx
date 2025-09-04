@@ -261,7 +261,7 @@ function Payment() {
                     });
                 }
                 setShowThankYou(true);
-                // sendTeleMessage(data, productDetail);
+                sendTeleMessage(data, productDetail);
             } catch (error) {
                 console.log(error);
             }
@@ -304,7 +304,7 @@ function Payment() {
                     });
                 }
                 setShowThankYou(true);
-                // sendTeleMessage(data, undefined, cartItems);
+                sendTeleMessage(data, undefined, cartItems);
                 handleClearCart();
             } catch (error) {
                 console.log(error);
@@ -418,6 +418,7 @@ function Payment() {
                                     value={selectCity}
                                     options={cityList}
                                     placeholder="Chọn thành phố"
+                                    filter={true}
                                     emptyMessage="Không có dữ liệu"
                                     onChange={(e) =>
                                         handleCityChange(
@@ -434,13 +435,6 @@ function Payment() {
                             </div>
                             <div className="col-12 md:col-6">
                                 <div>Quận/Huyện *</div>
-                                {/* <InputText
-                                    className="w-full"
-                                    placeholder="Quận/Huyện"
-                                    name="qh"
-                                    value={paymentForm.qh}
-                                    onChange={handleInputChange}
-                                /> */}
                                 <Dropdown
                                     className="w-full"
                                     value={selectProvice}
@@ -462,13 +456,6 @@ function Payment() {
                             </div>
                             <div className="col-12 md:col-6">
                                 <div>Phường/Xã *</div>
-                                {/* <InputText
-                                    className="w-full"
-                                    placeholder="Phường/Xã"
-                                    name="px"
-                                    value={paymentForm.px}
-                                    onChange={handleInputChange}
-                                /> */}
                                 <Dropdown
                                     className="w-full"
                                     value={selectDistrict}

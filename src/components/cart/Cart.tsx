@@ -143,7 +143,6 @@ function Cart() {
                         </div>
                     ))}
                 </div>
-                
                 <div className="cart_summary">
                     <h2>Tổng quan đơn hàng</h2>
                     <div className="summary_item">

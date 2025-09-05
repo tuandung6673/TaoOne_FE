@@ -418,7 +418,6 @@ function Payment() {
                                     value={selectCity}
                                     options={cityList}
                                     placeholder="Chọn thành phố"
-                                    filter={true}
                                     emptyMessage="Không có dữ liệu"
                                     onChange={(e) =>
                                         handleCityChange(

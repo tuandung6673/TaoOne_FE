@@ -19,6 +19,10 @@
             opacity: 1;
             transform: translateY(0);
         }
+        @media (max-width: 576px) {
+           box-shadow: none;
+           transition: none;
+        }
     }
 
     &_img {
@@ -75,6 +79,10 @@
         @media (max-width: 576px) {
             font-size: 13px;
             margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         span {
@@ -90,6 +98,9 @@
 
     @media (max-width: 576px) {
         font-size: 13px;
+        &_sale {
+            font-size: 14px;
+        }
     }
 }
 

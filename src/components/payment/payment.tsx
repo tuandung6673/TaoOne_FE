@@ -45,6 +45,15 @@ function Payment() {
     const { cartItems, clearCart } = useCart();
 
     useEffect(() => {
+        // Scroll to top when Payment screen loads
+        try {
+            window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        } catch (e) {
+            // Fallback for environments without window or older browsers
+            if (typeof window !== "undefined" && window.scrollTo) {
+                window.scrollTo(0, 0);
+            }
+        }
         if (!!itemId) {
             fetchDetailProduct(itemId);
         }

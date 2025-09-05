@@ -16,3 +16,25 @@ code {
   padding: 0 10px;
   margin: 0 -10px;
 } */
+
+/* Global PrimeReact Toast styles */
+@media (max-width: 768px) {
+  .p-toast {
+    width: 86% !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    max-width: 420px;
+    right: auto !important;
+  }
+  .p-toast .p-toast-message {
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+  .p-toast .p-toast-message .p-toast-message-content {
+    padding: 8px 12px;
+  }
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-message-text {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+}

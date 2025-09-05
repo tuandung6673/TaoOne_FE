@@ -323,7 +323,7 @@ function Payment() {
 
     return (
         <>
-            <Toast ref={toast} />
+            <Toast ref={toast} position="top-right" />
             {showThankYou ? (
                 <ThankYou paymentForm={paymentForm} />
             ) : (
@@ -331,17 +331,16 @@ function Payment() {
                     <div className="sm-col-12 md:col-8 lg:col-6 xl:col-4 main-form">
                         {!!itemId && productDetail && (
                             <div className="flex pm-product">
-                                <div className="col-3">
+                                <div className="col-3 pm-product__img">
                                     <img
-
                                         src={productDetail?.img}
                                         alt={productDetail?.name}
                                     />
                                 </div>
-                                <div className="col-6">
+                                <div className="col-6 pm-product__name">
                                     <div>{productDetail?.name}</div>
                                 </div>
-                                <div className="col-3 text-right font-bold">
+                                <div className="text-right font-bold pm-product__price">
                                     <span>
                                         {productDetail?.salePrice.toLocaleString(
                                             "vi-VN"
@@ -355,17 +354,17 @@ function Payment() {
                             <div>
                                 {cartItems.map((it) => (
                                     <div className="flex pm-product" key={it.id}>
-                                        <div className="col-3 p-0">
+                                        <div className="col-3 p-0 pm-product__img">
                                             <img src={it.img} alt={it.name} />
                                         </div>
-                                        <div className="col-6">
+                                        <div className="col-6 pm-product__name">
                                             <div className="font-medium">{it.name}</div>
                                             <div className="mt-1 text-sm">
                                                 <div>Đơn giá: {it.salePrice.toLocaleString("vi-VN")}đ</div>
                                                 <div>SL: {it.quantity}</div>
                                             </div>
                                         </div>
-                                        <div className="col-3 text-right font-bold">
+                                        <div className="text-right font-bold pm-product__price">
                                             {(it.salePrice * it.quantity).toLocaleString("vi-VN")}đ
                                         </div>
                                     </div>

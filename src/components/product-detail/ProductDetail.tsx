@@ -74,6 +74,11 @@ function ProductDetail() {
         }
     }, [itemId]);
 
+    // Ensure the page starts at the top when navigating to a new product
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [itemId]);
+
     useEffect(() => {
         if (detailData) {
             const newBreadcrumbItems = [
@@ -145,6 +150,7 @@ function ProductDetail() {
                                         className="product_image"
                                         src={mainImage}
                                         alt={detailData.name}
+                                        loading="eager"
                                     />
                                 </Zoom>
                             )}

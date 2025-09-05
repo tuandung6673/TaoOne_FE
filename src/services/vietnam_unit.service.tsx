@@ -6,16 +6,16 @@ const VietnamUnitService = {
             const response : any = await axios.get(`${process.env.REACT_APP_VIETNAM_API}/?depth=1`)
             return response
         } catch (error) {
-            console.error("Error fetching slide list:", error);
+            console.error("Error fetching province list:", error);
         }
     },
 
-    getProvice : async (provice_code : any) => {
+    getProvice : async (province_code : any) => {
         try {
-            const response : any = await axios.get(`${process.env.REACT_APP_VIETNAM_API}/p/${provice_code}?depth=2`)
+            const response : any = await axios.get(`${process.env.REACT_APP_VIETNAM_API}/p/${province_code}?depth=2`)
             return response
         } catch (error) {
-            console.error("Error fetching slide list:", error);
+            console.error("Error fetching district list:", error);
         }
     },
 
@@ -24,7 +24,7 @@ const VietnamUnitService = {
             const response : any = await axios.get(`${process.env.REACT_APP_VIETNAM_API}/d/${district_code}?depth=2`)
             return response
         } catch (error) {
-            console.error("Error fetching slide list:", error);
+            console.error("Error fetching ward list:", error);
         }
     }
 }

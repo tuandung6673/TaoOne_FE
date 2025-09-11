@@ -29,7 +29,7 @@ export const BANK_INFO = {
     owner: 'NGUYEN TUAN DUNG'
 }
 
-export const TIEN_COC = '50.000'
+export const TIEN_COC = '0'
 
 export const ROLE = {
     // user: 'user',

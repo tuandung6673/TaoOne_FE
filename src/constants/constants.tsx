@@ -43,7 +43,7 @@ export const CAM_KET = [
     "Ship COD toàn quốc - Kiểm tra hàng trước khi thanh toán",
     // "Giảm giá 10% phụ kiện khi mua kèm theo",
     "Hỗ trợ lên đời, thu cũ đổi mới",
-    "Hỗ trợ quẹt thẻ || Trả góp thẻ tín dụng"
+    // "Hỗ trợ quẹt thẻ || Trả góp thẻ tín dụng"
 ]
 
 export const QUA_TANG = [

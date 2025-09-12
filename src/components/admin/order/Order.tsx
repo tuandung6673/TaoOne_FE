@@ -233,6 +233,7 @@ function Order() {
                 <DataTable value={data.products} scrollable={false}>
                     <Column field="img" header="Hình ảnh" body={imageBodyTemplate} style={{ width: "11rem" }}></Column>
                     <Column field="product_name" header="Sản phẩm" style={{ width: "700px" }}></Column>
+                    <Column field="size" header="Phiên bản" style={{ width: "180px" }}></Column>
                     <Column
                         header="Số lượng"
                         field="quantity"

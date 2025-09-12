@@ -4,8 +4,8 @@ import { CartItem } from "../constants/interface";
 interface CartContextType {
     cartItems: CartItem[];
     addToCart: (item: CartItem) => void;
-    removeFromCart: (itemId: string) => void;
-    updateQuantity: (itemId: string, quantity: number) => void;
+    removeFromCart: (itemId: string, size?: string) => void;
+    updateQuantity: (itemId: string, quantity: number, size?: string) => void;
     clearCart: () => void;
     getCartTotal: () => number;
     getCartCount: () => number;
@@ -35,35 +35,43 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     const addToCart = (item: CartItem) => {
         setCartItems(prevItems => {
-            const existingItem = prevItems.find(cartItem => cartItem.id === item.id);
+            const existingItem = prevItems.find(cartItem => 
+                cartItem.id === item.id && cartItem.size === item.size
+            );
             
             if (existingItem) {
-                // If item already exists, increase quantity
+                // If item with same ID and size already exists, increase quantity
                 return prevItems.map(cartItem =>
-                    cartItem.id === item.id
+                    cartItem.id === item.id && cartItem.size === item.size
                         ? { ...cartItem, quantity: cartItem.quantity + 1 }
                         : cartItem
                 );
             } else {
-                // If item doesn't exist, add it with quantity 1
+                // If item doesn't exist or has different size, add it with quantity 1
                 return [...prevItems, { ...item, quantity: 1 }];
             }
         });
     };
 
-    const removeFromCart = (itemId: string) => {
-        setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
+    const removeFromCart = (itemId: string, size?: string) => {
+        setCartItems(prevItems => 
+            prevItems.filter(item => 
+                !(item.id === itemId && (size === undefined || item.size === size))
+            )
+        );
     };
 
-    const updateQuantity = (itemId: string, quantity: number) => {
+    const updateQuantity = (itemId: string, quantity: number, size?: string) => {
         if (quantity <= 0) {
-            removeFromCart(itemId);
+            removeFromCart(itemId, size);
             return;
         }
         
         setCartItems(prevItems =>
             prevItems.map(item =>
-                item.id === itemId ? { ...item, quantity } : item
+                item.id === itemId && (size === undefined || item.size === size)
+                    ? { ...item, quantity }
+                    : item
             )
         );
     };

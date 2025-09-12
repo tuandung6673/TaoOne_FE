@@ -100,14 +100,14 @@ function ProductItem({ productItem, categoryCode, onAddToCart }: Props) {
                     </span>
                 )}
             </div>
-            <div className={classes.add_to_cart}>
+            {/* <div className={classes.add_to_cart}>
                 <Button
                     icon="pi pi-shopping-bag"
                     size="small"
                     onClick={handleAddToCart}
                     className={classes.cart_button}
                 />
-            </div>
+            </div> */}
         </div>
     );
 }

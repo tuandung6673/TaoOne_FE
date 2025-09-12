@@ -28,6 +28,7 @@ import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
 import "./Category.scss";
 import ImagePickerDialog from "../../PickerDialog/ImagePickerDialog";
+import { Chips } from "primereact/chips";
 
 function Category() {
     const toast = useRef<Toast>(null);
@@ -50,7 +51,6 @@ function Category() {
     const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
     const [imageUrl, setImageUrl] = useState<string>("");
     const [showImagePicker, setShowImagePicker] = useState<boolean>(false);
-
     const { showSpinner, hideSpinner } = useSpinner();
 
     useEffect(() => {
@@ -321,7 +321,10 @@ function Category() {
             const detailDetailCtg = await ApiService.getCategoryDetailDetail(
                 selectedDetailId || ""
             );
-            setDetailDetailCtg(detailDetailCtg.data);
+            setDetailDetailCtg(() => ({
+                ...detailDetailCtg.data,
+                size: detailDetailCtg.data.size ? detailDetailCtg.data.size.split(',') : [],
+            }));
         } catch (error) {
             console.log(error);
         }
@@ -360,6 +363,13 @@ function Category() {
         }));
     };
 
+    const handleChangeSize = (e: any) => {
+        setDetailDetailCtg((prev) => ({
+            ...prev,
+            size: [...e],
+        }));
+    };
+
     const handleSaveDetailCtg = async () => {
         const data: Ctg = detailCtg;
         data.img = isChangeAvatar
@@ -393,10 +403,12 @@ function Category() {
     };
 
     const submitDetailDetail = async () => {
-        const data: any = detailDetailCtg;
+        const data: any = {...detailDetailCtg};
+        data.size = data.size ? data.size.join(',') : data.size;
         if (!selectedDetailId || selectedDetailId == "" || data.id == "" || !data.id) {
             delete data.id;
         }
+        delete data.product_count;
         try {
             const response = await ApiService.postCategoryDetail(data);
             if (response.status === "success" && toast.current) {
@@ -451,6 +463,7 @@ function Category() {
                             header="Số sản phẩm"
                             field="product_count"
                         ></Column>
+                        <Column field="size" header="Phiên bản"></Column>
                         <Column body={optionsTemplate2}></Column>
                     </DataTable>
                 </div>
@@ -665,8 +678,9 @@ function Category() {
 
             <Dialog
                 header="Loại chi tiết"
+                draggable={false}
                 visible={visibleLeft}
-                style={{ width: "500px" }}
+                style={{ width: "600px" }}
                 onHide={() => {
                     if (!visibleLeft) return;
                     setVisibleLeft(false);
@@ -691,6 +705,10 @@ function Category() {
                             value={detailDetailCtg.name}
                             onChange={(e) => handleChange(e)}
                         />
+                    </div>
+                    <div className="col-12">
+                        <div>Phân loại</div>
+                        <Chips value={detailDetailCtg.size} onChange={(e: any) => handleChangeSize(e.value)}/>
                     </div>
                 </div>
                 <div className="flex mt-5 mr-2 justify-content-end">

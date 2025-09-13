@@ -7,8 +7,9 @@ export class BannerDetail {
 }
 export class CategoryDetail {
     id: string = "";
-    name: string = "";
     category_id: string = "";
+    name: string = "";
+    size: string[] = [];
 }
 
 export class SubImage {
@@ -23,6 +24,7 @@ export class ItemDetail {
     category_detail_name?: string = "";
     img?: string = "";
     name?: string = "";
+    size?: string = "";
     price: number = 0;
     salePrice: number = 0;
     description?: string = "";
@@ -110,4 +112,5 @@ export interface CartItem {
     quantity: number;
     category_code?: string;
     category_detail_name?: string;
+    size?: string;
 }

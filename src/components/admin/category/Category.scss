@@ -7,3 +7,13 @@
         }
     }
 }
+
+.p-chips {
+    width: 100% !important;
+    .p-chips-multiple-container {
+        width: 100% !important;
+    }
+    .p-chips-token {
+        padding: 0.2rem 0.75rem;
+    }
+}

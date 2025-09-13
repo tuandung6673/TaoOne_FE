@@ -24,6 +24,7 @@ function ProductDetail() {
     const navigate = useNavigate();
     const [detailData, setDetailData] = useState<ItemDetail>(new ItemDetail());
     const [mainImage, setMainImage] = useState<string>();
+    const [selectedSize, setSelectedSize] = useState<string>("");
     const { categoryName, itemId } = useParams();
     const [breadcrumbItems, setBreadcrumbItems] = useState<any[]>([]);
     const { addToCart } = useCart();
@@ -100,6 +101,14 @@ function ProductDetail() {
             const productDetail = await ApiService.getProductDetail(id);
             setDetailData(productDetail.data);
             setMainImage(productDetail.data.img);
+            
+            // Set first size as default if sizes exist
+            if (productDetail.data.size) {
+                const sizes = productDetail.data.size.split(',');
+                if (sizes.length > 0) {
+                    setSelectedSize(sizes[0].trim());
+                }
+            }
         } catch (error) {}
     };
 
@@ -108,7 +117,7 @@ function ProductDetail() {
     };
 
     const buynow = () => {
-        navigate("/thanh-toan/" + itemId);
+        navigate("/thanh-toan/" + itemId + "?size=" + selectedSize);
     };
 
     const bagnow = () => {
@@ -121,7 +130,8 @@ function ProductDetail() {
                 img: detailData.img || "",
                 quantity: 1,
                 category_code: detailData.category_code,
-                category_detail_name: detailData.category_detail_name
+                category_detail_name: detailData.category_detail_name,
+                size: selectedSize
             });
             
             if (toast.current) {
@@ -236,6 +246,20 @@ function ProductDetail() {
                                     </span>
                                 </div>
                             )}
+                        {detailData && detailData.size && (
+                            <div className="product_size">
+                                Phiên bản:
+                                {detailData.size.split(',').map((item: any, index: any) => (
+                                    <span 
+                                        key={index} 
+                                        className={`product_size_item ${selectedSize === item.trim() ? 'active' : ''}`}
+                                        onClick={() => setSelectedSize(item.trim())}
+                                    >
+                                        {item.trim()}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
                         <div className="product_action">
                             <div className="cart" onClick={buynow}>
                                 <Button

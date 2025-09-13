@@ -14,12 +14,12 @@ function Cart() {
         return new Intl.NumberFormat("vi-VN").format(number);
     };
 
-    const handleQuantityChange = (itemId: string, newQuantity: number) => {
-        updateQuantity(itemId, newQuantity);
+    const handleQuantityChange = (itemId: string, newQuantity: number, size?: string) => {
+        updateQuantity(itemId, newQuantity, size);
     };
 
-    const handleRemoveItem = (itemId: string) => {
-        removeFromCart(itemId);
+    const handleRemoveItem = (itemId: string, size?: string) => {
+        removeFromCart(itemId, size);
         if (toast.current) {
             toast.current.show({
                 severity: "info",
@@ -98,12 +98,12 @@ function Cart() {
             <div className="cart_content">
                 <div className="cart_items">
                     {cartItems.map((item) => (
-                        <div key={item.id} className="cart_item">
+                        <div key={item.id + "_" + item.size} className="cart_item">
                             <div className="item_image">
                                 <img src={item.img} alt={item.name} />
                             </div>
                             <div className="item_details">
-                                <h3>{item.name}</h3>
+                                <h3>{item.name}{item.size ? ` - ${item.size}` : ""}</h3>
                                 <p className="item_category">
                                     {item.category_detail_name}
                                 </p>
@@ -120,14 +120,14 @@ function Cart() {
                             </div>
                             <div className="item_quantity">
                                 <button
-                                    onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                                    onClick={() => handleQuantityChange(item.id, item.quantity - 1, item.size)}
                                     disabled={item.quantity <= 1}
                                 >
                                     <i className="pi pi-minus"></i>
                                 </button>
                                 <span>{item.quantity}</span>
                                 <button
-                                    onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                    onClick={() => handleQuantityChange(item.id, item.quantity + 1, item.size)}
                                 >
                                     <i className="pi pi-plus"></i>
                                 </button>
@@ -136,7 +136,7 @@ function Cart() {
                                 <span>{formatNumber(item.salePrice * item.quantity)}đ</span>
                             </div>
                             <div className="item_actions">
-                                <button onClick={() => handleRemoveItem(item.id)}>
+                                <button onClick={() => handleRemoveItem(item.id, item.size)}>
                                     <i className="pi pi-trash"></i>
                                 </button>
                             </div>

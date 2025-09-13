@@ -4,7 +4,7 @@ import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { BANK_INFO, TIEN_COC } from "../../constants/constants";
 import { CartItem, ItemDetail, PaymentForm } from "../../constants/interface";
@@ -23,6 +23,8 @@ enum PaymentMethod {
 }
 
 function Payment() {
+    const [queryParams] = useSearchParams();
+    const sizeOneItemSelected = queryParams.get('size');
     const [cityList, setCityList] = useState([]);
     const [selectCity, setSelectCity] = useState();
     const [proviceList, setProviceList] = useState([]);
@@ -58,7 +60,7 @@ function Payment() {
             fetchDetailProduct(itemId);
         }
         fetchCity();
-    }, []);
+    }, [sizeOneItemSelected]);
 
     const handleInputChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -225,10 +227,10 @@ function Payment() {
             let photoUrl = singleProduct?.img || multiProducts?.[0]?.img;
             let caption = "";
             if (singleProduct) {
-                caption = `- Model: ${singleProduct?.name}\n\n- KH: ${formData?.name} - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}, ${formData?.px}, ${formData?.qh}, ${formData?.tp}\n\n- Ghi chú: ${formData?.note}\n\n- Giá bán: ${singleProduct?.salePrice.toLocaleString("vi-VN")} (${formData?.payment_method == "bankTransfer" ? "Chuyển khoản full" : "Ship COD"})`;
+                caption = `- Model: ${singleProduct?.name} - ${sizeOneItemSelected}\n\n- KH: ${formData?.name} - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}, ${formData?.px}, ${formData?.qh}, ${formData?.tp}\n\n- Ghi chú: ${formData?.note}\n\n- Giá bán: ${singleProduct?.salePrice.toLocaleString("vi-VN")} (${formData?.payment_method == "bankTransfer" ? "Chuyển khoản full" : "Ship COD"})`;
             } else if (multiProducts && multiProducts.length > 0) {
                 const itemsText = multiProducts
-                    .map((it) => `• ${it.name} x ${it.quantity} = ${(it.salePrice * it.quantity).toLocaleString("vi-VN")}đ`)
+                    .map((it) => `• ${it.name} - ${it.size} (x ${it.quantity}) = ${(it.salePrice * it.quantity).toLocaleString("vi-VN")}đ`)
                     .join("\n");
                 const total = multiProducts.reduce((sum, it) => sum + it.salePrice * it.quantity, 0);
                 caption = `- Đơn hàng nhiều sản phẩm:\n${itemsText}\n\n- Tổng: ${total.toLocaleString("vi-VN")}đ\n\n- KH: ${formData?.name} - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}, ${formData?.px}, ${formData?.qh}, ${formData?.tp}\n\n- Ghi chú: ${formData?.note}\n\n(${formData?.payment_method == "bankTransfer" ? "Chuyển khoản full" : "Ship COD"})`;
@@ -257,7 +259,8 @@ function Payment() {
                 img: productDetail.img || "",
                 quantity: 1,
                 price: productDetail.price || 0,
-                salePrice: productDetail.salePrice || 0
+                salePrice: productDetail.salePrice || 0,
+                size: sizeOneItemSelected || ""
             }];
             data.total_bill = productDetail.salePrice;
             try {
@@ -279,7 +282,6 @@ function Payment() {
 
         // Multiple products (from cart)
         if (!itemId) {
-
             if (!cartItems || cartItems.length === 0) {
                 if (toast.current) {
                     toast.current.show({
@@ -299,10 +301,11 @@ function Payment() {
                 img: it.img,
                 quantity: it.quantity,
                 price: it.price || 0,
-                salePrice: it.salePrice || 0
+                salePrice: it.salePrice || 0,
+                size: it.size || ""
             }));
             data.total_bill = total;
-
+            // console.log(data);
             try {
                 const response = await ApiService.postPayment(data);
                 if (response.status === "success" && toast.current) {
@@ -338,7 +341,7 @@ function Payment() {
                                     />
                                 </div>
                                 <div className="col-6 pm-product__name">
-                                    <div>{productDetail?.name}</div>
+                                    <div className="font-medium">{productDetail?.name}{sizeOneItemSelected ? ` - ${sizeOneItemSelected}` : ""}</div>
                                 </div>
                                 <div className="text-right font-bold pm-product__price">
                                     <span>
@@ -353,12 +356,12 @@ function Payment() {
                         {!itemId && cartItems && cartItems.length > 0 && (
                             <div>
                                 {cartItems.map((it) => (
-                                    <div className="flex pm-product" key={it.id}>
+                                    <div className="flex pm-product" key={it.id + "_" + it.size}>
                                         <div className="col-3 p-0 pm-product__img">
                                             <img src={it.img} alt={it.name} />
                                         </div>
                                         <div className="col-6 pm-product__name">
-                                            <div className="font-medium">{it.name}</div>
+                                            <div className="font-medium">{it.name}{it.size ? ` - ${it.size}` : ""}</div>
                                             <div className="mt-1 text-sm">
                                                 <div>Đơn giá: {it.salePrice.toLocaleString("vi-VN")}đ</div>
                                                 <div>SL: {it.quantity}</div>

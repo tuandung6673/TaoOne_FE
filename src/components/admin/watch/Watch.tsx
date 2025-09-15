@@ -15,6 +15,7 @@ import { AllRouteType } from "../../../constants/constants";
 import { DropdownInterface, ItemDetail } from "../../../constants/interface";
 import ApiService from "../../../services/api.service";
 import "./Watch.scss";
+import { Checkbox } from "primereact/checkbox";
 
 function Watch() {
     const navigate = useNavigate();
@@ -29,13 +30,14 @@ function Watch() {
         category_detail_id: "",
         filter: "",
         offSet: 0,
-        pageSize: 10,
+        pageSize: 20,
+        status: -1,
     });
     const [searchValue, setSearchValue] = useState("");
     const [watchList, setWatchList] = useState<ItemDetail[]>([]);
     const [recordsTotal, setRecordsTotal] = useState(0);
     const [first, setFirst] = useState(0);
-    const [rows, setRows] = useState(10);
+    const [rows, setRows] = useState(20);
     const [selectCtg, setSelectCtg] = useState(null);
     const [selectedId, setSelectedId] = useState<string>();
     const [listCtg, setListCtg] = useState<DropdownInterface[]>([]);
@@ -235,6 +237,10 @@ function Watch() {
         navigate(`${currentPath}/${selectedId}`);
     };
 
+    const showStatusTemplate = (product: any) => {
+        return <Checkbox checked={product.status == "1"}></Checkbox>;
+    };
+
     return (
         <>
             <Toast ref={toast} />
@@ -328,6 +334,7 @@ function Watch() {
                                     priceFormatTemplate(rowData, "price")
                                 }
                             ></Column>
+                            <Column field="status" header="Hiển thị" body={showStatusTemplate}></Column>
                             <Column
                                 header="Tùy chọn"
                                 body={optionsTemplate}
@@ -342,7 +349,7 @@ function Watch() {
                             first={first}
                             rows={rows}
                             totalRecords={recordsTotal}
-                            rowsPerPageOptions={[10, 20, 30]}
+                            rowsPerPageOptions={[20, 30, 50]}
                             onPageChange={onPageChange}
                         />
                     </div>

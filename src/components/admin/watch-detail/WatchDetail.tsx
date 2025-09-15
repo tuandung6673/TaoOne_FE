@@ -17,6 +17,7 @@ import {
 import ApiService from "../../../services/api.service";
 import ImagePickerDialog from "../../PickerDialog/ImagePickerDialog";
 import "./WatchDetail.scss";
+import { Checkbox } from "primereact/checkbox";
 
 function WatchDetail() {
     const navigate = useNavigate();
@@ -164,10 +165,10 @@ function WatchDetail() {
     };
 
     const handleChange = (e: any) => {
-        const { name, value } = e.target;
+        const { name, checked, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: value,
+            [name]: value != null ? value : checked ? 1 : 0,
         }));
     };
 
@@ -383,6 +384,26 @@ function WatchDetail() {
                                     name="price"
                                     onChange={(e) => handleChange(e)}
                                 />
+                            </div>
+                            <div className="col-6">
+                                <div className="">Phiên bản</div>
+                                {/* <InputText
+                                    className="w-full"
+                                    keyfilter="int"
+                                    value={formData.price.toLocaleString(
+                                        "vi-VN"
+                                    )}
+                                    name="price"
+                                    onChange={(e) => handleChange(e)}
+                                /> */}
+                            </div>
+                            <div className="col-6">
+                                <div className="">Hiển thị</div>
+                                <Checkbox
+                                    name="status"
+                                    onChange={(e: any) => handleChange(e)}
+                                    checked={formData.status === 1 ? true : false}
+                                ></Checkbox>
                             </div>
                         </div>
                         <div className="description editor p-2 mt-3">

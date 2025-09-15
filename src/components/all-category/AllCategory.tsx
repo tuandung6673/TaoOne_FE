@@ -48,6 +48,7 @@ function AllCategory() {
                 offSet: 0,
                 pageSize: 100,
                 sort: sortFilterValue,
+                status: 1
             };
             fetchProduct(productParams);
         }

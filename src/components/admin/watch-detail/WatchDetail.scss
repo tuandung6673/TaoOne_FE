@@ -88,3 +88,10 @@ input[type="file"] {
 .sub-image:hover .delete-button {
     display: flex;
 }
+
+.p-multiselect {
+    height: 40px;
+    .p-multiselect-token {
+        padding: 0.2rem 0.75rem;
+    }
+}

@@ -41,6 +41,12 @@ function Watch() {
     const [selectCtg, setSelectCtg] = useState(null);
     const [selectedId, setSelectedId] = useState<string>();
     const [listCtg, setListCtg] = useState<DropdownInterface[]>([]);
+    const [selectStatus, setSelectStatus] = useState(null);
+    const statusOptions = [
+        { label: "Tất cả", value: -1 },
+        { label: "Hiển thị", value: 1 },
+        { label: "Ẩn", value: 0 }
+    ];
 
     useEffect(() => {
         if (categoryName) {
@@ -163,6 +169,15 @@ function Watch() {
         if (event && event.key === "Enter") {
             searchHandler();
         }
+    };
+
+    const changeStatusHanlder = (e: any) => {
+        setSelectStatus(e.value);
+        setSlideParams((prevParams) => ({
+            ...prevParams,
+            status: e.value,
+        }));
+        op2.current?.toggle(e);
     };
 
     const changeCtgHanlder = (e: any) => {
@@ -294,6 +309,16 @@ function Watch() {
                                             className="w-full"
                                             // onClick={(e) => e.stopPropagation()}
                                         />
+                                        <div className="pt-3 pb-1">Trạng thái</div>
+                                        <Dropdown
+                                            value={selectStatus}
+                                            onChange={(e) =>
+                                                changeStatusHanlder(e)
+                                            }
+                                            options={statusOptions}
+                                            placeholder="Lựa chọn"
+                                            className="w-full"
+                                        />
                                     </div>
                                 </OverlayPanel>
                             </div>
@@ -320,6 +345,7 @@ function Watch() {
                                 field="category_detail_name"
                                 header="Loại chi tiết"
                             ></Column>
+                            <Column field="size" header="Phiên bản"></Column>
                             <Column
                                 field="salePrice"
                                 header="Giá bán"

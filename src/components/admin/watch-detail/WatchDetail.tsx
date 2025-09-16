@@ -5,6 +5,7 @@ import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { TabPanel, TabView } from "primereact/tabview";
 import { Toast } from "primereact/toast";
+import { MultiSelect } from "primereact/multiselect";
 import queryString from "query-string";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -32,6 +33,9 @@ function WatchDetail() {
     const [categoryDetailList, setCategoryDetailList] = useState<
         CategoryDetail[]
     >([]);
+    const [categoryDetailOptions, setCategoryDetailOptions] = useState<{label: string, value: string}[]>([]);
+    const [sizeOptions, setSizeOptions] = useState<{label: string, value: string}[]>([]);
+    const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
     const editorRef = useRef<TinyMCEEditor | null>(null);
     const toast = useRef<Toast>(null);
     // them moi se ko co productId nen se check (productId)
@@ -41,6 +45,26 @@ function WatchDetail() {
         { label: !!productId ? "Chi tiết" : "Thêm mới" },
     ];
     const home = { icon: "pi pi-home", url: "" };
+
+    useEffect(() => {
+        if (!!productId) {
+            fetchDetailProduct(productId);
+        }
+        fetchCategory();
+    }, []);
+
+    useEffect(() => {
+        if (formData.category_id) {
+            fetchCategoryDetail();
+        }
+    }, [formData.category_code]);
+
+    useEffect(() => {
+        // Load size options when category details are loaded and there's a selected category detail
+        if (categoryDetailList.length > 0 && formData.category_detail_id) {
+            loadSizeOptions(formData.category_detail_id);
+        }
+    }, [categoryDetailList, formData.category_detail_id]);
 
     const handleImageSelect = (selectedImageUrl: string) => {
         setImageUrl(selectedImageUrl);
@@ -87,24 +111,17 @@ function WatchDetail() {
         handleSubImagePickerHide();
     };
 
-    useEffect(() => {
-        if (!!productId) {
-            fetchDetailProduct(productId);
-        }
-        fetchCategory();
-    }, []);
-
-    useEffect(() => {
-        if (formData.category_id) {
-            fetchCategoryDetail();
-        }
-    }, [formData.category_code]);
-
     const fetchDetailProduct = async (id: string) => {
         try {
             const productDetail = await ApiService.getProductDetail(id);
             setFormData(productDetail.data);
             setImageUrl(productDetail.data.img);
+            
+            // Parse existing size string to array for multi-select
+            if (productDetail.data.size) {
+                const sizes = productDetail.data.size.split(',').map((s: string) => s.trim()).filter((s: string) => s);
+                setSelectedSizes(sizes);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -142,9 +159,23 @@ function WatchDetail() {
                     };
                 }
             );
-            setCategoryDetailList(ctgDList);
+            setCategoryDetailList(categoryDetailList.data.data);
+            setCategoryDetailOptions(ctgDList);
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    const loadSizeOptions = (categoryDetailId: string) => {
+        const selectedCategoryDetail = categoryDetailList.find(item => item.id === categoryDetailId);
+        if (selectedCategoryDetail && selectedCategoryDetail.size) {
+            const sizeOpts = selectedCategoryDetail.size.split(',').map((size: string) => ({
+                label: size.trim(),
+                value: size.trim()
+            }));
+            setSizeOptions(sizeOpts);
+        } else {
+            setSizeOptions([]);
         }
     };
 
@@ -155,6 +186,9 @@ function WatchDetail() {
             category_id: e.value,
         }));
         setCategoryDetailList([]);
+        setCategoryDetailOptions([]);
+        setSizeOptions([]);
+        setSelectedSizes([]);
     };
 
     const handleCategoryDetailChange = (e: any) => {
@@ -162,6 +196,10 @@ function WatchDetail() {
             ...prevFormData,
             category_detail_id: e.value,
         }));
+        
+        // Load size options from selected category detail
+        loadSizeOptions(e.value);
+        setSelectedSizes([]);
     };
 
     const handleChange = (e: any) => {
@@ -169,6 +207,15 @@ function WatchDetail() {
         setFormData((prev) => ({
             ...prev,
             [name]: value != null ? value : checked ? 1 : 0,
+        }));
+    };
+
+    const handleSizeChange = (e: any) => {
+        setSelectedSizes(e.value);
+        // Convert array to comma-separated string for formData
+        setFormData((prev) => ({
+            ...prev,
+            size: e.value.join(',')
         }));
     };
 
@@ -346,7 +393,7 @@ function WatchDetail() {
                                 <Dropdown
                                     className="w-full"
                                     value={formData.category_detail_id}
-                                    options={categoryDetailList}
+                                    options={categoryDetailOptions}
                                     onChange={(e) =>
                                         handleCategoryDetailChange(e)
                                     }
@@ -387,15 +434,14 @@ function WatchDetail() {
                             </div>
                             <div className="col-6">
                                 <div className="">Phiên bản</div>
-                                {/* <InputText
+                                <MultiSelect
                                     className="w-full"
-                                    keyfilter="int"
-                                    value={formData.price.toLocaleString(
-                                        "vi-VN"
-                                    )}
-                                    name="price"
-                                    onChange={(e) => handleChange(e)}
-                                /> */}
+                                    value={selectedSizes}
+                                    options={sizeOptions}
+                                    onChange={handleSizeChange}
+                                    placeholder="Chọn phiên bản"
+                                    display="chip"
+                                />
                             </div>
                             <div className="col-6">
                                 <div className="">Hiển thị</div>

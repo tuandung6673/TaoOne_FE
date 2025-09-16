@@ -230,7 +230,7 @@ function Payment() {
                 caption = `- Model: ${singleProduct?.name} - ${sizeOneItemSelected}\n\n- KH: ${formData?.name} - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}, ${formData?.px}, ${formData?.qh}, ${formData?.tp}\n\n- Ghi chú: ${formData?.note}\n\n- Giá bán: ${singleProduct?.salePrice.toLocaleString("vi-VN")} (${formData?.payment_method == "bankTransfer" ? "Chuyển khoản full" : "Ship COD"})`;
             } else if (multiProducts && multiProducts.length > 0) {
                 const itemsText = multiProducts
-                    .map((it) => `• ${it.name} - ${it.size} (x ${it.quantity}) = ${(it.salePrice * it.quantity).toLocaleString("vi-VN")}đ`)
+                    .map((it) => `• ${it.name} - ${it.size} (x${it.quantity}) = ${(it.salePrice * it.quantity).toLocaleString("vi-VN")}đ`)
                     .join("\n");
                 const total = multiProducts.reduce((sum, it) => sum + it.salePrice * it.quantity, 0);
                 caption = `- Đơn hàng nhiều sản phẩm:\n${itemsText}\n\n- Tổng: ${total.toLocaleString("vi-VN")}đ\n\n- KH: ${formData?.name} - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}, ${formData?.px}, ${formData?.qh}, ${formData?.tp}\n\n- Ghi chú: ${formData?.note}\n\n(${formData?.payment_method == "bankTransfer" ? "Chuyển khoản full" : "Ship COD"})`;

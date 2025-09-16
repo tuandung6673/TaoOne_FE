@@ -29,7 +29,7 @@ export class ItemDetail {
     salePrice: number = 0;
     description?: string = "";
     specs?: string = "";
-    status: number = 0;
+    status: number = 1;
     listImages : SubImage[] = [];
 }
 

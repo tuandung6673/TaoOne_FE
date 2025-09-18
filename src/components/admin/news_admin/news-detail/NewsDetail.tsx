@@ -308,7 +308,7 @@ const NewsAdminDetail = () => {
                         }
                         value={newsDetail.contentHtml}
                         init={{
-                            height: 500,
+                            height: 800,
                             menubar: true,
                             plugins: [
                                 "advlist",

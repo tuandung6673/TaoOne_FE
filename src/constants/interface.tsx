@@ -83,7 +83,7 @@ export class NewsDetail {
     contentHtml : string = ""
     publishedAt : string = ""
     updatedAt : string = ""
-    status : number = 0
+    status : number = 1
 }
 
 export class PaymentForm extends UserInfo {

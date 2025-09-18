@@ -217,7 +217,7 @@ const NewsAdmin = () => {
                             ></Column>
                             <Column field="title" header="Tiêu đề"></Column>
                             <Column field="slug" header="Slug"></Column>
-                            <Column field="excerpt" header="Mô tả ngắn" body={(rowData) => stripHtmlAndDecode(rowData.excerpt)}></Column>
+                            {/* <Column field="excerpt" header="Mô tả ngắn" body={(rowData) => stripHtmlAndDecode(rowData.excerpt)}></Column> */}
                             <Column field="publishedAt" header="Ngày đăng"></Column>
                             <Column field="updatedAt" header="Ngày cập nhật"></Column>
                             <Column

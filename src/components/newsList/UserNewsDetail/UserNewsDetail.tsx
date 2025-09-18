@@ -1,7 +1,7 @@
 import moment from "moment";
 import { BreadCrumb } from 'primereact/breadcrumb';
 import queryString from 'query-string';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { NewsDetail } from '../../../constants/interface';
 import ApiService from '../../../services/api.service';
@@ -24,6 +24,7 @@ const UserNewsDetail = () => {
     const relatedNewsParams = {
         currentNews: newsSlug
     };
+    const contentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (newsSlug) {
@@ -32,24 +33,25 @@ const UserNewsDetail = () => {
         }
     }, [newsSlug]);
 
+    // Scroll to top whenever navigating to a different news detail
     useEffect(() => {
-        // Tạo một DOM tạm để parse contentHtml
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(newsDetail?.contentHtml!, "text/html");
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        // Optionally reset TOC while new content loads
+        setTocItems([]);
+    }, [newsSlug]);
 
-        const headers = doc.querySelectorAll("h2, h3");
+    useEffect(() => {
+        if (!contentRef.current) return;
+        const headers = contentRef.current.querySelectorAll("h2, h3");
         const items: any[] = [];
-
         headers.forEach((header, index) => {
-            // Tạo id cho từng heading nếu chưa có
-            if (!header.id) {
-                header.id = `heading-${index}`;
+            if (!(header as HTMLElement).id) {
+                (header as HTMLElement).id = `heading-${index}`;
             }
-
             items.push({
-                id: header.id,
-                text: header.textContent,
-                level: header.tagName, // h2 hoặc h3
+                id: (header as HTMLElement).id,
+                text: header.textContent || "",
+                level: header.tagName,
             });
         });
         setTocItems(items);
@@ -75,7 +77,7 @@ const UserNewsDetail = () => {
         e.preventDefault();
         const targetElement = document.getElementById(targetId);
         if (targetElement) {
-            const headerHeight = 140; // Fixed header height
+            const headerHeight = 110; // Fixed header height
             const targetPosition = targetElement.offsetTop - headerHeight;
             window.scrollTo({
                 top: targetPosition,
@@ -100,6 +102,9 @@ const UserNewsDetail = () => {
                     </div>
                     <b className='news-excerpt' dangerouslySetInnerHTML={{ __html: newsDetail?.excerpt! }}>
                     </b>
+                    <div className='news-image w-full'>
+                        <img src={newsDetail?.thumbnailUrl} alt={newsDetail?.title} />
+                    </div>
                     {tocItems.length > 0 && <nav className="toc">
                         <div className='toc-title'>Mục lục</div>
                         <div className='toc-list'>
@@ -110,11 +115,8 @@ const UserNewsDetail = () => {
                             ))}
                         </div>
                     </nav>}
-                    <div className='news-image w-full'>
-                        <img src={newsDetail?.thumbnailUrl} alt={newsDetail?.title} />
-                    </div>
                     <div className='news-content'>
-                        <div className='news-content-body' dangerouslySetInnerHTML={{ __html: newsDetail?.contentHtml! }}>
+                        <div className='news-content-body' ref={contentRef} dangerouslySetInnerHTML={{ __html: newsDetail?.contentHtml! }}>
 
                         </div>
                     </div>

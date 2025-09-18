@@ -14,17 +14,13 @@ interface Props {
 
 function ProductItem({ productItem, categoryCode, onAddToCart }: Props) {
     const navigate = useNavigate();
-    const { categoryName } = useParams<{ categoryName?: string }>();
+    // const { categoryName } = useParams<{ categoryName?: string }>();
     const { addToCart } = useCart();
     const touchStartTime = useRef<number>(0);
     const touchStartPosition = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
     
-    const directProductDetail = (productId: string) => {
-        if(categoryName) {
-            navigate(`${productId}`)
-        } else {
-            navigate(`/${categoryCode}/${productId}`)
-        }
+    const directProductDetail = (productItem: ItemDetail) => {
+        navigate(`/${productItem.category_code}/${productItem.id}`)
     }
 
     const handleAddToCart = (e: React.MouseEvent) => {
@@ -64,14 +60,14 @@ function ProductItem({ productItem, categoryCode, onAddToCart }: Props) {
             
             // Only navigate if it's not a swipe (small movement)
             if (deltaX < 10 && deltaY < 10) {
-                directProductDetail(productItem.id);
+                directProductDetail(productItem);
             }
         }
     };
 
     const handleClick = (e: React.MouseEvent) => {
         // For mouse clicks, always navigate
-        directProductDetail(productItem.id);
+        directProductDetail(productItem);
     };
 
     return (

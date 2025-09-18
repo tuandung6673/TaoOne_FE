@@ -340,6 +340,18 @@ const ApiService = {
             console.error("Error fetching slide list:", error);
             throw error; // Ném lỗi ra để xử lý sau
         }
+    },
+
+    getRelatedProducts: async (productId: string) => {
+        try {
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_BASE_URL}/Product/GetRelateProduct?productId=` + productId
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching slide list:", error);
+            throw error; // Ném lỗi ra để xử lý sau
+        }
     }
 };
 

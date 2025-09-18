@@ -230,9 +230,9 @@ function AllCategory() {
                 </div>
             </OverlayPanel>
             <div className={classes.category_wrapper}>
-                {product.map((category: ItemDetail, index: any) => (
+                {product.map((product: ItemDetail, index: any) => (
                     <ProductItem
-                        productItem={category}
+                        productItem={product}
                         key={index}
                         onAddToCart={handleAddToCart}
                     />

@@ -17,12 +17,14 @@ import { useCart } from "../../custom-hook/CartContext";
 import GiftIcon from "../../icons/giftbox.png";
 import saleLogo from "../../images/sale_tag_2.png";
 import ApiService from "../../services/api.service";
+import ProductItem from "../product-item/ProductItem";
 import "./ProductDetail.scss";
 
 function ProductDetail() {
     const toast = useRef<Toast>(null);
     const navigate = useNavigate();
     const [detailData, setDetailData] = useState<ItemDetail>(new ItemDetail());
+    const [relatedProducts, setRelatedProducts] = useState<ItemDetail[]>([]);
     const [mainImage, setMainImage] = useState<string>();
     const [selectedSize, setSelectedSize] = useState<string>("");
     const { categoryName, itemId } = useParams();
@@ -109,7 +111,19 @@ function ProductDetail() {
                     setSelectedSize(sizes[0].trim());
                 }
             }
-        } catch (error) {}
+            if (productDetail.data.id) {
+                fetchRelatedProducts(productDetail.data.id);
+            }
+        } catch (error) { }
+    };
+
+    const fetchRelatedProducts = async (productId: string) => {
+        try {
+            const response = await ApiService.getRelatedProducts(productId);
+            setRelatedProducts(response.data);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const changeImage = (item: any) => {
@@ -141,6 +155,16 @@ function ProductDetail() {
                     detail: "Đã thêm sản phẩm vào giỏ hàng!",
                 });
             }
+        }
+    };
+
+    const handleAddToCart = (productName: string) => {
+        if (toast.current) {
+            toast.current.show({
+                severity: "success",
+                summary: "Thành công",
+                detail: `Đã thêm ${productName} vào giỏ hàng!`,
+            });
         }
     };
 
@@ -176,7 +200,7 @@ function ProductDetail() {
                                         {(
                                             (1 -
                                                 detailData.salePrice /
-                                                    detailData.price) *
+                                                detailData.price) *
                                             100
                                         ).toFixed(0)}
                                         %
@@ -250,8 +274,8 @@ function ProductDetail() {
                             <div className="product_size">
                                 Phiên bản:
                                 {detailData.size.split(',').map((item: any, index: any) => (
-                                    <span 
-                                        key={index} 
+                                    <span
+                                        key={index}
                                         className={`product_size_item ${selectedSize === item.trim() ? 'active' : ''}`}
                                         onClick={() => setSelectedSize(item.trim())}
                                     >
@@ -301,6 +325,7 @@ function ProductDetail() {
                     </div>
                 </div>
             </div>
+
             <div className="product2">
                 <div className="product_down">
                     <TabView>
@@ -319,6 +344,32 @@ function ProductDetail() {
                                     __html: `${detailData.specs}`,
                                 }}
                             ></div>
+                        </TabPanel>
+                        <TabPanel header="Sản phẩm tương tự">
+                            {relatedProducts && relatedProducts.length > 0 && (
+                                <div className="related_products">
+                                    <div className="related_inner">
+                                        <Swiper
+                                            breakpoints={{
+                                                1200: { slidesPerView: 4, spaceBetween: 25 },
+                                                768: { slidesPerView: 3, spaceBetween: 20 },
+                                                0: { slidesPerView: 2, spaceBetween: 15 },
+                                            }}
+                                            modules={[Navigation, Pagination, Scrollbar, A11y]}
+                                        >
+                                            {relatedProducts.map((item: ItemDetail, index: number) => (
+                                                <SwiperSlide key={index}>
+                                                    <ProductItem
+                                                        productItem={item}
+                                                        categoryCode={detailData.category_code}
+                                                        onAddToCart={handleAddToCart}
+                                                    />
+                                                </SwiperSlide>
+                                            ))}
+                                        </Swiper>
+                                    </div>
+                                </div>
+                            )}
                         </TabPanel>
                     </TabView>
                 </div>

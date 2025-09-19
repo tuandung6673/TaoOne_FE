@@ -1,4 +1,5 @@
 import he from 'he';
+import moment from 'moment';
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
@@ -55,7 +56,7 @@ const NewsAdmin = () => {
                 src={product.thumbnailUrl}
                 alt={product.thumbnailUrl}
                 style={{ objectFit: "cover" }}
-                className="w-9rem h-3rem shadow-2 border-round"
+                className="w-9rem h-4rem shadow-2 border-round"
             />
         );
     };
@@ -158,6 +159,12 @@ const NewsAdmin = () => {
         return he.decode(stripped);
     };
 
+    const dateBodyTemplate = (rowData: any, field: 'publishedAt' | 'updatedAt') => {
+        const value = rowData?.[field];
+        if (!value) return '';
+        return moment(value).format('DD/MM/YYYY hh:mm:ss');
+    };
+
     const onPageChange = (event: any) => {
         setRows(event.rows);
         setFirst(event.first);
@@ -218,8 +225,8 @@ const NewsAdmin = () => {
                             <Column field="title" header="Tiêu đề"></Column>
                             <Column field="slug" header="Slug"></Column>
                             {/* <Column field="excerpt" header="Mô tả ngắn" body={(rowData) => stripHtmlAndDecode(rowData.excerpt)}></Column> */}
-                            <Column field="publishedAt" header="Ngày đăng"></Column>
-                            <Column field="updatedAt" header="Ngày cập nhật"></Column>
+                            <Column field="publishedAt" header="Ngày đăng" body={(rowData) => dateBodyTemplate(rowData, 'publishedAt')}></Column>
+                            <Column field="updatedAt" header="Ngày cập nhật" body={(rowData) => dateBodyTemplate(rowData, 'updatedAt')}></Column>
                             <Column
                                 field="status"
                                 header="Hiển thị"

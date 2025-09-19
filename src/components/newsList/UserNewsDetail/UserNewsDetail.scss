@@ -159,6 +159,61 @@ html {
     }
 }
 
+/* Ensure TinyMCE/content HTML is fully responsive and doesn't cause horizontal scroll */
+.news-content-body {
+    max-width: 100%;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+
+    img,
+    video,
+    canvas,
+    svg,
+    embed,
+    object {
+        max-width: 100% !important;
+        height: auto !important;
+        display: block;
+    }
+
+    figure {
+        max-width: 100% !important;
+        margin: 16px auto;
+    }
+
+    iframe {
+        max-width: 100% !important;
+        width: 100% !important;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        border: 0;
+        display: block;
+    }
+
+    table {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-collapse: collapse;
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    pre,
+    code {
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .news-left {
+        padding: 0 16px 20px 16px;
+    }
+}
+
 .toc {
     background: #e5f2ec;
     margin: 30px 0;

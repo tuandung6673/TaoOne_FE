@@ -131,7 +131,7 @@ function ProductDetail() {
     };
 
     const buynow = () => {
-        navigate("/thanh-toan/" + itemId + "?size=" + selectedSize);
+        navigate("/thanh-toan/" + itemId + "?size=" + encodeURIComponent(selectedSize));
     };
 
     const bagnow = () => {

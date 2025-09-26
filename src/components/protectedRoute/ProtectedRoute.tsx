@@ -25,11 +25,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     }
 
     // If token is a JWT and expired, force login
-    // if (isJwtExpired(token)) {
-    //     localStorage.removeItem('token');
-    //     localStorage.removeItem('username');
-    //     return <Navigate to={redirectPath} replace />;
-    // }
+    if (isJwtExpired(token)) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        return <Navigate to={redirectPath} replace />;
+    }
 
     return <Outlet />;
 };

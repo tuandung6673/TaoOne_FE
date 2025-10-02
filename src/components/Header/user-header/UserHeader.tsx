@@ -1,9 +1,11 @@
-import classes from "./UserHeader.module.scss";
-import headerLogo from "../../../images/Tao one den.png";
-import { AllRouteType } from "../../../constants/constants";
-import { useEffect, useState, useRef } from "react";
-import { useCart } from "../../../custom-hook/CartContext";
+import queryString from "query-string";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AllRouteType } from "../../../constants/constants";
+import { useCart } from "../../../custom-hook/CartContext";
+import headerLogo from "../../../images/Tao one den.png";
+import classes from "./UserHeader.module.scss";
+
 import { OverlayPanel } from "primereact/overlaypanel";
 
 function UserHeader() {
@@ -93,7 +95,13 @@ function UserHeader() {
     e.preventDefault();
     if (searchQuery.trim()) {
       // Handle search logic here
-      navigate(`/search?filter=${encodeURIComponent(searchQuery)}`);
+      let queryParams = "";
+      if (searchQuery.trim()) {
+        queryParams = queryString.stringify({
+          filter: searchQuery
+        });
+      }
+      navigate(`/search${queryParams ? "?" + queryParams : ""}`);
       // Hide the search input after navigation
       handleSearchClose();
     }

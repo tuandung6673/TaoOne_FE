@@ -341,7 +341,7 @@ function Payment() {
                                     />
                                 </div>
                                 <div className="col-6 pm-product__name">
-                                    <div className="font-medium">{productDetail?.name}{sizeOneItemSelected ? ` - ${sizeOneItemSelected}` : ""}</div>
+                                    <div className="font-medium">{productDetail?.name}{sizeOneItemSelected ? ` - ${decodeURIComponent(sizeOneItemSelected)}` : ""}</div>
                                 </div>
                                 <div className="text-right font-bold pm-product__price">
                                     <span>

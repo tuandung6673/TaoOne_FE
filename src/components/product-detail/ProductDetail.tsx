@@ -3,6 +3,7 @@ import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
 import { TabPanel, TabView } from "primereact/tabview";
 import { Toast } from "primereact/toast";
+import queryString from "query-string";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
@@ -131,7 +132,13 @@ function ProductDetail() {
     };
 
     const buynow = () => {
-        navigate("/thanh-toan/" + itemId + "?size=" + selectedSize);
+        let queryParams = "";
+        if (selectedSize) {
+            queryParams = queryString.stringify({
+                size: selectedSize
+            });
+        } 
+        navigate("/thanh-toan/" + itemId + (selectedSize ? "?" + queryParams : ""));
     };
 
     const bagnow = () => {
@@ -147,7 +154,7 @@ function ProductDetail() {
                 category_detail_name: detailData.category_detail_name,
                 size: selectedSize
             });
-            
+
             if (toast.current) {
                 toast.current.show({
                     severity: "success",

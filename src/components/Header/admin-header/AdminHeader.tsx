@@ -63,14 +63,14 @@ function AdminHeader() {
             ]
         },
         {
-            label: 'Đơn hàng',
-            icon: '',
-            url: ROLE.admin + '/order'
-        },
-        {
             label: 'Tin tức',
             icon: '',
             url: ROLE.admin + '/' + AllRouteType.news
+        },
+        {
+            label: 'Đơn hàng',
+            icon: '',
+            url: ROLE.admin + '/order'
         }
     ];
 

@@ -528,7 +528,7 @@ function Payment() {
                             </div>
                             <div className="flex justify-content-between mt-1">
                                 <span>Tổng số lượng:</span>
-                                <span>{cartItems?.reduce((count, it) => count + it.quantity, 0) || 0}</span>
+                                <span>{!!itemId && productDetail ? 1 : cartItems?.reduce((count, it) => count + it.quantity, 0) || 0}</span>
                             </div>
                             <hr></hr>
                             <div className="flex justify-content-between total">

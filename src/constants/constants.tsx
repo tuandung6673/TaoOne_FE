@@ -52,3 +52,8 @@ export const QUA_TANG = [
     "- Cáp sạc iPhone & iPad 200k",
     "- Vệ sinh máy trọn đời"
 ]
+
+export const SOCIAL_LINKS = {
+    facebook: 'https://www.facebook.com/taoone.vn/', //
+    tiktok: 'https://www.tiktok.com/@taoone01' // TODO: replace with your account URL
+}

@@ -7,6 +7,7 @@ import headerLogo from "../../../images/Tao one den.png";
 import classes from "./UserHeader.module.scss";
 
 import { OverlayPanel } from "primereact/overlaypanel";
+import { CartItem } from "../../../constants/interface";
 
 function UserHeader() {
   const { clearCart } = useCart();
@@ -115,6 +116,13 @@ function UserHeader() {
   const handleSearchKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Escape") {
       handleSearchClose();
+    }
+  };
+
+  const handleItemClick = (item: CartItem) => {
+    navigate(`/${item.category_code}/${item.id}`);
+    if (cartOverlayRef.current) {
+      cartOverlayRef.current.hide();
     }
   };
 
@@ -293,7 +301,7 @@ function UserHeader() {
                       <img src={item.img} alt={item.name} />
                     </div>
                     <div className={classes.item_details_overlay}>
-                      <h4>{item.name}{item.size ? ` - ${item.size}` : ""}</h4>
+                      <h4 onClick={() => handleItemClick(item)}>{item.name}{item.size ? ` - ${item.size}` : ""}</h4>
                       <p className={classes.item_price_overlay}>
                         {formatNumber(item.salePrice)}đ
                       </p>

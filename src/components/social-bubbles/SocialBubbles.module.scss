@@ -46,6 +46,10 @@
   background: #000000;
 }
 
+.mobile {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .bubble {
     width: 46px;
@@ -54,6 +58,10 @@
   .icon {
     width: 26px;
     height: 26px;
+  }
+  .mobile {
+    display: inline-flex;
+    background: #28a745;
   }
 }
 

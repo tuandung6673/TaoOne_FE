@@ -56,5 +56,5 @@ export const QUA_TANG = [
 export const SOCIAL_LINKS = {
     facebook: 'https://www.facebook.com/taoone.vn/', //
     tiktok: 'https://www.tiktok.com/@taoone01', // TODO: replace with your account URL
-    mobile: 'tel:+84343986324'
+    mobile: '+84343986324'
 }

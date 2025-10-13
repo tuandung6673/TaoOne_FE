@@ -1,25 +1,27 @@
 const { SitemapStream, streamToPromise } = require("sitemap");
-const fs = require("fs");
+const { createWriteStream } = require("fs");
 
-const links = [
-    { url: "/", changefreq: "daily", priority: 1.0 },
-    { url: "/watch", changefreq: "monthly", priority: 0.8 },
-    { url: "/ipad", changefreq: "monthly", priority: 0.8 },
-    { url: "/macbook", changefreq: "monthly", priority: 0.8 },
-    { url: "/airpods", changefreq: "monthly", priority: 0.8 },
-    { url: "/news", changefreq: "monthly", priority: 0.8 },
-];
+(async () => {
+  const hostname = "https://taoone.vn"; // Thay domain thật
+  const smStream = new SitemapStream({ hostname });
+  const writeStream = createWriteStream("./public/sitemap.xml");
 
-const sitemapStream = new SitemapStream({ hostname: "https://taoone.vn" });
+  smStream.pipe(writeStream);
 
-// ✅ Phải ghi từng link vào stream
-links.forEach((link) => sitemapStream.write(link));
+  // ✅ Route tĩnh
+  const staticRoutes = ["/", "/watch", "/ipad", "/macbook", "/airpods", "/accessories", "/news"];
+  staticRoutes.forEach((r) =>
+    smStream.write({ url: r, changefreq: "weekly", priority: 0.8 })
+  );
 
-sitemapStream.end();
+  // ✅ Route động - từ API
+  const products = await fetch("https://taoone-api.syshub.io.vn/api/News/GetNewsList?filter=&offSet=0&pageSize=100&status=1").then((res) =>
+    res.json()
+  );
+  products?.data?.data.forEach((p) =>
+    smStream.write({ url: `/news/${p.slug}`, changefreq: "weekly", priority: 0.8 })
+  );
 
-streamToPromise(sitemapStream)
-    .then((data) => {
-        fs.writeFileSync("public/sitemap.xml", data.toString());
-        console.log("✅ Sitemap generated!");
-    })
-    .catch((err) => console.error("❌ Error generating sitemap", err));
+  smStream.end();
+  await streamToPromise(smStream);
+})();

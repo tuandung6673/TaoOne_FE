@@ -30,14 +30,14 @@ function Watch() {
         category_detail_id: "",
         filter: "",
         offSet: 0,
-        pageSize: 20,
+        pageSize: 50,
         status: -1,
     });
     const [searchValue, setSearchValue] = useState("");
     const [watchList, setWatchList] = useState<ItemDetail[]>([]);
     const [recordsTotal, setRecordsTotal] = useState(0);
     const [first, setFirst] = useState(0);
-    const [rows, setRows] = useState(20);
+    const [rows, setRows] = useState(50);
     const [selectCtg, setSelectCtg] = useState(null);
     const [selectedId, setSelectedId] = useState<string>();
     const [listCtg, setListCtg] = useState<DropdownInterface[]>([]);
@@ -375,7 +375,7 @@ function Watch() {
                             first={first}
                             rows={rows}
                             totalRecords={recordsTotal}
-                            rowsPerPageOptions={[20, 30, 50]}
+                            rowsPerPageOptions={[20, 30, 50, 100]}
                             onPageChange={onPageChange}
                         />
                     </div>

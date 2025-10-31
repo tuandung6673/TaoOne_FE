@@ -8,7 +8,7 @@ function Footer() {
                     Email: taoonestore@gmail.com
                 </div>
                 <div className="footer_item">
-                    Địa chỉ: Giải Phóng - Thanh Xuân - HN
+                    Địa chỉ: Thanh Xuân - HN
                 </div>
             </div>
         </div>

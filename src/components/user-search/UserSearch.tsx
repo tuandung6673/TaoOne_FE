@@ -22,10 +22,7 @@ const UserSearch = () => {
     const [product, setProduct] = useState<any[]>([]);
     const op = useRef<OverlayPanel>(null);
     const productParams = {
-        filter: filter || "",
-        offSet: 0,
-        pageSize: 100,
-        sort: sortFilterValue,
+        filter: filter || ""
     };
     const slideParams = {
         screen: "home"
@@ -46,8 +43,8 @@ const UserSearch = () => {
     const fetchProduct = async () => {
         try {
             const queryParams = queryString.stringify(productParams);
-            const productList = await ApiService.getProductList(queryParams);
-            setProduct(productList.data.data);
+            const productList = await ApiService.getProductSearch(queryParams);
+            setProduct(productList.data);
         } catch (error) {
             console.error(error);
         }

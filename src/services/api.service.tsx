@@ -67,6 +67,18 @@ const ApiService = {
     },
 
     // Product
+    getProductSearch: async (queryParams: string) => {
+        try {
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_BASE_URL}/Product/GetProductSearch?` + queryParams
+            );
+            return response.data; // Trả về dữ liệu từ API
+        } catch (error) {
+            console.error("Error fetching slide list:", error);
+            throw error; // Ném lỗi ra để xử lý sau
+        }
+    },
+
     getProductList: async (queryParams: string) => {
         try {
             const response = await axiosInstance.get(
@@ -171,7 +183,7 @@ const ApiService = {
         try {
             const response = await axiosInstance.get(
                 `${process.env.REACT_APP_BASE_URL}/CategoryDetail/GetCategoryDetailList?` +
-                    queryParams
+                queryParams
             );
             return response.data; // Trả về dữ liệu từ API
         } catch (error) {
@@ -184,7 +196,7 @@ const ApiService = {
         try {
             const response = await axiosInstance.get(
                 `${process.env.REACT_APP_BASE_URL}/CategoryDetail/GetCategoryDetailDetail?id=` +
-                    id
+                id
             );
             return response.data; // Trả về dữ liệu từ API
         } catch (error) {
@@ -210,7 +222,7 @@ const ApiService = {
         try {
             const response = await axiosInstance.delete(
                 `${process.env.REACT_APP_BASE_URL}/CategoryDetail/DeleteCategoryDetail?id=` +
-                    id
+                id
             );
             return response.data;
         } catch (error) {

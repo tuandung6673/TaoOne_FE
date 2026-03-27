@@ -37,12 +37,12 @@
     transition: all 0.3s ease;
     display: inline-block;
     background-color: #ffffff;
-    
+
     &:hover {
         border-color: $main-green-color;
         background-color: #f8f9fa;
     }
-    
+
     &.active {
         border-color: $main-green-color;
         background-color: $main-green-color;
@@ -116,12 +116,15 @@
 
 .status {
     margin-top: 10px;
+
     &_item {
         padding: 4px 0;
     }
+
     &_icon {
         color: $main-green-color;
     }
+
     &_value {
         margin-left: 6px;
     }
@@ -133,6 +136,7 @@
     border: 2px solid $main-green-color;
     border-radius: 6px;
     position: relative;
+
     &_header {
         background-color: #f5f5f7;
         position: absolute;
@@ -141,6 +145,7 @@
         display: flex;
         align-items: center;
     }
+
     &_icon {
         width: 23px;
         height: 23px;
@@ -162,8 +167,10 @@
     .product_down .p-tabview-nav-container {
         overflow-x: auto;
         /* Hide scrollbar (Firefox/IE) */
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+        -ms-overflow-style: none;
+        /* IE and Edge */
     }
 
     .product_down .p-tabview-nav {
@@ -172,13 +179,16 @@
         flex-wrap: nowrap;
         justify-content: flex-start;
         /* Hide scrollbar (Firefox/IE) */
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+        -ms-overflow-style: none;
+        /* IE and Edge */
     }
 
     .product_down .p-tabview-nav-container::-webkit-scrollbar,
     .product_down .p-tabview-nav::-webkit-scrollbar {
-        display: none; /* Chrome/Safari */
+        display: none;
+        /* Chrome/Safari */
     }
 
     .product_down .p-tabview-nav li {
@@ -202,6 +212,7 @@
 
 .related_products {
     background: #ffffff;
+
     // margin-top: 15px;
     // padding: 20px 0;
     .swiper-slide {
@@ -281,19 +292,24 @@
     .product_right {
         padding: 0;
     }
+
     .sale_percent {
         right: 23px;
         top: 28px;
     }
+
     .product_image {
         max-height: 370px;
         object-fit: cover;
     }
+
     .breadcrumb {
         display: none;
+
         &_mb {
             display: block;
             margin: 5px 0;
+
             .p-breadcrumb {
                 padding: 0;
             }
@@ -305,6 +321,7 @@
     .product_name {
         padding-bottom: 15px;
     }
+
     .product_size {
         margin-bottom: 5px;
     }
@@ -370,6 +387,7 @@
 }
 
 @media (min-width: 1024px) {
+
     .product1,
     .product_down {
         width: 65%;

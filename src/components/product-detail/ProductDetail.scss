@@ -153,6 +153,18 @@
     }
 }
 
+.lead_form_section {
+    margin: 18px 5px 10px 5px;
+}
+
+.lead_form_title {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    color: $main-green-color;
+    margin: 0 0 12px 0;
+}
+
 .product2 {
     background: #ffffff;
 }
@@ -383,6 +395,15 @@
 
     .product_right {
         padding: 0 10px;
+    }
+
+    .lead_form_section {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .lead_form_title {
+        font-size: 20px;
     }
 }
 

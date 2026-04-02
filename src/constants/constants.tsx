@@ -5,7 +5,8 @@ export const AllRouteType = {
     airpods: 'airpods',
     accessories: 'accessories',
     banner: 'banner',
-    news: 'news'
+    news: 'news',
+    advise: 'advise'
 }
 
 export const SORTFILTER = {

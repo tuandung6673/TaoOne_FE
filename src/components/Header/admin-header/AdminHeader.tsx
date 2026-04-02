@@ -71,6 +71,11 @@ function AdminHeader() {
             label: 'Đơn hàng',
             icon: '',
             url: ROLE.admin + '/order'
+        },
+        {
+            label: 'Tư vấn',
+            icon: '',
+            url: ROLE.admin + '/' + AllRouteType.advise
         }
     ];
 

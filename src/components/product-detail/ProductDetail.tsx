@@ -20,6 +20,7 @@ import saleLogo from "../../images/sale_tag_2.png";
 import ApiService from "../../services/api.service";
 import ProductItem from "../product-item/ProductItem";
 import "./ProductDetail.scss";
+import LeadForm from "../event/LeadForm";
 
 function ProductDetail() {
     const toast = useRef<Toast>(null);
@@ -328,6 +329,10 @@ function ProductDetail() {
                             {QUA_TANG.map((item: any, index: any) => (
                                 <div key={index}>{item}</div>
                             ))}
+                        </div>
+                        <div className="lead_form_section">
+                            <div className="lead_form_title">Đăng ký nhận ưu đãi</div>
+                            <LeadForm source={detailData.name || ""} />
                         </div>
                     </div>
                 </div>

@@ -15,7 +15,7 @@ const { createWriteStream } = require("fs");
   );
 
   // ✅ Route động - từ API
-  const products = await fetch("https://taoone-api.syshub.io.vn/api/News/GetNewsList?filter=&offSet=0&pageSize=100&status=1").then((res) =>
+  const products = await fetch("https://taoone.vn/api/News/GetNewsList?filter=&offSet=0&pageSize=100&status=1").then((res) =>
     res.json()
   );
   products?.data?.data.forEach((p) =>

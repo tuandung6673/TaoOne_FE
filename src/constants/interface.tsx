@@ -115,3 +115,13 @@ export interface CartItem {
     category_detail_name?: string;
     size?: string;
 }
+
+export interface AdviseForm {
+    id?: string;
+    name?: string;
+    phone?: string;
+    note?: string;
+    source?: string;
+    status: number;
+    submitDate:string;
+}

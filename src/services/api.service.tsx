@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Login, PaymentForm } from "../constants/interface";
+import { AdviseForm, Login, PaymentForm } from "../constants/interface";
 import axiosInstance from "./api.interceptor";
 
 const ApiService = {
@@ -276,6 +276,33 @@ const ApiService = {
         } catch (error) {
             console.error("Error fetching slide list:", error);
             throw error; // Ném lỗi ra để xử lý sau
+        }
+    },
+
+    // Advise
+    getAdviseList: async (queryParams: string = "") => {
+        try {
+            const url = queryParams
+                ? `${process.env.REACT_APP_BASE_URL}/Advise/GetAdviseList?${queryParams}`
+                : `${process.env.REACT_APP_BASE_URL}/Advise/GetAdviseList`;
+            const response = await axiosInstance.get(url);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching advise list:", error);
+            throw error;
+        }
+    },
+
+    postAdvise: async (data: AdviseForm) => {
+        try {
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_BASE_URL}/Advise/PostAdvise`,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error posting advise:", error);
+            throw error;
         }
     },
 

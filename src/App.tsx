@@ -24,6 +24,8 @@ import NewsAdminDetail from './components/admin/news_admin/news-detail/NewsDetai
 import UserNewsDetail from './components/newsList/UserNewsDetail/UserNewsDetail';
 import UserSearch from './components/user-search/UserSearch';
 import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
+import EventLandingAppleWatch from './components/event/EventLandingAppleWatch';
+import Advise from './components/admin/advise/advise';
 
 function App() {
   return (
@@ -45,12 +47,14 @@ function App() {
                 <Route path='news' element={<NewsAdmin />}></Route>
                 <Route path='news/them-moi' element={<NewsAdminDetail />}></Route>
                 <Route path='news/:newsId' element={<NewsAdminDetail />}></Route>
+                <Route path='advise' element={<Advise />} />
               </Route>
             </Route>
             <Route path='login' element={<LoginForm />}>
             </Route>
             <Route path="/" element={<UserLayout />}>
               <Route index element={<Home />} />
+              <Route path='event' element={<EventLandingAppleWatch />} />
               <Route path='cart' element={<Cart />} />
               <Route path='thanh-toan/:itemId' element={<Payment/>} />
               <Route path='thanh-toan-gio-hang' element={<Payment/>} />

@@ -26,6 +26,7 @@ import UserSearch from './components/user-search/UserSearch';
 import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
 import EventLandingAppleWatch from './components/event/EventLandingAppleWatch';
 import Advise from './components/admin/advise/advise';
+import PromoAppleWatch4 from './components/event2/PromoAppleWatch4';
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
             <Route path="/" element={<UserLayout />}>
               <Route index element={<Home />} />
               <Route path='event' element={<EventLandingAppleWatch />} />
+              <Route path='event2' element={<PromoAppleWatch4 />} />
               <Route path='cart' element={<Cart />} />
               <Route path='thanh-toan/:itemId' element={<Payment/>} />
               <Route path='thanh-toan-gio-hang' element={<Payment/>} />

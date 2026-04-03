@@ -1,0 +1,832 @@
+:root {
+    --p4-dark: #111111;
+    --p4-dark2: #1a1a1a;
+    --p4-dark3: #242424;
+    --p4-white: #ffffff;
+    --p4-muted: rgba(255, 255, 255, 0.65);
+    --p4-accent: #f97316;
+    --p4-accent2: #fb923c;
+    --p4-gray-bg: #f5f5f5;
+    --p4-gray-border: rgba(0, 0, 0, 0.1);
+    --p4-ink: #111111;
+    --p4-ink-muted: rgba(17, 17, 17, 0.65);
+  }
+  
+  .page {
+    background: #fff;
+    color: var(--p4-ink);
+    font-family: inherit;
+  }
+  
+  .container {
+    width: min(1120px, calc(100% - 40px));
+    margin: 0 auto;
+  }
+  
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    background: var(--p4-dark);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  
+    /* Dark gradient backdrop — swap for background-image when real photo is ready */
+    background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(249, 115, 22, 0.12), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 30% 80%, rgba(255, 255, 255, 0.03), transparent 50%),
+      #111111;
+  }
+  
+  .heroOverlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(120deg, rgba(0, 0, 0, 0.55) 30%, transparent 80%);
+  }
+  
+  .heroContent {
+    position: relative;
+    z-index: 1;
+    width: min(780px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 100px 0 80px;
+    text-align: center;
+  }
+  
+  .heroBadge {
+    display: inline-block;
+    border: 1px solid rgba(249, 115, 22, 0.45);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 13px;
+    color: var(--p4-accent);
+    letter-spacing: 0.03em;
+    font-weight: 600;
+  }
+  
+  .heroH1 {
+    margin: 18px 0 0;
+    font-size: clamp(38px, 5.5vw, 72px);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    color: var(--p4-white);
+    font-weight: 900;
+  }
+  
+  .heroAccent {
+    color: var(--p4-accent);
+  }
+  
+  .heroSub {
+    margin: 18px auto 0;
+    font-size: clamp(15px, 1.4vw, 17px);
+    line-height: 1.65;
+    color: var(--p4-muted);
+    max-width: 58ch;
+  }
+  
+  .heroSub b {
+    color: var(--p4-white);
+  }
+  
+  .heroCtas {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  
+  .heroTrust {
+    margin-top: 22px;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--p4-muted);
+  }
+  
+  /* ── SHARED BUTTONS ── */
+  .ctaPrimary {
+    background: var(--p4-accent);
+    border: 1px solid var(--p4-accent);
+    color: #fff;
+    border-radius: 999px;
+    padding: 13px 24px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 180ms ease, transform 120ms ease;
+    letter-spacing: -0.01em;
+  }
+  .ctaPrimary:hover {
+    background: var(--p4-accent2);
+    border-color: var(--p4-accent2);
+    transform: translateY(-1px);
+  }
+  
+  .ctaSecondary {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--p4-white);
+    border-radius: 999px;
+    padding: 13px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 180ms ease;
+  }
+  .ctaSecondary:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+  
+  /* ── SECTIONS ── */
+  .section {
+    padding: 72px 0;
+    background: #fff;
+  }
+  
+  .sectionGray {
+    padding: 72px 0;
+    background: var(--p4-gray-bg);
+  }
+  
+  .sectionDark {
+    padding: 72px 0;
+    background: var(--p4-dark);
+    color: var(--p4-white);
+  }
+  
+  .sectionLabel {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--p4-accent);
+    margin-bottom: 10px;
+  }
+  
+  .h2 {
+    font-size: clamp(26px, 2.6vw, 38px);
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+    color: var(--p4-ink);
+    margin: 0;
+  }
+  
+  .h2White {
+    font-size: clamp(26px, 2.6vw, 38px);
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+    color: var(--p4-white);
+    margin: 0;
+  }
+  
+  /* ── PAIN POINTS ── */
+  .painGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+  }
+  
+  .painCard {
+    border: 1px solid var(--p4-gray-border);
+    border-radius: 20px;
+    padding: 22px;
+    background: #fff;
+    transition: box-shadow 180ms ease, transform 180ms ease;
+  }
+  .painCard:hover {
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+  
+  .painIcon {
+    font-size: 28px;
+    line-height: 1;
+  }
+  
+  .painTitle {
+    margin-top: 12px;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    font-size: 16px;
+  }
+  
+  .painDesc {
+    margin-top: 6px;
+    color: var(--p4-ink-muted);
+    line-height: 1.6;
+    font-size: 14px;
+  }
+  
+  /* ── GIẢI PHÁP (dark section) ── */
+  .splitSolution {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 40px;
+    align-items: center;
+  }
+  
+  .solutionText {}
+  
+  .solutionList {
+    margin: 20px 0 0;
+    padding-left: 20px;
+    color: var(--p4-muted);
+    line-height: 1.9;
+    font-size: 15px;
+  }
+  .solutionList b {
+    color: var(--p4-white);
+  }
+  
+  .solutionMediaWrap {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .solutionMedia {
+    width: 100%;
+    max-width: 420px;
+  }
+  
+  .mediaPlaceholderDark {
+    width: 100%;
+    aspect-ratio: 4/3;
+    border-radius: 24px;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  
+  .solutionCta {
+    display: flex;
+    justify-content: center;
+    margin-top: 36px;
+  }
+  
+  /* ── LỢI ÍCH ── */
+  .benefitGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+  }
+  
+  .benefitCard {
+    border: 1px solid var(--p4-gray-border);
+    border-radius: 20px;
+    padding: 22px;
+    background: #fff;
+    text-align: center;
+    transition: box-shadow 180ms ease, transform 180ms ease;
+  }
+  .benefitCard:hover {
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.07);
+    transform: translateY(-2px);
+  }
+  
+  .benefitIcon {
+    font-size: 32px;
+    line-height: 1;
+  }
+  
+  .benefitTitle {
+    margin-top: 12px;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    font-size: 15px;
+  }
+  
+  .benefitDesc {
+    margin-top: 6px;
+    color: var(--p4-ink-muted);
+    line-height: 1.6;
+    font-size: 13px;
+  }
+  
+  /* ── PHOTO GRID ── */
+  .photoGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, 220px);
+    gap: 12px;
+    margin-top: 28px;
+  }
+  
+  .photoPlaceholder {
+    border-radius: 20px;
+    border: 1px dashed rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 0, 0, 0.3);
+    font-size: 13px;
+    overflow: hidden;
+  }
+  
+  .photoPlaceholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+  }
+  
+  /* ── SOCIAL PROOF ── */
+  .proofRow {
+    display: grid;
+    grid-template-columns: auto 1px 1fr;
+    gap: 40px;
+    align-items: center;
+    padding: 40px;
+    border: 1px solid var(--p4-gray-border);
+    border-radius: 24px;
+    background: #fff;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.05);
+  }
+  
+  .proofNumber {
+    font-size: clamp(48px, 6vw, 72px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: var(--p4-accent);
+    line-height: 1;
+  }
+  
+  .proofLabel {
+    font-size: 14px;
+    color: var(--p4-ink-muted);
+    margin-top: 4px;
+    max-width: 12ch;
+    line-height: 1.5;
+  }
+  
+  .proofDivider {
+    height: 80px;
+    background: var(--p4-gray-border);
+  }
+  
+  .proofPoints {
+    display: grid;
+    gap: 10px;
+  }
+  .proofPoints p {
+    margin: 0;
+    color: var(--p4-ink-muted);
+    line-height: 1.65;
+  }
+  .proofPoints b {
+    color: var(--p4-ink);
+  }
+  
+  /* ── BẢNG GIÁ ── */
+  .priceTable {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 32px;
+  }
+  
+  .priceCol {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--p4-white);
+    position: relative;
+  }
+  
+  .priceColHighlight {
+    border-color: var(--p4-accent);
+    background: rgba(249, 115, 22, 0.08);
+    box-shadow: 0 0 0 1px var(--p4-accent), 0 20px 60px rgba(249, 115, 22, 0.15);
+  }
+  
+  .priceColBadge {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--p4-accent);
+    color: #fff;
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  
+  .priceColHeader {
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  
+  .priceAmount {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin: 10px 0 14px;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  
+  .priceAmountAccent {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin: 10px 0 14px;
+    color: var(--p4-accent);
+  }
+  
+  .priceList {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.85;
+    font-size: 14px;
+  }
+  
+  .priceColHighlight .priceList {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  /* Deal bar */
+  .dealBar {
+    margin-top: 24px;
+    border: 1px solid rgba(249, 115, 22, 0.3);
+    border-radius: 18px;
+    background: rgba(249, 115, 22, 0.07);
+    padding: 20px 24px;
+    display: grid;
+    gap: 12px;
+  }
+  
+  .dealTitle {
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--p4-white);
+    letter-spacing: -0.02em;
+  }
+  
+  .dealItems {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  
+  .dealItem {
+    font-size: 14px;
+    color: var(--p4-muted);
+  }
+  
+  /* ── QUÀ TẶNG ── */
+  .giftWrap {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 40px;
+    align-items: center;
+  }
+  
+  .giftList {
+    margin: 20px 0 0;
+    padding-left: 18px;
+    color: var(--p4-ink-muted);
+    line-height: 2;
+    font-size: 15px;
+  }
+  
+  .giftRight {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .giftPlaceholder {
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.12), rgba(249, 115, 22, 0.04));
+    border: 1px dashed rgba(249, 115, 22, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .giftPlaceholder span {
+    font-size: 48px;
+    line-height: 1;
+  }
+  
+  .giftPlaceholder p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--p4-ink-muted);
+    text-align: center;
+  }
+  
+  /* ── KHAN HIẾM ── */
+  .scarcity {
+    background: var(--p4-dark2);
+    padding: 80px 0;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  
+  .scarcityInner {
+    display: grid;
+    gap: 16px;
+    justify-items: center;
+  }
+  
+  .scarcityIcon {
+    font-size: 40px;
+    line-height: 1;
+  }
+  
+  .scarcityH2 {
+    font-size: clamp(28px, 3.5vw, 48px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: var(--p4-white);
+    margin: 0;
+    line-height: 1.1;
+  }
+  
+  .scarcityDesc {
+    color: var(--p4-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 56ch;
+    margin: 0;
+  }
+  
+  .scarcityDesc b {
+    color: var(--p4-white);
+  }
+  
+  /* ── CAM KẾT ── */
+  .promiseGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+  }
+  
+  .promiseCard {
+    background: #fff;
+    border: 1px solid var(--p4-gray-border);
+    border-radius: 20px;
+    padding: 22px;
+    text-align: center;
+    transition: box-shadow 180ms ease, transform 180ms ease;
+  }
+  .promiseCard:hover {
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.07);
+    transform: translateY(-2px);
+  }
+  
+  .promiseIcon {
+    font-size: 28px;
+    line-height: 1;
+  }
+  
+  .promiseTitle {
+    margin-top: 10px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    font-size: 14px;
+  }
+  
+  .promiseDesc {
+    margin-top: 6px;
+    color: var(--p4-ink-muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  
+  /* ── CTA FORM ── */
+  .formWrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  
+  .formLeft {}
+  
+  .formSubtext {
+    margin-top: 14px;
+    color: var(--p4-muted);
+    line-height: 1.65;
+    font-size: 15px;
+  }
+  
+  .formTrustList {
+    margin-top: 22px;
+    display: grid;
+    gap: 8px;
+  }
+  
+  .formTrustItem {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+  }
+  
+  .formRight {}
+  
+  /* ── CHÍNH SÁCH ── */
+  .policyGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+  }
+  
+  .policyCard {
+    border: 1px solid var(--p4-gray-border);
+    border-radius: 20px;
+    padding: 24px;
+    background: #fff;
+    text-align: center;
+  }
+  
+  .policyIcon {
+    font-size: 30px;
+    line-height: 1;
+  }
+  
+  .policyTitle {
+    margin-top: 12px;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  
+  .policyDesc {
+    margin-top: 6px;
+    color: var(--p4-ink-muted);
+    line-height: 1.6;
+    font-size: 13px;
+  }
+  
+  /* ── LIÊN HỆ ── */
+  .contact {
+    background: var(--p4-dark);
+    padding: 64px 0;
+    text-align: center;
+  }
+  
+  .contactSub {
+    color: var(--p4-muted);
+    margin-top: 10px;
+    font-size: 15px;
+  }
+  
+  .contactLinks {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  
+  .contactBtn {
+    display: inline-block;
+    background: var(--p4-accent);
+    border: 1px solid var(--p4-accent);
+    color: #fff;
+    border-radius: 999px;
+    padding: 12px 24px;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    transition: background 180ms ease;
+  }
+  .contactBtn:hover {
+    background: var(--p4-accent2);
+    border-color: var(--p4-accent2);
+  }
+  
+  .contactBtnOutline {
+    display: inline-block;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: var(--p4-white);
+    border-radius: 999px;
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: border-color 180ms ease;
+  }
+  .contactBtnOutline:hover {
+    border-color: rgba(255, 255, 255, 0.55);
+  }
+  
+  /* ── RESPONSIVE ── */
+  @media (max-width: 960px) {
+    .painGrid {
+      grid-template-columns: 1fr;
+    }
+  
+    .splitSolution {
+      grid-template-columns: 1fr;
+    }
+  
+    .solutionMediaWrap {
+      order: -1;
+    }
+  
+    .benefitGrid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  
+    .photoGrid {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(4, 200px);
+    }
+  
+    .proofRow {
+      grid-template-columns: 1fr;
+    }
+  
+    .proofDivider {
+      display: none;
+    }
+  
+    .priceTable {
+      grid-template-columns: 1fr;
+    }
+  
+    .priceColBadge {
+      position: static;
+      transform: none;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+  
+    .giftWrap {
+      grid-template-columns: 1fr;
+    }
+  
+    .giftRight {
+      order: -1;
+    }
+  
+    .promiseGrid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  
+    .formWrap {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+  
+    .policyGrid {
+      grid-template-columns: 1fr;
+    }
+  
+    .heroCtas {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .ctaPrimary,
+    .ctaSecondary {
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .benefitGrid {
+      grid-template-columns: 1fr;
+    }
+  
+    .promiseGrid {
+      grid-template-columns: 1fr;
+    }
+  
+    .heroContent {
+      padding: 80px 0 60px;
+    }
+  }
+  

@@ -28,6 +28,35 @@ const BENEFITS = [
     { icon: "⌚", title: "Thiết kế vẫn rất hiện đại", desc: "Series 4 không lỗi thời — vẫn đẹp, vẫn sang, vẫn ổn định." },
 ];
 
+/** Set to a path under `public/` (e.g. `/promo/apple-watch-s4-hero.webp`) when the asset is ready. */
+const HERO_IMAGE_SRC = "https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/PROD%2FS456_nhom_hong%20(9).JPEG?alt=media&token=c16c210f-36a2-4854-a9b0-dca6a7bae19a";
+
+const TIKTOK_EMBEDS: { videoId: string; embedUrl: string }[] = [
+    { videoId: "1", embedUrl: "https://www.youtube.com/embed/kuZd1Rh3sJk" },
+    { videoId: "2", embedUrl: "https://www.youtube.com/embed/d6-IGmh3W8I" },
+    { videoId: "3", embedUrl: "https://www.youtube.com/embed/x0McO-2YLag" },
+];
+
+const PAIR_GUIDE_YT_EMBED = "https://www.youtube.com/embed/sb6-jCSfdZw";
+
+const CUSTOMER_FEEDBACK = [
+    {
+        stars: "★★★★★",
+        quote: "Lần đầu dùng Apple Watch, shop hướng dẫn ghép iPhone từng bước. Máy đẹp, pin xài cả ngày ổn.",
+        author: "Anh Minh — TP.HCM",
+    },
+    {
+        stars: "★★★★★",
+        quote: "Giao nhanh, được kiểm tra trước khi trả tiền. Series 4 đúng như mô tả, không phải lo hàng dựng.",
+        author: "Chị Hương — Đà Nẵng",
+    },
+    {
+        stars: "★★★★★",
+        quote: "Tư vấn thật chứ không ép mua. Mua xong vẫn nhắn hỏi thăm — cảm giác an tâm.",
+        author: "Bạn Kiên — Hà Nội",
+    },
+];
+
 const PROMISE_ITEMS = [
     { icon: "✅", title: "Cam kết đúng mô tả", desc: "Hàng thực tế đúng như mô tả, không nói quá." },
     { icon: "🔍", title: "Bao test – bao kiểm tra", desc: "Kiểm tra kỹ trước khi giao, pin tốt, mượt mà." },
@@ -54,30 +83,69 @@ function PromoAppleWatch4() {
             {/* ── HERO ── */}
             <section className={classes.hero}>
                 <div className={classes.heroOverlay} />
-                <div className={classes.heroContent}>
-                    <div className={classes.heroBadge}>Số lượng giới hạn • Không còn sản xuất mới</div>
-                    <h1 className={classes.heroH1}>
-                        Apple Watch Series 4
-                        <br />
-                        <span className={classes.heroAccent}>Chính hãng — Giá chỉ từ X.XXX.000đ</span>
-                    </h1>
-                    <p className={classes.heroSub}>
-                        Chiếc Apple Watch <b>"đủ xài nhất"</b> cho người muốn trải nghiệm hệ sinh thái Apple với chi phí tối ưu.
-                        Đã kiểm tra kỹ, pin tốt, dùng mượt cho nhu cầu hằng ngày.
-                    </p>
-                    <div className={classes.heroCtas}>
-                        <button className={classes.ctaPrimary} onClick={scrollToForm}>
-                            Xem mẫu đang có – Nhận báo giá ngay
-                        </button>
-                        <button className={classes.ctaSecondary} onClick={scrollToForm}>
-                            Nhận ưu đãi hôm nay
-                        </button>
+                <div className={classes.heroInner}>
+                    <div className={classes.heroText}>
+                        <div className={classes.heroBadge}>Số lượng giới hạn • Không còn sản xuất mới</div>
+                        <h1 className={classes.heroH1}>
+                            Apple Watch Series 4
+                            <br />
+                            <span className={classes.heroAccent}>Chính hãng — Giá chỉ từ X.XXX.000đ</span>
+                        </h1>
+                        <p className={classes.heroSub}>
+                            Chiếc Apple Watch <b>"đủ xài nhất"</b> cho người muốn trải nghiệm hệ sinh thái Apple với chi phí tối ưu.
+                            Đã kiểm tra kỹ, pin tốt, dùng mượt cho nhu cầu hằng ngày.
+                        </p>
+                        <div className={classes.heroCtas}>
+                            <button className={classes.ctaPrimary} onClick={scrollToForm}>
+                                Xem mẫu đang có – Nhận báo giá ngay
+                            </button>
+                            <button className={classes.ctaSecondary} onClick={scrollToForm}>
+                                Nhận ưu đãi hôm nay
+                            </button>
+                        </div>
+                        <div className={classes.heroTrust}>
+                            <span>✓ Hơn 300 khách đã mua</span>
+                            <span>✓ Freeship toàn quốc</span>
+                            <span>✓ Kiểm tra trước khi thanh toán</span>
+                        </div>
                     </div>
-                    <div className={classes.heroTrust}>
-                        <span>✓ Hơn 300 khách đã mua</span>
-                        <span>✓ Freeship toàn quốc</span>
-                        <span>✓ Kiểm tra trước khi thanh toán</span>
+                    <div className={classes.heroMedia}>
+                        {HERO_IMAGE_SRC ? (
+                            <img
+                                className={classes.heroMediaImg}
+                                src={HERO_IMAGE_SRC}
+                                alt="Apple Watch Series 4"
+                            />
+                        ) : (
+                            <div className={classes.heroMediaPlaceholder}>
+                                <span>Ảnh Apple Watch Series 4<br />trên tay / lifestyle</span>
+                            </div>
+                        )}
                     </div>
+                </div>
+            </section>
+
+            {/* ── VIDEO TIKTOK (3 cột dọc) ── */}
+            <section className={classes.tiktokVideoSection} aria-label="Video trải nghiệm sản phẩm">
+                <div className={classes.tiktokVideoHead}>
+                    <div className={classes.tiktokVideoLabel}>Xem nhanh</div>
+                    <h2 className={classes.tiktokVideoTitle}>Trên tay & review Apple Watch chính hãng</h2>
+                </div>
+                <div className={classes.tiktokVideoRow}>
+                    {TIKTOK_EMBEDS.map(({ videoId, embedUrl }) => (
+                        <div key={videoId} className={classes.tiktokVideoCell}>
+                            <div className={classes.tiktokVideoFrame}>
+                                <iframe
+                                    src={embedUrl}
+                                    title={`YouTube video ${videoId}`}
+                                    allow="encrypted-media; picture-in-picture; fullscreen"
+                                    allowFullScreen
+                                    loading="lazy"
+                                    referrerPolicy="strict-origin-when-cross-origin"
+                                />
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </section>
 
@@ -118,7 +186,11 @@ function PromoAppleWatch4() {
                         <div className={classes.solutionMediaWrap}>
                             <div className={classes.solutionMedia}>
                                 <div className={classes.mediaPlaceholderDark}>
-                                    <span>Ảnh Apple Watch Series 4<br />trên tay / lifestyle</span>
+                                    {/* <span>Ảnh Apple Watch Series 4<br />trên tay / lifestyle</span> */}
+                                    <img
+                                        src='https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/PROD%2FS456_nhom_hong%20(10).JPEG?alt=media&token=8b2b08ff-a232-4976-8ae0-17019a8eb6c5'
+                                        alt="Apple Watch Series 4"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -154,10 +226,34 @@ function PromoAppleWatch4() {
                     <div className={classes.sectionLabel}>Hình ảnh thực tế</div>
                     <h2 className={classes.h2}>Chỉ còn lại số lượng rất hạn chế</h2>
                     <div className={classes.photoGrid}>
-                        <div className={classes.photoPlaceholder}><span>Ảnh trên tay 1</span></div>
-                        <div className={classes.photoPlaceholder}><span>Ảnh trên tay 2</span></div>
-                        <div className={classes.photoPlaceholder}><span>Ảnh lifestyle 3</span></div>
-                        <div className={classes.photoPlaceholder}><span>Ảnh mặt đồng hồ chi tiết</span></div>
+                        <div className={classes.photoPlaceholder}>
+                            <img
+                                src="https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/PROD%2FIMG_5219.jpg?alt=media&token=620631f8-62f2-4287-9df2-305baa9d464b"
+                                alt="Apple Watch Series 4 - Ảnh thực tế 1"
+                                loading="lazy"
+                            />
+                        </div>
+                        <div className={classes.photoPlaceholder}>
+                            <img
+                                src="https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/PROD%2FIMG_5222.jpg?alt=media&token=0376c23f-72e7-4da2-9c6d-7e7ef4d5bf02"
+                                alt="Apple Watch Series 4 - Ảnh thực tế 2"
+                                loading="lazy"
+                            />
+                        </div>
+                        <div className={classes.photoPlaceholder}>
+                            <img
+                                src="https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/PROD%2FIMG_5227.jpg?alt=media&token=3df952ae-e6ab-4b4a-9714-9c581dd7f732"
+                                alt="Apple Watch Series 4 - Ảnh thực tế 3"
+                                loading="lazy"
+                            />
+                        </div>
+                        <div className={classes.photoPlaceholder}>
+                            <img
+                                src="https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/PROD%2FIMG_5225.jpg?alt=media&token=fd652bce-72b3-4dc7-83cd-9ec380c4b82f"
+                                alt="Apple Watch Series 4 - Ảnh thực tế 4"
+                                loading="lazy"
+                            />
+                        </div>
                     </div>
                 </div>
             </section>
@@ -272,6 +368,42 @@ function PromoAppleWatch4() {
                 </div>
             </section>
 
+            {/* ── HƯỚNG DẪN GHÉP APPLE WATCH ── */}
+            <section className={classes.pairGuideSection} aria-label="Hướng dẫn ghép Apple Watch với iPhone">
+                <div className={classes.container}>
+                    <div className={classes.pairGuideGrid}>
+                        <div>
+                            <div className={classes.sectionLabel}>Sau khi nhận máy</div>
+                            <h2 className={classes.h2}>Cách ghép Apple Watch Series 4 với iPhone</h2>
+                            <p className={classes.pairGuideLead}>
+                                Series 4 ghép qua app <b>Watch</b> trên iPhone. Bạn chỉ cần iPhone đã đăng nhập iCloud, bật Bluetooth và Wi‑Fi;
+                                đồng hồ đặt sát máy là có thể bắt đầu.
+                            </p>
+                            <ul className={classes.pairGuideList}>
+                                <li>Mở app <b>Watch</b> → <b>Bắt đầu ghép nối</b> → quét animation trên mặt đồng hồ.</li>
+                                <li>Chọn <b>cổ tay</b> (trái/phải), đồng ý điều khoản, chờ đồng bộ vài phút.</li>
+                                <li>Tạo <b>mã PIN</b> trên đồng hồ để bảo vệ khi tháo khỏi tay.</li>
+                                <li>Bật <b>Thông báo</b>, <b>Sức khỏe</b>, <b>Phòng tập</b> theo nhu cầu — có thể chỉnh sau trong app.</li>
+                                <li>Nếu đồng hồ đã từng ghép máy khác: cần <b>xóa/ghi đè</b> trong Cài đặt trên đồng hồ hoặc nhờ shop reset trước khi ghép máy mới.</li>
+                            </ul>
+                            <div className={classes.pairGuideNote}>
+                                <b>Mua tại TaoOne:</b> được hỗ trợ ghép nối và cài đặt cơ bản — xem video bên cạnh hoặc inbox để được chỉ từng bước.
+                            </div>
+                        </div>
+                        <div className={classes.pairGuideMedia}>
+                            <iframe
+                                src={PAIR_GUIDE_YT_EMBED}
+                                title="Ghép đôi Apple Watch"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerPolicy="strict-origin-when-cross-origin"
+                                allowFullScreen
+                                loading="lazy"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* ── CAM KẾT ── */}
             <section className={classes.sectionGray}>
                 <div className={classes.container}>
@@ -283,6 +415,23 @@ function PromoAppleWatch4() {
                                 <div className={classes.promiseIcon}>{p.icon}</div>
                                 <div className={classes.promiseTitle}>{p.title}</div>
                                 <div className={classes.promiseDesc}>{p.desc}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ── PHẢN HỒI KHÁCH HÀNG ── */}
+            <section className={classes.section}>
+                <div className={classes.container}>
+                    <div className={classes.sectionLabel}>Khách đã nói gì?</div>
+                    <h2 className={classes.h2}>Feedback từ người đã mua</h2>
+                    <div className={classes.feedbackGrid}>
+                        {CUSTOMER_FEEDBACK.map((f) => (
+                            <div key={f.author} className={classes.feedbackCard}>
+                                <div className={classes.feedbackStars} aria-hidden>{f.stars}</div>
+                                <p className={classes.feedbackQuote}>“{f.quote}”</p>
+                                <div className={classes.feedbackAuthor}>{f.author}</div>
                             </div>
                         ))}
                     </div>

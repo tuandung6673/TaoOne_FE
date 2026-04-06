@@ -45,13 +45,53 @@
     background: linear-gradient(120deg, rgba(0, 0, 0, 0.55) 30%, transparent 80%);
   }
   
-  .heroContent {
+  .heroInner {
     position: relative;
     z-index: 1;
-    width: min(780px, calc(100% - 40px));
+    width: min(1120px, calc(100% - 40px));
     margin: 0 auto;
-    padding: 100px 0 80px;
+    padding: 0px 0 80px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(28px, 4vw, 56px);
+    align-items: center;
+  }
+  
+  .heroText {
+    text-align: left;
+  }
+  
+  .heroMedia {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+  }
+  
+  .heroMediaImg {
+    width: 100%;
+    max-width: 440px;
+    height: auto;
+    max-height: min(72vh, 520px);
+    object-fit: contain;
+    border-radius: 20px;
+    filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.45));
+  }
+  
+  .heroMediaPlaceholder {
+    width: 100%;
+    max-width: 440px;
+    aspect-ratio: 4 / 5;
+    border-radius: 24px;
+    border: 1px dashed rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 14px;
+    line-height: 1.6;
   }
   
   .heroBadge {
@@ -79,11 +119,11 @@
   }
   
   .heroSub {
-    margin: 18px auto 0;
+    margin: 18px 0 0;
     font-size: clamp(15px, 1.4vw, 17px);
     line-height: 1.65;
     color: var(--p4-muted);
-    max-width: 58ch;
+    max-width: 52ch;
   }
   
   .heroSub b {
@@ -93,7 +133,7 @@
   .heroCtas {
     display: flex;
     gap: 12px;
-    justify-content: center;
+    justify-content: flex-start;
     flex-wrap: wrap;
     margin-top: 28px;
   }
@@ -102,7 +142,7 @@
     margin-top: 22px;
     display: flex;
     gap: 16px;
-    justify-content: center;
+    justify-content: flex-start;
     flex-wrap: wrap;
     font-size: 13px;
     color: var(--p4-muted);
@@ -225,6 +265,80 @@
     font-size: 14px;
   }
   
+  /* ── TIKTOK-STYLE VIDEO STRIP (hero → pain) ── */
+  .tiktokVideoSection {
+    padding: 56px 0 64px;
+    background: var(--p4-gray-bg);
+    border-bottom: 1px solid var(--p4-gray-border);
+  }
+  
+  .tiktokVideoHead {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 8px;
+    padding: 0 20px;
+  }
+  
+  .tiktokVideoLabel {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--p4-accent);
+    margin-bottom: 10px;
+  }
+  
+  .tiktokVideoTitle {
+    margin: 0;
+    font-size: clamp(22px, 2.4vw, 32px);
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--p4-ink);
+  }
+  
+  .tiktokVideoRow {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(12px, 2vw, 20px);
+    margin-top: 28px;
+    align-items: start;
+    justify-items: center;
+    max-width: min(1020px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px;
+  }
+  
+  .tiktokVideoFrame {
+    width: 100%;
+    max-width: 325px;
+    aspect-ratio: 9 / 16;
+    margin: 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  
+  .tiktokVideoFrame iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    border-radius: 0;
+    border: 0;
+  }
+  
+  .tiktokVideoCell {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
   /* ── GIẢI PHÁP (dark section) ── */
   .splitSolution {
     display: grid;
@@ -232,8 +346,6 @@
     gap: 40px;
     align-items: center;
   }
-  
-  .solutionText {}
   
   .solutionList {
     margin: 20px 0 0;
@@ -253,12 +365,12 @@
   
   .solutionMedia {
     width: 100%;
-    max-width: 420px;
+    max-width: 360px;
   }
   
   .mediaPlaceholderDark {
     width: 100%;
-    aspect-ratio: 4/3;
+    aspect-ratio: 1 / 1;
     border-radius: 24px;
     border: 1px dashed rgba(255, 255, 255, 0.2);
     background: rgba(255, 255, 255, 0.04);
@@ -269,6 +381,14 @@
     color: rgba(255, 255, 255, 0.3);
     font-size: 14px;
     line-height: 1.6;
+    overflow: hidden;
+  }
+
+  .mediaPlaceholderDark img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
   
   .solutionCta {
@@ -321,7 +441,6 @@
   .photoGrid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: repeat(2, 220px);
     gap: 12px;
     margin-top: 28px;
   }
@@ -336,12 +455,13 @@
     color: rgba(0, 0, 0, 0.3);
     font-size: 13px;
     overflow: hidden;
+    aspect-ratio: 3 / 4; /* 3024x4032 */
   }
   
   .photoPlaceholder img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 20px;
   }
   
@@ -473,6 +593,8 @@
     padding: 20px 24px;
     display: grid;
     gap: 12px;
+    text-align: center;
+    justify-items: center;
   }
   
   .dealTitle {
@@ -486,6 +608,7 @@
     display: flex;
     gap: 24px;
     flex-wrap: wrap;
+    justify-content: center;
   }
   
   .dealItem {
@@ -580,6 +703,125 @@
     color: var(--p4-white);
   }
   
+  /* ── HƯỚNG DẪN GHÉP ĐỒNG HỒ ── */
+  .pairGuideSection {
+    padding: 72px 0;
+    background: #fff;
+    border-top: 1px solid var(--p4-gray-border);
+  }
+  
+  .pairGuideGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(16px, 2.6vw, 32px);
+    align-items: center;
+  }
+  
+  .pairGuideLead {
+    margin: 14px 0 0;
+    font-size: clamp(15px, 1.4vw, 17px);
+    line-height: 1.65;
+    color: var(--p4-ink-muted);
+    max-width: 56ch;
+  }
+  
+  .pairGuideLead b {
+    color: var(--p4-ink);
+  }
+  
+  .pairGuideList {
+    margin: 18px 0 0;
+    padding-left: 20px;
+    color: var(--p4-ink-muted);
+    line-height: 1.85;
+    font-size: 15px;
+  }
+  
+  .pairGuideList b {
+    color: var(--p4-ink);
+  }
+  
+  .pairGuideNote {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: var(--p4-gray-bg);
+    border: 1px solid var(--p4-gray-border);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--p4-ink-muted);
+  }
+  
+  .pairGuideNote b {
+    color: var(--p4-ink);
+  }
+  
+  .pairGuideMedia {
+    min-width: 0;
+    width: 100%;
+    max-width: 340px;
+    justify-self: end;
+    align-self: start;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #111;
+    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.12);
+    border: 1px solid var(--p4-gray-border);
+  }
+  
+  .pairGuideMedia iframe {
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    display: block;
+    border: 0;
+    max-height: min(520px, 62vh);
+  }
+  
+  /* ── PHẢN HỒI KHÁCH HÀNG ── */
+  .feedbackGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+  }
+  
+  .feedbackCard {
+    background: #fff;
+    border: 1px solid var(--p4-gray-border);
+    border-radius: 20px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: box-shadow 180ms ease, transform 180ms ease;
+  }
+  
+  .feedbackCard:hover {
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.07);
+    transform: translateY(-2px);
+  }
+  
+  .feedbackStars {
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    color: var(--p4-accent);
+  }
+  
+  .feedbackQuote {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--p4-ink);
+    font-style: italic;
+  }
+  
+  .feedbackAuthor {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--p4-ink-muted);
+    margin-top: auto;
+  }
+  
   /* ── CAM KẾT ── */
   .promiseGrid {
     display: grid;
@@ -628,8 +870,6 @@
     align-items: start;
   }
   
-  .formLeft {}
-  
   .formSubtext {
     margin-top: 14px;
     color: var(--p4-muted);
@@ -648,8 +888,6 @@
     color: rgba(255, 255, 255, 0.7);
     line-height: 1.5;
   }
-  
-  .formRight {}
   
   /* ── CHÍNH SÁCH ── */
   .policyGrid {
@@ -742,6 +980,18 @@
   
   /* ── RESPONSIVE ── */
   @media (max-width: 960px) {
+    .heroInner {
+      grid-template-columns: 1fr;
+      padding-top: 88px;
+      padding-bottom: 64px;
+    }
+  
+    .heroMediaImg,
+    .heroMediaPlaceholder {
+      max-width: 360px;
+      max-height: 48vh;
+    }
+  
     .painGrid {
       grid-template-columns: 1fr;
     }
@@ -794,6 +1044,18 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   
+    .pairGuideGrid {
+      grid-template-columns: 1fr;
+    }
+  
+    .pairGuideMedia {
+      order: -1;
+    }
+  
+    .feedbackGrid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  
     .formWrap {
       grid-template-columns: 1fr;
       gap: 32px;
@@ -805,13 +1067,13 @@
   
     .heroCtas {
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
     }
   
     .ctaPrimary,
     .ctaSecondary {
       width: 100%;
-      max-width: 320px;
+      max-width: none;
       text-align: center;
     }
   }
@@ -825,7 +1087,27 @@
       grid-template-columns: 1fr;
     }
   
-    .heroContent {
+    .feedbackGrid {
+      grid-template-columns: 1fr;
+    }
+  
+    .tiktokVideoRow {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 12px;
+      padding: 0 20px 10px;
+      -webkit-overflow-scrolling: touch;
+    }
+  
+    .tiktokVideoCell {
+      flex: 0 0 min(78vw, 280px);
+      scroll-snap-align: center;
+    }
+  
+    .heroInner {
       padding: 80px 0 60px;
     }
   }

@@ -236,7 +236,7 @@
         margin: 0 0 6px 0;
         font-size: 14px;
         font-weight: 700;
-        color: #28a745;
+        color: #7CBD43;
     }
 }
 
@@ -266,7 +266,7 @@
         transition: all 0.2s ease;
         
         &:hover:not(:disabled) {
-            background: #28a745;
+            background: #7CBD43;
             color: white;
         }
         
@@ -363,7 +363,7 @@
 
 .checkout_overlay {
     width: 50%;
-    background: #28a745;
+    background: #7CBD43;
     color: white;
     border: none;
     border-radius: 6px;

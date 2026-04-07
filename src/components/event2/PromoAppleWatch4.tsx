@@ -5,39 +5,39 @@ import { CAM_KET, QUA_TANG, SOCIAL_LINKS } from "../../constants/constants";
 
 const PAIN_POINTS = [
     {
-        icon: "💸",
+        icon: "pi pi-money-bill",
         title: "Không muốn bỏ hơn chục triệu",
         desc: "Apple Watch mới giá từ 7–10 triệu, quá cao cho nhu cầu cơ bản.",
     },
     {
-        icon: "🎯",
+        icon: "pi pi-wifi",
         title: "Chỉ cần những tính năng thiết yếu",
         desc: "Theo dõi sức khoẻ, nhận thông báo, tập luyện — không cần tính năng dư thừa.",
     },
     {
-        icon: "😟",
+        icon: "pi pi-thumbs-down-fill",
         title: "Ngại mua hàng cũ không rõ nguồn",
         desc: "Sợ pin kém, lỗi vặt, bảo hành mập mờ, mua xong không có ai hỗ trợ.",
     },
 ];
 
 const BENEFITS = [
-    { icon: "📱", title: "Màn hình lớn, rõ ràng", desc: "Hiển thị thông tin trực quan, dễ đọc ngay trên cổ tay." },
-    { icon: "❤️", title: "Theo dõi sức khỏe toàn diện", desc: "Nhịp tim, vận động, giấc ngủ — mọi thứ một nơi." },
-    { icon: "📲", title: "Kết nối thông minh", desc: "Nhận cuộc gọi, tin nhắn, thông báo trực tiếp trên đồng hồ." },
-    { icon: "⌚", title: "Thiết kế vẫn rất hiện đại", desc: "Series 4 không lỗi thời — vẫn đẹp, vẫn sang, vẫn ổn định." },
+    { icon: "pi pi-stop", title: "Màn hình lớn, rõ ràng", desc: "Hiển thị thông tin trực quan, dễ đọc ngay trên cổ tay." },
+    { icon: "pi pi-heart-fill", title: "Theo dõi sức khỏe toàn diện", desc: "Nhịp tim, vận động, giấc ngủ — mọi thứ một nơi." },
+    { icon: "pi pi-bolt", title: "Kết nối thông minh", desc: "Nhận cuộc gọi, tin nhắn, thông báo trực tiếp trên đồng hồ." },
+    { icon: "pi pi-verified", title: "Thiết kế vẫn rất hiện đại", desc: "Series 4 không lỗi thời — vẫn đẹp, vẫn sang, vẫn ổn định." },
 ];
 
 /** Set to a path under `public/` (e.g. `/promo/apple-watch-s4-hero.webp`) when the asset is ready. */
 const HERO_IMAGE_SRC = "https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/PROD%2FS456_nhom_hong%20(9).JPEG?alt=media&token=c16c210f-36a2-4854-a9b0-dca6a7bae19a";
 
 const TIKTOK_EMBEDS: { videoId: string; embedUrl: string }[] = [
-    { videoId: "1", embedUrl: "https://www.youtube.com/embed/kuZd1Rh3sJk" },
-    { videoId: "2", embedUrl: "https://www.youtube.com/embed/d6-IGmh3W8I" },
-    { videoId: "3", embedUrl: "https://www.youtube.com/embed/x0McO-2YLag" },
+    { videoId: "1", embedUrl: "https://www.youtube.com/embed/b0QI6H4Gjuc" },
+    { videoId: "2", embedUrl: "https://www.youtube.com/embed/3wf4NscVtc4" },
+    { videoId: "3", embedUrl: "https://www.youtube.com/embed/7NzKntOXvXQ" },
 ];
 
-const PAIR_GUIDE_YT_EMBED = "https://www.youtube.com/embed/sb6-jCSfdZw";
+const PAIR_GUIDE_YT_EMBED = "https://www.youtube.com/embed/XJwem3xE_k0";
 
 const CUSTOMER_FEEDBACK = [
     {
@@ -58,10 +58,10 @@ const CUSTOMER_FEEDBACK = [
 ];
 
 const PROMISE_ITEMS = [
-    { icon: "✅", title: "Cam kết đúng mô tả", desc: "Hàng thực tế đúng như mô tả, không nói quá." },
-    { icon: "🔍", title: "Bao test – bao kiểm tra", desc: "Kiểm tra kỹ trước khi giao, pin tốt, mượt mà." },
-    { icon: "🔄", title: "Hỗ trợ đổi nếu lỗi phần cứng", desc: "Phát sinh lỗi phần cứng sẽ được hỗ trợ đổi máy." },
-    { icon: "🤝", title: "Tư vấn đúng nhu cầu", desc: "Không ép mua — tư vấn thật sự phù hợp ngân sách bạn." },
+    { icon: "pi pi-check", title: "Cam kết đúng mô tả", desc: "Hàng thực tế đúng như mô tả, không nói quá." },
+    { icon: "pi pi-search", title: "Bao test – bao kiểm tra", desc: "Kiểm tra kỹ trước khi giao, pin tốt, mượt mà." },
+    { icon: "pi pi-wrench", title: "Hỗ trợ đổi nếu lỗi phần cứng", desc: "Phát sinh lỗi phần cứng sẽ được hỗ trợ đổi máy." },
+    { icon: "pi pi-compass", title: "Tư vấn đúng nhu cầu", desc: "Không ép mua — tư vấn thật sự phù hợp ngân sách bạn." },
 ];
 
 function scrollToForm() {
@@ -73,7 +73,7 @@ function scrollToForm() {
 function PromoAppleWatch4() {
     useEffect(() => {
         const prev = document.title;
-        document.title = "Apple Watch Series 4 Giá Tốt | TaoOne";
+        document.title = "Apple Watch Series 4 Giá Tốt | TáoOne";
         return () => { document.title = prev; };
     }, []);
 
@@ -89,7 +89,7 @@ function PromoAppleWatch4() {
                         <h1 className={classes.heroH1}>
                             Apple Watch Series 4
                             <br />
-                            <span className={classes.heroAccent}>Chính hãng — Giá chỉ từ X.XXX.000đ</span>
+                            <span className={classes.heroAccent}>Chính hãng — Giá chỉ từ 2.990.000đ</span>
                         </h1>
                         <p className={classes.heroSub}>
                             Chiếc Apple Watch <b>"đủ xài nhất"</b> cho người muốn trải nghiệm hệ sinh thái Apple với chi phí tối ưu.
@@ -157,7 +157,9 @@ function PromoAppleWatch4() {
                     <div className={classes.painGrid}>
                         {PAIN_POINTS.map((p) => (
                             <div key={p.title} className={classes.painCard}>
-                                <div className={classes.painIcon}>{p.icon}</div>
+                                <div className={classes.painIcon} aria-hidden>
+                                    <i className={p.icon} />
+                                </div>
                                 <div className={classes.painTitle}>{p.title}</div>
                                 <div className={classes.painDesc}>{p.desc}</div>
                             </div>
@@ -166,12 +168,12 @@ function PromoAppleWatch4() {
                 </div>
             </section>
 
-            {/* ── GIẢI PHÁP ── */}
+            {/* ── GIẢI PHÁP ── */} 
             <section className={classes.sectionDark}>
                 <div className={classes.container}>
                     <div className={classes.splitSolution}>
                         <div className={classes.solutionText}>
-                            <div className={classes.sectionLabel} style={{ color: "#f97316" }}>Giải pháp</div>
+                            <div className={classes.sectionLabel}>Giải pháp</div>
                             <h2 className={classes.h2White}>
                                 Apple Watch Series 4 —<br />
                                 Cân bằng hoàn hảo giữa giá tiền, tính năng và độ ổn định
@@ -211,7 +213,9 @@ function PromoAppleWatch4() {
                     <div className={classes.benefitGrid}>
                         {BENEFITS.map((b) => (
                             <div key={b.title} className={classes.benefitCard}>
-                                <div className={classes.benefitIcon}>{b.icon}</div>
+                                <div className={classes.benefitIcon} aria-hidden>
+                                    <i className={b.icon} />
+                                </div>
                                 <div className={classes.benefitTitle}>{b.title}</div>
                                 <div className={classes.benefitDesc}>{b.desc}</div>
                             </div>
@@ -279,12 +283,12 @@ function PromoAppleWatch4() {
             {/* ── BẢNG GIÁ SO SÁNH ── */}
             <section className={classes.sectionDark}>
                 <div className={classes.container}>
-                    <div className={classes.sectionLabel} style={{ color: "#f97316" }}>So sánh giá</div>
+                    <div className={classes.sectionLabel}>So sánh giá</div>
                     <h2 className={classes.h2White}>Tại sao chọn Series 4 thay vì mua mới?</h2>
                     <div className={classes.priceTable}>
                         <div className={classes.priceCol}>
                             <div className={classes.priceColHeader}>Apple Watch Mới</div>
-                            <div className={classes.priceAmount}>7–10 triệu</div>
+                            <div className={classes.priceAmount}>7 – 10 triệu</div>
                             <ul className={classes.priceList}>
                                 <li>Tính năng nhiều hơn nhu cầu</li>
                                 <li>Chi phí cao</li>
@@ -292,8 +296,8 @@ function PromoAppleWatch4() {
                             </ul>
                         </div>
                         <div className={classes.priceCol}>
-                            <div className={classes.priceColHeader}>Series cao hơn (S5–S9)</div>
-                            <div className={classes.priceAmount}>5–8 triệu</div>
+                            <div className={classes.priceColHeader}>Series cao hơn (S5 – S9)</div>
+                            <div className={classes.priceAmount}>5 – 8 triệu</div>
                             <ul className={classes.priceList}>
                                 <li>Tính năng vẫn dư thừa</li>
                                 <li>Giá vẫn còn cao</li>
@@ -303,7 +307,7 @@ function PromoAppleWatch4() {
                         <div className={`${classes.priceCol} ${classes.priceColHighlight}`}>
                             <div className={classes.priceColBadge}>Lựa chọn tốt nhất</div>
                             <div className={classes.priceColHeader}>Apple Watch Series 4 tại shop</div>
-                            <div className={classes.priceAmountAccent}>Chỉ từ X.XXX.000đ</div>
+                            <div className={classes.priceAmountAccent}>Chỉ từ 2.990.000đ</div>
                             <ul className={classes.priceList}>
                                 <li>✓ Đủ tính năng cần thiết</li>
                                 <li>✓ Tiết kiệm 5–7 triệu</li>
@@ -337,7 +341,7 @@ function PromoAppleWatch4() {
                                 {QUA_TANG.map((t) => (
                                     <li key={t}>{t}</li>
                                 ))}
-                                <li>- Hỗ trợ cài đặt, hướng dẫn sử dụng chi tiết cho người mới</li>
+                                <li>Hỗ trợ cài đặt, hướng dẫn sử dụng chi tiết cho người mới</li>
                             </ul>
                         </div>
                         <div className={classes.giftRight}>
@@ -387,7 +391,7 @@ function PromoAppleWatch4() {
                                 <li>Nếu đồng hồ đã từng ghép máy khác: cần <b>xóa/ghi đè</b> trong Cài đặt trên đồng hồ hoặc nhờ shop reset trước khi ghép máy mới.</li>
                             </ul>
                             <div className={classes.pairGuideNote}>
-                                <b>Mua tại TaoOne:</b> được hỗ trợ ghép nối và cài đặt cơ bản — xem video bên cạnh hoặc inbox để được chỉ từng bước.
+                                <b>Mua tại TáoOne:</b> được hỗ trợ ghép nối và cài đặt cơ bản — xem video bên cạnh hoặc inbox để được chỉ từng bước.
                             </div>
                         </div>
                         <div className={classes.pairGuideMedia}>
@@ -407,12 +411,14 @@ function PromoAppleWatch4() {
             {/* ── CAM KẾT ── */}
             <section className={classes.sectionGray}>
                 <div className={classes.container}>
-                    <div className={classes.sectionLabel}>Cam kết của TaoOne</div>
+                    <div className={classes.sectionLabel}>Cam kết của TáoOne</div>
                     <h2 className={classes.h2}>Mua an tâm — hỗ trợ tận tâm</h2>
                     <div className={classes.promiseGrid}>
                         {PROMISE_ITEMS.map((p) => (
                             <div key={p.title} className={classes.promiseCard}>
-                                <div className={classes.promiseIcon}>{p.icon}</div>
+                                <div className={classes.promiseIcon} aria-hidden>
+                                    <i className={p.icon} />
+                                </div>
                                 <div className={classes.promiseTitle}>{p.title}</div>
                                 <div className={classes.promiseDesc}>{p.desc}</div>
                             </div>
@@ -443,9 +449,9 @@ function PromoAppleWatch4() {
                 <div className={classes.container}>
                     <div className={classes.formWrap}>
                         <div className={classes.formLeft}>
-                            <div className={classes.sectionLabel} style={{ color: "#f97316" }}>Kêu gọi hành động</div>
+                            <div className={classes.sectionLabel}>Hành động</div>
                             <h2 className={classes.h2White}>
-                                Inbox ngay để xem mẫu Series 4 đang có
+                                Inbox ngay để xem mẫu Apple Watch Series 4 đang có
                             </h2>
                             <p className={classes.formSubtext}>
                                 Nhận giá tốt nhất và ưu đãi trong hôm nay. Số lượng có hạn — đừng để lỡ.
@@ -470,17 +476,23 @@ function PromoAppleWatch4() {
                     <h2 className={classes.h2}>Không lo rủi ro khi mua</h2>
                     <div className={classes.policyGrid}>
                         <div className={classes.policyCard}>
-                            <div className={classes.policyIcon}>🔎</div>
+                            <div className={classes.policyIcon} aria-hidden>
+                                <i className="pi pi-search" />
+                            </div>
                             <div className={classes.policyTitle}>Kiểm tra hàng trước khi thanh toán</div>
                             <div className={classes.policyDesc}>Mở hộp kiểm tra tình trạng sản phẩm trước khi trả tiền.</div>
                         </div>
                         <div className={classes.policyCard}>
-                            <div className={classes.policyIcon}>🛡️</div>
+                            <div className={classes.policyIcon} aria-hidden>
+                                <i className="pi pi-shield" />
+                            </div>
                             <div className={classes.policyTitle}>Bảo hành rõ ràng</div>
                             <div className={classes.policyDesc}>Bảo hành minh bạch, hỗ trợ đổi nếu lỗi phần cứng.</div>
                         </div>
                         <div className={classes.policyCard}>
-                            <div className={classes.policyIcon}>🚚</div>
+                            <div className={classes.policyIcon} aria-hidden>
+                                <i className="pi pi-globe" />
+                            </div>
                             <div className={classes.policyTitle}>Giao hàng toàn quốc</div>
                             <div className={classes.policyDesc}>Ship COD toàn quốc — nhận hàng rồi mới thanh toán.</div>
                         </div>
@@ -491,7 +503,7 @@ function PromoAppleWatch4() {
             {/* ── LIÊN HỆ ── */}
             <section className={classes.contact}>
                 <div className={classes.container}>
-                    <h2 className={classes.h2White}>Liên hệ với TaoOne</h2>
+                    <h2 className={classes.h2White}>Liên hệ với TáoOne</h2>
                     <p className={classes.contactSub}>Sẵn sàng tư vấn — phản hồi nhanh trong giờ làm việc</p>
                     <div className={classes.contactLinks}>
                         <a

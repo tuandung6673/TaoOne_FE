@@ -48,10 +48,10 @@ export const CAM_KET = [
 ]
 
 export const QUA_TANG = [
-    "- Dây đeo và dây sạc (Apple Watch) chính hãng",
-    "- Miếng dán màn hình trị giá 100k",
-    "- Cáp sạc iPhone & iPad 200k",
-    "- Vệ sinh máy trọn đời"
+    "Dây đeo và dây sạc (Apple Watch) chính hãng",
+    "Miếng dán màn hình trị giá 100k",
+    "Cáp sạc iPhone & iPad 200k",
+    "Vệ sinh máy trọn đời"
 ]
 
 export const SOCIAL_LINKS = {

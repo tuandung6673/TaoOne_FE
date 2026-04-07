@@ -55,8 +55,8 @@ function App() {
             </Route>
             <Route path="/" element={<UserLayout />}>
               <Route index element={<Home />} />
-              <Route path='event' element={<EventLandingAppleWatch />} />
-              <Route path='event2' element={<PromoAppleWatch4 />} />
+              <Route path='event' element={<PromoAppleWatch4 />} />
+              {/* <Route path='event2' element={<PromoAppleWatch4 />} /> */}
               <Route path='cart' element={<Cart />} />
               <Route path='thanh-toan/:itemId' element={<Payment/>} />
               <Route path='thanh-toan-gio-hang' element={<Payment/>} />

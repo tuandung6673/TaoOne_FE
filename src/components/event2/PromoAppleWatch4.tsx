@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import classes from "./PromoAppleWatch4.module.scss";
 import LeadForm from "../event/LeadForm";
 import { CAM_KET, QUA_TANG, SOCIAL_LINKS } from "../../constants/constants";
+import s4BacTachNen from "../../images/s4_bac_tachnen.png";
+import s4DenTachNen from "../../images/s4_den_tachnen.png";
+import s4HongTachNen from "../../images/s4_hong_tachnen.png";
 
 const PAIN_POINTS = [
     {
@@ -28,8 +31,11 @@ const BENEFITS = [
     { icon: "pi pi-verified", title: "Thiết kế vẫn rất hiện đại", desc: "Series 4 không lỗi thời — vẫn đẹp, vẫn sang, vẫn ổn định." },
 ];
 
-/** Set to a path under `public/` (e.g. `/promo/apple-watch-s4-hero.webp`) when the asset is ready. */
-const HERO_IMAGE_SRC = "https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/PROD%2FS456_nhom_hong%20(9).JPEG?alt=media&token=c16c210f-36a2-4854-a9b0-dca6a7bae19a";
+const HERO_IMAGES = [
+    { src: s4DenTachNen, alt: "Apple Watch Series 4 - Màu đen" },
+    { src: s4BacTachNen, alt: "Apple Watch Series 4 - Màu bạc" },
+    { src: s4HongTachNen, alt: "Apple Watch Series 4 - Màu hồng" },
+] as const;
 
 const TIKTOK_EMBEDS: { videoId: string; embedUrl: string }[] = [
     { videoId: "1", embedUrl: "https://www.youtube.com/embed/b0QI6H4Gjuc" },
@@ -110,17 +116,17 @@ function PromoAppleWatch4() {
                         </div>
                     </div>
                     <div className={classes.heroMedia}>
-                        {HERO_IMAGE_SRC ? (
-                            <img
-                                className={classes.heroMediaImg}
-                                src={HERO_IMAGE_SRC}
-                                alt="Apple Watch Series 4"
-                            />
-                        ) : (
-                            <div className={classes.heroMediaPlaceholder}>
-                                <span>Ảnh Apple Watch Series 4<br />trên tay / lifestyle</span>
-                            </div>
-                        )}
+                        <div className={classes.heroMediaStack} aria-label="Các màu Apple Watch Series 4">
+                            {HERO_IMAGES.map((img) => (
+                                <img
+                                    key={img.alt}
+                                    className={classes.heroMediaStackImg}
+                                    src={img.src}
+                                    alt={img.alt}
+                                    loading="eager"
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
@@ -168,7 +174,7 @@ function PromoAppleWatch4() {
                 </div>
             </section>
 
-            {/* ── GIẢI PHÁP ── */} 
+            {/* ── GIẢI PHÁP ── */}
             <section className={classes.sectionDark}>
                 <div className={classes.container}>
                     <div className={classes.splitSolution}>
@@ -199,7 +205,7 @@ function PromoAppleWatch4() {
                     </div>
                     <div className={classes.solutionCta}>
                         <button className={classes.ctaPrimary} onClick={scrollToForm}>
-                            Xem mẫu đang có – Nhận báo giá ngay →
+                            Nhận ưu đãi ngay →
                         </button>
                     </div>
                 </div>
@@ -258,6 +264,11 @@ function PromoAppleWatch4() {
                                 loading="lazy"
                             />
                         </div>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}>
+                        <button className={classes.ctaPrimary} onClick={scrollToForm}>
+                            Nhận ưu đãi ngay →
+                        </button>
                     </div>
                 </div>
             </section>
@@ -346,8 +357,12 @@ function PromoAppleWatch4() {
                         </div>
                         <div className={classes.giftRight}>
                             <div className={classes.giftPlaceholder}>
-                                <span>🎁</span>
-                                <p>Quà tặng kèm theo</p>
+                                <img
+                                    className={classes.giftImage}
+                                    src="https://scontent.fhan2-3.fna.fbcdn.net/v/t1.15752-9/663411647_25991328973895829_1903081013089547257_n.png?_nc_cat=101&ccb=1-7&_nc_sid=9f807c&_nc_ohc=NxQeXUJgongQ7kNvwEZvxvo&_nc_oc=AdqjtEeTPauoo-BDUC_2Hqjgbs5oUK1l-9QzzDNjRev-8nPzK3PYzitvucM4oiDCdow&_nc_zt=23&_nc_ht=scontent.fhan2-3.fna&_nc_ss=7a3a8&oh=03_Q7cD5AH80R_ruEiUd_ppShrQtqcK30c5BDWv2iGI-iOkqKcbIA&oe=69FC4DBB"
+                                    alt="Quà tặng kèm theo"
+                                    loading="lazy"
+                                />
                             </div>
                         </div>
                     </div>
@@ -366,7 +381,7 @@ function PromoAppleWatch4() {
                             Hết là phải chờ đợt khác — <b>không giữ giá</b>.
                         </p>
                         <button className={classes.ctaPrimary} onClick={scrollToForm}>
-                            Xem mẫu còn hàng ngay →
+                            Nhận ưu đãi ngay →
                         </button>
                     </div>
                 </div>

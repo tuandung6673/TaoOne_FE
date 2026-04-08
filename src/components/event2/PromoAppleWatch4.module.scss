@@ -68,6 +68,23 @@
     min-width: 0;
   }
   
+  .heroMediaSingle {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .heroMediaSingleImg {
+    width: 100%;
+    height: auto;
+    max-height: min(62vh, 420px);
+    object-fit: contain;
+    filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.45));
+  }
+
   .heroMediaStack {
     width: 100%;
     max-width: 440px;
@@ -686,7 +703,7 @@
   /* ── KHAN HIẾM ── */
   .scarcity {
     background: var(--p4-dark2);
-    padding: 80px 0;
+    padding: 60px 0;
     text-align: center;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -1007,6 +1024,7 @@
       padding-bottom: 64px;
     }
   
+    .heroMediaSingle,
     .heroMediaImg,
     .heroMediaPlaceholder {
       max-width: 360px;
@@ -1058,7 +1076,7 @@
     }
   
     .giftRight {
-      order: -1;
+      order: 1;
     }
   
     .promiseGrid {

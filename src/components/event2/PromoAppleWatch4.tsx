@@ -116,16 +116,13 @@ function PromoAppleWatch4() {
                         </div>
                     </div>
                     <div className={classes.heroMedia}>
-                        <div className={classes.heroMediaStack} aria-label="Các màu Apple Watch Series 4">
-                            {HERO_IMAGES.map((img) => (
-                                <img
-                                    key={img.alt}
-                                    className={classes.heroMediaStackImg}
-                                    src={img.src}
-                                    alt={img.alt}
-                                    loading="eager"
-                                />
-                            ))}
+                        <div className={classes.heroMediaSingle} aria-label="Apple Watch Series 4">
+                            <img
+                                className={classes.heroMediaSingleImg}
+                                src="https://scontent.fhan14-3.fna.fbcdn.net/v/t1.15752-9/663494664_1092770170579318_10819237057789602_n.png?_nc_cat=103&ccb=1-7&_nc_sid=9f807c&_nc_ohc=3_-Nkz9ivcYQ7kNvwGTP169&_nc_oc=AdrkI3yiZw0fx2SrDHTulcTIz0qR6DhJplHuJTcUMVGl2CCmHV3EU4B3p8Uy_HbuV5I&_nc_zt=23&_nc_ht=scontent.fhan14-3.fna&_nc_ss=7a3a8&oh=03_Q7cD5AFgdrnW1akhaARtcRceSCHxLZXDbF4a8NJqj5yRM4C_9Q&oe=69FD26E7"
+                                alt="Apple Watch Series 4"
+                                loading="eager"
+                            />
                         </div>
                     </div>
                 </div>
@@ -378,7 +375,7 @@ function PromoAppleWatch4() {
                         <p className={classes.scarcityDesc}>
                             Hàng đẹp, pin tốt không có nhiều. Mỗi đợt chỉ về <b>số lượng rất hạn chế</b>.
                             <br />
-                            Hết là phải chờ đợt khác — <b>không giữ giá</b>.
+                            {/* Hết là phải chờ đợt khác — <b>không giữ giá</b>. */}
                         </p>
                         <button className={classes.ctaPrimary} onClick={scrollToForm}>
                             Nhận ưu đãi ngay →

@@ -327,7 +327,7 @@ function ProductDetail() {
                                 <span>Quà tặng</span>
                             </div>
                             {QUA_TANG.map((item: any, index: any) => (
-                                <div key={index}>{item}</div>
+                                <div key={index}>- {item}</div>
                             ))}
                         </div>
                         <div className="lead_form_section">

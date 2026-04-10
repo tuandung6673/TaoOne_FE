@@ -100,17 +100,41 @@
     // border: 1px solid var(--p4-accent);
     // color: #fff;
     border-radius: 999px;
+    font-family: inherit;
+    font: inherit;
     font-weight: 900;
     letter-spacing: -0.02em;
     font-size: clamp(40px, 4.6vw, 68px);
     line-height: 1.05;
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: pointer;
+    user-select: none;
+    background: rgba(17, 17, 17, 0.35);
+    -webkit-tap-highlight-color: transparent;
+    appearance: none;
+    border-width: 1px;
+    border-style: solid;
     transform-origin: 50% 70%;
     animation: p4PromoWiggle 1.35s ease-in-out infinite;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    transition: border-color 160ms ease, background-color 160ms ease, transform 120ms ease;
+  }
+
+  .heroMediaPromo:hover {
+    border-color: rgba(124, 189, 67, 0.9);
+    background: rgba(17, 17, 17, 0.5);
+  }
+
+  .heroMediaPromo:active {
+    transform: scale(0.99);
+  }
+
+  .heroMediaPromo:focus-visible {
+    outline: 3px solid rgba(124, 189, 67, 0.55);
+    outline-offset: 4px;
   }
 
   @keyframes p4PromoWiggle {
@@ -1077,11 +1101,25 @@
       padding-bottom: 64px;
     }
   
-    .heroMediaSingle,
+    .heroMedia {
+      margin-top: clamp(18px, 4vw, 28px);
+    }
+
+    /* Không giới hạn chiều cao cả khối (có padding-top cho badge) — chỉ giới hạn ảnh */
+    .heroMediaSingle {
+      max-width: 360px;
+      max-height: none;
+      padding-top: clamp(40px, 10vw, 58px);
+    }
+
     .heroMediaImg,
     .heroMediaPlaceholder {
       max-width: 360px;
       max-height: 48vh;
+    }
+
+    .heroMediaSingleImg {
+      max-height: min(46vh, 360px);
     }
 
     /* Promo overlay: desktop dùng top âm để nằm trên mép ảnh; mobile stack 1 cột — top âm sẽ đè lên khối text phía trên */
@@ -1093,7 +1131,7 @@
       max-width: calc(100% - 16px);
       margin: 0 auto;
       padding: 10px 14px;
-      font-size: clamp(26px, 6vw, 36px);
+      font-size: clamp(28px, 6.4vw, 40px);
     }
   
     .painGrid {
@@ -1212,13 +1250,25 @@
     }
   
     .heroInner {
-      padding: 80px 0 60px;
+      padding: 20px 0 60px;
+    }
+
+    .heroMedia {
+      margin-top: clamp(10px, 2.5vw, 18px);
+    }
+
+    .heroMediaSingle {
+      padding-top: clamp(44px, 11vw, 62px);
+    }
+
+    .heroMediaSingleImg {
+      max-height: min(44vh, 340px);
     }
 
     .heroMediaPromo {
       top: 8px;
-      font-size: clamp(24px, 5.5vw, 32px);
-      padding: 8px 12px;
+      font-size: clamp(32px, 8vw, 46px);
+      padding: 10px 14px;
     }
   }
   

@@ -99,7 +99,7 @@ function PromoAppleWatch4() {
                                 Xem mẫu đang có – Nhận báo giá ngay
                             </button>
                             <button className={classes.ctaSecondary} onClick={scrollToForm}>
-                                Nhận ưu đãi hôm nay
+                                Nhận ưu đãi 70% hôm nay
                             </button>
                         </div>
                         <div className={classes.heroTrust}>
@@ -110,9 +110,14 @@ function PromoAppleWatch4() {
                     </div>
                     <div className={classes.heroMedia}>
                         <div className={classes.heroMediaSingle} aria-label="Apple Watch Series 4">
-                            <div className={classes.heroMediaPromo} aria-hidden>
+                            <button
+                                type="button"
+                                className={classes.heroMediaPromo}
+                                onClick={scrollToForm}
+                                aria-label="Ưu đãi 70% (nhấn để xem form)"
+                            >
                                 Ưu đãi 70%
-                            </div>
+                            </button>
                             <img
                                 className={classes.heroMediaSingleImg}
                                 src="https://scontent.fhan14-3.fna.fbcdn.net/v/t1.15752-9/663494664_1092770170579318_10819237057789602_n.png?_nc_cat=103&ccb=1-7&_nc_sid=9f807c&_nc_ohc=3_-Nkz9ivcYQ7kNvwGTP169&_nc_oc=AdrkI3yiZw0fx2SrDHTulcTIz0qR6DhJplHuJTcUMVGl2CCmHV3EU4B3p8Uy_HbuV5I&_nc_zt=23&_nc_ht=scontent.fhan14-3.fna&_nc_ss=7a3a8&oh=03_Q7cD5AFgdrnW1akhaARtcRceSCHxLZXDbF4a8NJqj5yRM4C_9Q&oe=69FD26E7"

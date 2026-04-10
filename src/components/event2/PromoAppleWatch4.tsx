@@ -1,10 +1,7 @@
 import { useEffect } from "react";
-import classes from "./PromoAppleWatch4.module.scss";
-import LeadForm from "../event/LeadForm";
 import { CAM_KET, QUA_TANG, SOCIAL_LINKS } from "../../constants/constants";
-import s4BacTachNen from "../../images/s4_bac_tachnen.png";
-import s4DenTachNen from "../../images/s4_den_tachnen.png";
-import s4HongTachNen from "../../images/s4_hong_tachnen.png";
+import LeadForm from "../event/LeadForm";
+import classes from "./PromoAppleWatch4.module.scss";
 
 const PAIN_POINTS = [
     {
@@ -30,12 +27,6 @@ const BENEFITS = [
     { icon: "pi pi-bolt", title: "Kết nối thông minh", desc: "Nhận cuộc gọi, tin nhắn, thông báo trực tiếp trên đồng hồ." },
     { icon: "pi pi-verified", title: "Thiết kế vẫn rất hiện đại", desc: "Series 4 không lỗi thời — vẫn đẹp, vẫn sang, vẫn ổn định." },
 ];
-
-const HERO_IMAGES = [
-    { src: s4DenTachNen, alt: "Apple Watch Series 4 - Màu đen" },
-    { src: s4BacTachNen, alt: "Apple Watch Series 4 - Màu bạc" },
-    { src: s4HongTachNen, alt: "Apple Watch Series 4 - Màu hồng" },
-] as const;
 
 const TIKTOK_EMBEDS: { videoId: string; embedUrl: string }[] = [
     { videoId: "1", embedUrl: "https://www.youtube.com/embed/b0QI6H4Gjuc" },
@@ -95,7 +86,9 @@ function PromoAppleWatch4() {
                         <h1 className={classes.heroH1}>
                             Apple Watch Series 4
                             <br />
-                            <span className={classes.heroAccent}>Chính hãng — Giá chỉ từ 2.990.000đ</span>
+                            <span className={classes.heroAccent}>
+                                Chính hãng — Giá chỉ từ 2.990.000đ
+                            </span>
                         </h1>
                         <p className={classes.heroSub}>
                             Chiếc Apple Watch <b>"đủ xài nhất"</b> cho người muốn trải nghiệm hệ sinh thái Apple với chi phí tối ưu.
@@ -117,6 +110,9 @@ function PromoAppleWatch4() {
                     </div>
                     <div className={classes.heroMedia}>
                         <div className={classes.heroMediaSingle} aria-label="Apple Watch Series 4">
+                            <div className={classes.heroMediaPromo} aria-hidden>
+                                Ưu đãi <span className={classes.heroDiscount}>70%</span>
+                            </div>
                             <img
                                 className={classes.heroMediaSingleImg}
                                 src="https://scontent.fhan14-3.fna.fbcdn.net/v/t1.15752-9/663494664_1092770170579318_10819237057789602_n.png?_nc_cat=103&ccb=1-7&_nc_sid=9f807c&_nc_ohc=3_-Nkz9ivcYQ7kNvwGTP169&_nc_oc=AdrkI3yiZw0fx2SrDHTulcTIz0qR6DhJplHuJTcUMVGl2CCmHV3EU4B3p8Uy_HbuV5I&_nc_zt=23&_nc_ht=scontent.fhan14-3.fna&_nc_ss=7a3a8&oh=03_Q7cD5AFgdrnW1akhaARtcRceSCHxLZXDbF4a8NJqj5yRM4C_9Q&oe=69FD26E7"

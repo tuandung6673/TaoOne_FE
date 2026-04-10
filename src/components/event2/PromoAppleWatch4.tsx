@@ -111,7 +111,7 @@ function PromoAppleWatch4() {
                     <div className={classes.heroMedia}>
                         <div className={classes.heroMediaSingle} aria-label="Apple Watch Series 4">
                             <div className={classes.heroMediaPromo} aria-hidden>
-                                Ưu đãi <span className={classes.heroDiscount}>70%</span>
+                                Ưu đãi 70%
                             </div>
                             <img
                                 className={classes.heroMediaSingleImg}

@@ -87,6 +87,8 @@
 }
 
 .news-image {
+    display: flex;
+    justify-content: center;
     img {
         max-width: 100%;
         object-fit: cover;

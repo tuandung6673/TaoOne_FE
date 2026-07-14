@@ -1,4 +1,5 @@
 export const AllRouteType = {
+    dashboard: 'dashboard',
     watch: 'watch',
     ipad: 'ipad',
     macbook: 'macbook',
@@ -6,7 +7,8 @@ export const AllRouteType = {
     accessories: 'accessories',
     banner: 'banner',
     news: 'news',
-    advise: 'advise'
+    advise: 'advise',
+    import: 'import'
 }
 
 export const SORTFILTER = {

@@ -391,6 +391,20 @@ const ApiService = {
             console.error("Error fetching slide list:", error);
             throw error; // Ném lỗi ra để xử lý sau
         }
+    },
+
+    // Template
+    downloadProductSample: async () => {
+        try {
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_BASE_URL}/Template/DownloadProductSample`,
+                { responseType: "blob" }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error downloading product sample template:", error);
+            throw error;
+        }
     }
 };
 

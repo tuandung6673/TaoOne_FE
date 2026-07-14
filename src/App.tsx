@@ -27,6 +27,8 @@ import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
 import EventLandingAppleWatch from './components/event/EventLandingAppleWatch';
 import Advise from './components/admin/advise/advise';
 import PromoAppleWatch4 from './components/event2/PromoAppleWatch4';
+import Dashboard from './components/admin/dashboard/Dashboard';
+import Import from './components/admin/import/Import';
 
 function App() {
   return (
@@ -37,7 +39,8 @@ function App() {
           <Routes>
             <Route path={ROLE.admin} element={<ProtectedRoute />}>
               <Route element={<AdminLayout />}>
-                <Route index element={<Order />}></Route>
+                <Route index element={<Dashboard />}></Route>
+                <Route path='dashboard' element={<Dashboard />}></Route>
                 <Route path='banner' element={<Banner />}></Route>
                 <Route path='category' element={<Category />}></Route>
                 {/* banner detail + category + category_detail */}
@@ -49,6 +52,7 @@ function App() {
                 <Route path='news/them-moi' element={<NewsAdminDetail />}></Route>
                 <Route path='news/:newsId' element={<NewsAdminDetail />}></Route>
                 <Route path='advise' element={<Advise />} />
+                <Route path='import' element={<Import />} />
               </Route>
             </Route>
             <Route path='login' element={<LoginForm />}>

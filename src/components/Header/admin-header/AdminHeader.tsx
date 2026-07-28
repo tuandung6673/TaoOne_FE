@@ -18,6 +18,11 @@ function AdminHeader() {
     }, []);
     const items = [
         {
+            label: 'Dashboard',
+            icon: '',
+            url: ROLE.admin + '/' + AllRouteType.dashboard
+        },
+        {
             label: 'Sản phẩm',
             icon: '',
             items: [
@@ -76,6 +81,21 @@ function AdminHeader() {
             label: 'Tư vấn',
             icon: '',
             url: ROLE.admin + '/' + AllRouteType.advise
+        },
+        {
+            label: 'Import',
+            icon: '',
+            // url: ROLE.admin + '/' + AllRouteType.import,
+            items: [
+                {
+                    label: 'Lịch sử',
+                    url: ROLE.admin + '/' + AllRouteType.importHistory
+                },
+                {
+                    label: 'Import',
+                    url: ROLE.admin + '/' + AllRouteType.import,
+                }
+            ]
         }
     ];
 

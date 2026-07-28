@@ -1,0 +1,54 @@
+.import-admin {
+    .import-card {
+        padding: 1.5rem;
+        max-width: 720px;
+    }
+
+    .import-section {
+        margin-bottom: 1.75rem;
+
+        &:last-of-type {
+            margin-bottom: 1.25rem;
+        }
+    }
+
+    .import-section-title {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+        color: var(--text-color, #212529);
+    }
+
+    .import-label {
+        display: block;
+        margin-bottom: 0.4rem;
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .import-dropzone {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem 1rem;
+        color: #6c757d;
+    }
+
+    .import-dropzone-icon {
+        font-size: 2rem;
+        color: var(--primary-color, #2196f3);
+        margin-bottom: 0.75rem;
+    }
+
+    .import-dropzone-hint {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+    }
+
+    .import-actions {
+        border-top: 1px solid var(--surface-border, #e9ecef);
+        padding-top: 1.25rem;
+    }
+}

@@ -391,6 +391,89 @@ const ApiService = {
             console.error("Error fetching slide list:", error);
             throw error; // Ném lỗi ra để xử lý sau
         }
+    },
+
+    // Template
+    downloadProductSample: async () => {
+        try {
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_BASE_URL}/SaleRecord/FileDownloadProduct`,
+                { responseType: "blob" }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error downloading product sample template:", error);
+            throw error;
+        }
+    },
+
+    // SaleRecord
+    uploadSaleRecordFile: async (file: File, month: number, year: number) => {
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("month", String(month));
+            formData.append("year", String(year));
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_BASE_URL}/SaleRecord/UploadFile`,
+                formData,
+                { headers: { "Content-Type": "multipart/form-data" } }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error uploading sale record file:", error);
+            throw error;
+        }
+    },
+
+    getTrendDashboard: async (queryParams: string = "") => {
+        try {
+            const url = queryParams
+                ? `${process.env.REACT_APP_BASE_URL}/SaleRecord/GetTrendDashboard?${queryParams}`
+                : `${process.env.REACT_APP_BASE_URL}/SaleRecord/GetTrendDashboard`;
+            const response = await axiosInstance.get(url);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching trend dashboard:", error);
+            throw error;
+        }
+    },
+
+    getStats: async (queryParams: string = "") => {
+        try {
+            const url = queryParams
+                ? `${process.env.REACT_APP_BASE_URL}/SaleRecord/GetStats?${queryParams}`
+                : `${process.env.REACT_APP_BASE_URL}/SaleRecord/GetStats`;
+            const response = await axiosInstance.get(url);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching stats:", error);
+            throw error;
+        }
+    },
+
+    getImportHistory: async () => {
+        try {
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_BASE_URL}/SaleRecord/GetImportHistory`
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching import history:", error);
+            throw error;
+        }
+    },
+
+    deleteImportHistory: async (importBatchId: string) => {
+        try {
+            const response = await axiosInstance.delete(
+                `${process.env.REACT_APP_BASE_URL}/SaleRecord/DeleteImportHistory?importBatchId=` + importBatchId
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error deleting import history:", error);
+            throw error;
+        }
     }
 };
 

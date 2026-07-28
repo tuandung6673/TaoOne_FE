@@ -1,4 +1,36 @@
 .dashboard-admin {
+    .dashboard-filter-bar {
+        background: var(--surface-card, #fff);
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .dashboard-filter-heading {
+        font-weight: 600;
+        color: var(--text-color, #212529);
+
+        i {
+            color: var(--primary-color, #2196f3);
+            margin-right: 0.5rem;
+        }
+    }
+
+    .dashboard-filter-field {
+        display: flex;
+        flex-direction: column;
+        .p-button {
+            width: 40px;
+            height: 40px;
+        }
+    }
+
+    .dashboard-filter-arrow {
+        color: #adb5bd;
+        margin-top: 1.3rem;
+    }
+
     .dashboard-stat-card {
         padding: 1.25rem;
         border-radius: 8px;
@@ -18,5 +50,53 @@
 
     .dashboard-stat-label {
         color: #6c757d;
+    }
+
+    .dashboard-stat-eye {
+        font-size: 1rem;
+        color: #adb5bd;
+        margin-left: 0.6rem;
+        cursor: pointer;
+
+        &:hover {
+            color: var(--primary-color, #2196f3);
+        }
+    }
+
+    .dashboard-filter-label {
+        display: block;
+        margin-bottom: 0.4rem;
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .dashboard-section-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    .dashboard-loading {
+        color: #6c757d;
+        padding: 2rem 0;
+        text-align: center;
+    }
+
+    .trend-pie-card {
+        border: 1px solid var(--surface-border, #e9ecef);
+        border-radius: 8px;
+        padding: 1rem;
+        height: 100%;
+    }
+
+    .trend-pie-title {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .trend-pie-empty {
+        color: #6c757d;
+        text-align: center;
+        padding: 2rem 0;
     }
 }

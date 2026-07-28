@@ -85,7 +85,17 @@ function AdminHeader() {
         {
             label: 'Import',
             icon: '',
-            url: ROLE.admin + '/' + AllRouteType.import
+            // url: ROLE.admin + '/' + AllRouteType.import,
+            items: [
+                {
+                    label: 'Lịch sử',
+                    url: ROLE.admin + '/' + AllRouteType.importHistory
+                },
+                {
+                    label: 'Import',
+                    url: ROLE.admin + '/' + AllRouteType.import,
+                }
+            ]
         }
     ];
 

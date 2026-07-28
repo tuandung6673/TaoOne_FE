@@ -8,7 +8,8 @@ export const AllRouteType = {
     banner: 'banner',
     news: 'news',
     advise: 'advise',
-    import: 'import'
+    import: 'import',
+    importHistory: 'import-history'
 }
 
 export const SORTFILTER = {

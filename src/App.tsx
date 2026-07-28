@@ -29,6 +29,7 @@ import Advise from './components/admin/advise/advise';
 import PromoAppleWatch4 from './components/event2/PromoAppleWatch4';
 import Dashboard from './components/admin/dashboard/Dashboard';
 import Import from './components/admin/import/Import';
+import ImportHistory from './components/admin/import/ImportHistory';
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
                 <Route path='news/:newsId' element={<NewsAdminDetail />}></Route>
                 <Route path='advise' element={<Advise />} />
                 <Route path='import' element={<Import />} />
+                <Route path='import-history' element={<ImportHistory />} />
               </Route>
             </Route>
             <Route path='login' element={<LoginForm />}>

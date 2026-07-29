@@ -474,6 +474,19 @@ const ApiService = {
             console.error("Error deleting import history:", error);
             throw error;
         }
+    },
+
+    getSaleRecordList: async (queryParams: string = "") => {
+        try {
+            const url = queryParams
+                ? `${process.env.REACT_APP_BASE_URL}/SaleRecord/GetSaleRecordList?${queryParams}`
+                : `${process.env.REACT_APP_BASE_URL}/SaleRecord/GetSaleRecordList`;
+            const response = await axiosInstance.get(url);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching sale record list:", error);
+            throw error;
+        }
     }
 };
 

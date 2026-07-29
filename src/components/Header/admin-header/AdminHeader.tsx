@@ -75,7 +75,16 @@ function AdminHeader() {
         {
             label: 'Đơn hàng',
             icon: '',
-            url: ROLE.admin + '/order'
+            items: [
+                {
+                    label: 'Website',
+                    url: ROLE.admin + '/order',
+                },
+                {
+                    label: 'Online',
+                    url: ROLE.admin + '/' + AllRouteType.saleRecord
+                }
+            ]
         },
         {
             label: 'Tư vấn',

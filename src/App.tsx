@@ -1,35 +1,35 @@
 import 'primeflex/primeflex.css';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.scss';
-import WatchDetail from './components/admin/watch-detail/WatchDetail';
-import Watch from './components/admin/watch/Watch';
-import AllCategory from './components/all-category/AllCategory';
-import Home from './components/home/Home';
-import ProductDetail from './components/product-detail/ProductDetail';
-import { ROLE } from './constants/constants';
-import AdminLayout from './layouts/Admin/AdminLayout';
-import UserLayout from './layouts/User/UserLayout';
-import Category from './components/admin/category/Category';
-import Banner from './components/admin/banner/banner';
-import Payment from './components/payment/payment';
-import Order from './components/admin/order/Order';
-import LoginForm from './components/login/Login';
-import Cart from './components/cart/Cart';
-import { SpinnerProvider } from './custom-hook/SpinnerContext';
-import { CartProvider } from './custom-hook/CartContext';
-import Spinner from './components/spinner/Spinner';
-import NewsAdmin from './components/admin/news_admin/NewsAdmin';
-import NewsList from './components/newsList/NewsList';
-import NewsAdminDetail from './components/admin/news_admin/news-detail/NewsDetail';
-import UserNewsDetail from './components/newsList/UserNewsDetail/UserNewsDetail';
-import UserSearch from './components/user-search/UserSearch';
-import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
-import EventLandingAppleWatch from './components/event/EventLandingAppleWatch';
 import Advise from './components/admin/advise/advise';
-import PromoAppleWatch4 from './components/event2/PromoAppleWatch4';
+import Banner from './components/admin/banner/banner';
+import Category from './components/admin/category/Category';
 import Dashboard from './components/admin/dashboard/Dashboard';
 import Import from './components/admin/import/Import';
 import ImportHistory from './components/admin/import/ImportHistory';
+import NewsAdminDetail from './components/admin/news_admin/news-detail/NewsDetail';
+import NewsAdmin from './components/admin/news_admin/NewsAdmin';
+import Order from './components/admin/order/Order';
+import SaleRecordList from './components/admin/sale-record/SaleRecordList';
+import WatchDetail from './components/admin/watch-detail/WatchDetail';
+import Watch from './components/admin/watch/Watch';
+import AllCategory from './components/all-category/AllCategory';
+import Cart from './components/cart/Cart';
+import PromoAppleWatch4 from './components/event2/PromoAppleWatch4';
+import Home from './components/home/Home';
+import LoginForm from './components/login/Login';
+import NewsList from './components/newsList/NewsList';
+import UserNewsDetail from './components/newsList/UserNewsDetail/UserNewsDetail';
+import Payment from './components/payment/payment';
+import ProductDetail from './components/product-detail/ProductDetail';
+import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
+import Spinner from './components/spinner/Spinner';
+import UserSearch from './components/user-search/UserSearch';
+import { ROLE } from './constants/constants';
+import { CartProvider } from './custom-hook/CartContext';
+import { SpinnerProvider } from './custom-hook/SpinnerContext';
+import AdminLayout from './layouts/Admin/AdminLayout';
+import UserLayout from './layouts/User/UserLayout';
 
 function App() {
   return (
@@ -49,6 +49,7 @@ function App() {
                 <Route path=':categoryName/them-moi' element={<WatchDetail />}></Route>
                 <Route path=':categoryName/:productId' element={<WatchDetail />}></Route>
                 <Route path='order' element={<Order />}></Route>
+                <Route path='sale-record' element={<SaleRecordList />}></Route>
                 <Route path='news' element={<NewsAdmin />}></Route>
                 <Route path='news/them-moi' element={<NewsAdminDetail />}></Route>
                 <Route path='news/:newsId' element={<NewsAdminDetail />}></Route>

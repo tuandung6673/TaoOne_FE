@@ -125,3 +125,34 @@ export interface AdviseForm {
     status: number;
     submitDate:string;
 }
+
+export interface SaleRecord {
+    id: string;
+    month: number;
+    year: number;
+    importBatchId: string;
+    createdDate: string;
+    stt: number;
+    phone: string;
+    address: string;
+    facebook: string;
+    gender: string;
+    productLine: string;
+    size: string;
+    color: string;
+    material: string;
+    imei: string;
+    version: string;
+    paymentMethod: string;
+    battery: string;
+    soldDate: string;
+    deliveryDate: string;
+    warranty: string;
+    importPrice: number;
+    sellPrice: number;
+    cost: number;
+    profit: number;
+    customerPaid: number | null;
+    note: string | null;
+    source: string | null;
+}

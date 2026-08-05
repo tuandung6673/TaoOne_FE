@@ -487,6 +487,57 @@ const ApiService = {
             console.error("Error fetching sale record list:", error);
             throw error;
         }
+    },
+
+    // Voucher
+    getVoucherList: async (queryParams: string = "") => {
+        try {
+            const url = queryParams
+                ? `${process.env.REACT_APP_BASE_URL}/Voucher/GetVoucherList?${queryParams}`
+                : `${process.env.REACT_APP_BASE_URL}/Voucher/GetVoucherList`;
+            const response = await axiosInstance.get(url);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching voucher list:", error);
+            throw error;
+        }
+    },
+
+    getVoucherDetail: async (id: string) => {
+        try {
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_BASE_URL}/Voucher/GetVoucherById?id=` + id
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching voucher detail:", error);
+            throw error;
+        }
+    },
+
+    postVoucher: async (data: any) => {
+        try {
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_BASE_URL}/Voucher/PostVoucher`,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error saving voucher:", error);
+            throw error;
+        }
+    },
+
+    deleteVoucher: async (id: string) => {
+        try {
+            const response = await axiosInstance.delete(
+                `${process.env.REACT_APP_BASE_URL}/Voucher/DeleteVoucher?id=` + id
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error deleting voucher:", error);
+            throw error;
+        }
     }
 };
 

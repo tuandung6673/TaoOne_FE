@@ -10,7 +10,8 @@ export const AllRouteType = {
     advise: 'advise',
     import: 'import',
     importHistory: 'import-history',
-    saleRecord: 'sale-record'
+    saleRecord: 'sale-record',
+    voucher: 'voucher'
 }
 
 export const SORTFILTER = {

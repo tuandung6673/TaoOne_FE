@@ -11,6 +11,8 @@ import NewsAdminDetail from './components/admin/news_admin/news-detail/NewsDetai
 import NewsAdmin from './components/admin/news_admin/NewsAdmin';
 import Order from './components/admin/order/Order';
 import SaleRecordList from './components/admin/sale-record/SaleRecordList';
+import VoucherDetail from './components/admin/voucher-detail/VoucherDetail';
+import Voucher from './components/admin/voucher/Voucher';
 import WatchDetail from './components/admin/watch-detail/WatchDetail';
 import Watch from './components/admin/watch/Watch';
 import AllCategory from './components/all-category/AllCategory';
@@ -56,6 +58,9 @@ function App() {
                 <Route path='advise' element={<Advise />} />
                 <Route path='import' element={<Import />} />
                 <Route path='import-history' element={<ImportHistory />} />
+                <Route path='voucher' element={<Voucher />} />
+                <Route path='voucher/them-moi' element={<VoucherDetail />} />
+                <Route path='voucher/:voucherId' element={<VoucherDetail />} />
               </Route>
             </Route>
             <Route path='login' element={<LoginForm />}>

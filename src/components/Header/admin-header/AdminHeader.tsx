@@ -92,6 +92,11 @@ function AdminHeader() {
             url: ROLE.admin + '/' + AllRouteType.advise
         },
         {
+            label: 'Voucher',
+            icon: '',
+            url: ROLE.admin + '/' + AllRouteType.voucher
+        },
+        {
             label: 'Import',
             icon: '',
             // url: ROLE.admin + '/' + AllRouteType.import,

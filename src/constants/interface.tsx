@@ -156,3 +156,42 @@ export interface SaleRecord {
     note: string | null;
     source: string | null;
 }
+
+export interface VoucherCategoryDetail {
+    category_detail_id: string;
+}
+
+export interface VoucherCategory {
+    category_id: string;
+    category_details: VoucherCategoryDetail[];
+}
+
+export class VoucherModel {
+    id?: string = "";
+    code: string = "";
+    name: string = "";
+    discount_type: "percent" | "amount" = "percent";
+    discount_value: number = 0;
+    max_discount_amount?: number | null = null;
+    min_order_amount?: number | null = null;
+    start_date: string = "";
+    end_date: string = "";
+    usage_limit?: number | null = null;
+    usage_limit_per_user?: number | null = null;
+    status: number = 1;
+    apply_scope: "all" | "category" = "all";
+    categories: VoucherCategory[] = [];
+}
+
+export interface VoucherListItem {
+    id: string;
+    code: string;
+    name: string;
+    discount_type: "percent" | "amount";
+    discount_value: number;
+    start_date: string;
+    end_date: string;
+    usage_limit: number | null;
+    used_count: number;
+    status: number;
+}

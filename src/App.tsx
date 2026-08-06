@@ -30,6 +30,7 @@ import UserSearch from './components/user-search/UserSearch';
 import { ROLE } from './constants/constants';
 import { CartProvider } from './custom-hook/CartContext';
 import { SpinnerProvider } from './custom-hook/SpinnerContext';
+import { VoucherProvider } from './custom-hook/VoucherContext';
 import AdminLayout from './layouts/Admin/AdminLayout';
 import UserLayout from './layouts/User/UserLayout';
 
@@ -37,49 +38,51 @@ function App() {
   return (
     <SpinnerProvider>
       <CartProvider>
-        <Spinner />
-        <Router>
-          <Routes>
-            <Route path={ROLE.admin} element={<ProtectedRoute />}>
-              <Route element={<AdminLayout />}>
-                <Route index element={<Dashboard />}></Route>
-                <Route path='dashboard' element={<Dashboard />}></Route>
-                <Route path='banner' element={<Banner />}></Route>
-                <Route path='category' element={<Category />}></Route>
-                {/* banner detail + category + category_detail */}
-                <Route path=':categoryName' element={<Watch />}></Route>
-                <Route path=':categoryName/them-moi' element={<WatchDetail />}></Route>
-                <Route path=':categoryName/:productId' element={<WatchDetail />}></Route>
-                <Route path='order' element={<Order />}></Route>
-                <Route path='sale-record' element={<SaleRecordList />}></Route>
-                <Route path='news' element={<NewsAdmin />}></Route>
-                <Route path='news/them-moi' element={<NewsAdminDetail />}></Route>
-                <Route path='news/:newsId' element={<NewsAdminDetail />}></Route>
-                <Route path='advise' element={<Advise />} />
-                <Route path='import' element={<Import />} />
-                <Route path='import-history' element={<ImportHistory />} />
-                <Route path='voucher' element={<Voucher />} />
-                <Route path='voucher/them-moi' element={<VoucherDetail />} />
-                <Route path='voucher/:voucherId' element={<VoucherDetail />} />
+        <VoucherProvider>
+          <Spinner />
+          <Router>
+            <Routes>
+              <Route path={ROLE.admin} element={<ProtectedRoute />}>
+                <Route element={<AdminLayout />}>
+                  <Route index element={<Dashboard />}></Route>
+                  <Route path='dashboard' element={<Dashboard />}></Route>
+                  <Route path='banner' element={<Banner />}></Route>
+                  <Route path='category' element={<Category />}></Route>
+                  {/* banner detail + category + category_detail */}
+                  <Route path=':categoryName' element={<Watch />}></Route>
+                  <Route path=':categoryName/them-moi' element={<WatchDetail />}></Route>
+                  <Route path=':categoryName/:productId' element={<WatchDetail />}></Route>
+                  <Route path='order' element={<Order />}></Route>
+                  <Route path='sale-record' element={<SaleRecordList />}></Route>
+                  <Route path='news' element={<NewsAdmin />}></Route>
+                  <Route path='news/them-moi' element={<NewsAdminDetail />}></Route>
+                  <Route path='news/:newsId' element={<NewsAdminDetail />}></Route>
+                  <Route path='advise' element={<Advise />} />
+                  <Route path='import' element={<Import />} />
+                  <Route path='import-history' element={<ImportHistory />} />
+                  <Route path='voucher' element={<Voucher />} />
+                  <Route path='voucher/them-moi' element={<VoucherDetail />} />
+                  <Route path='voucher/:voucherId' element={<VoucherDetail />} />
+                </Route>
               </Route>
-            </Route>
-            <Route path='login' element={<LoginForm />}>
-            </Route>
-            <Route path="/" element={<UserLayout />}>
-              <Route index element={<Home />} />
-              <Route path='event' element={<PromoAppleWatch4 />} />
-              {/* <Route path='event2' element={<PromoAppleWatch4 />} /> */}
-              <Route path='cart' element={<Cart />} />
-              <Route path='thanh-toan/:itemId' element={<Payment/>} />
-              <Route path='thanh-toan-gio-hang' element={<Payment/>} />
-              <Route path=':categoryName' element={<AllCategory />} />
-              <Route path=':categoryName/:itemId' element={<ProductDetail />} />
-              <Route path='news' element={<NewsList />} />
-              <Route path='news/:newsSlug' element={<UserNewsDetail />} />
-              <Route path='search' element={<UserSearch />} />
-            </Route>
-          </Routes>
-        </Router>
+              <Route path='login' element={<LoginForm />}>
+              </Route>
+              <Route path="/" element={<UserLayout />}>
+                <Route index element={<Home />} />
+                <Route path='event' element={<PromoAppleWatch4 />} />
+                {/* <Route path='event2' element={<PromoAppleWatch4 />} /> */}
+                <Route path='cart' element={<Cart />} />
+                <Route path='thanh-toan/:itemId' element={<Payment/>} />
+                <Route path='thanh-toan-gio-hang' element={<Payment/>} />
+                <Route path=':categoryName' element={<AllCategory />} />
+                <Route path=':categoryName/:itemId' element={<ProductDetail />} />
+                <Route path='news' element={<NewsList />} />
+                <Route path='news/:newsSlug' element={<UserNewsDetail />} />
+                <Route path='search' element={<UserSearch />} />
+              </Route>
+            </Routes>
+          </Router>
+        </VoucherProvider>
       </CartProvider>
     </SpinnerProvider>
   );

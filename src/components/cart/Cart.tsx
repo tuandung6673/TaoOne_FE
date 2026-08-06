@@ -1,14 +1,34 @@
 import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../custom-hook/CartContext";
+import { useVoucher } from "../../custom-hook/VoucherContext";
 import "./cart.scss";
 
 function Cart() {
     const { cartItems, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
+    const { appliedCode, result: voucherResult, loading: voucherLoading, error: voucherError, discountAmount, applyVoucher, clearVoucher } = useVoucher();
+    const [voucherInput, setVoucherInput] = useState("");
     const toast = useRef<Toast>(null);
     const navigate = useNavigate();
+
+    const ineligibleReasonByProductId: Record<string, string> = {};
+    voucherResult?.ineligible_products?.forEach((p) => {
+        ineligibleReasonByProductId[p.product_id] = p.reason;
+    });
+
+    const handleApplyVoucher = async () => {
+        await applyVoucher(voucherInput);
+    };
+
+    const handleRemoveVoucher = () => {
+        setVoucherInput("");
+        clearVoucher();
+    };
+
+    const finalTotal = Math.max(getCartTotal() - discountAmount, 0);
 
     const formatNumber = (number: number) => {
         return new Intl.NumberFormat("vi-VN").format(number);
@@ -117,6 +137,12 @@ function Cart() {
                                         </span>
                                     )}
                                 </div>
+                                {ineligibleReasonByProductId[item.id] && (
+                                    <div className="item_voucher_warning">
+                                        <i className="pi pi-exclamation-triangle"></i>
+                                        Sản phẩm này không được áp dụng mã giảm giá
+                                    </div>
+                                )}
                             </div>
                             <div className="item_quantity">
                                 <button
@@ -153,9 +179,54 @@ function Cart() {
                         <span>Phí vận chuyển:</span>
                         <span>Miễn phí</span>
                     </div>
+
+                    <div className="voucher_box">
+                        {appliedCode ? (
+                            <div className="voucher_applied">
+                                <div className="voucher_applied_info">
+                                    <i className="pi pi-tag"></i>
+                                    <span>Mã <b>{appliedCode}</b> đã áp dụng</span>
+                                </div>
+                                <button className="voucher_remove_btn" onClick={handleRemoveVoucher}>
+                                    <i className="pi pi-times"></i>
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="voucher_input_row">
+                                <InputText
+                                    placeholder="Nhập mã giảm giá"
+                                    value={voucherInput}
+                                    onChange={(e) => setVoucherInput(e.target.value)}
+                                    onKeyDown={(e) => e.key === "Enter" && handleApplyVoucher()}
+                                />
+                                <Button
+                                    label="Áp dụng"
+                                    onClick={handleApplyVoucher}
+                                    loading={voucherLoading}
+                                />
+                            </div>
+                        )}
+                        {voucherError && (
+                            <div className="voucher_error">
+                                <i className="pi pi-times-circle"></i>
+                                {voucherError}
+                            </div>
+                        )}
+                        {voucherResult?.valid && voucherResult?.message && (
+                            <div className="voucher_success_message">{voucherResult.message}</div>
+                        )}
+                    </div>
+
+                    {discountAmount > 0 && (
+                        <div className="summary_item summary_discount">
+                            <span>Giảm giá:</span>
+                            <span>-{formatNumber(discountAmount)}đ</span>
+                        </div>
+                    )}
+
                     <div className="summary_total">
                         <span>Tổng cộng:</span>
-                        <span>{formatNumber(getCartTotal())}đ</span>
+                        <span>{formatNumber(finalTotal)}đ</span>
                     </div>
                     <button
                         className="checkout_button"

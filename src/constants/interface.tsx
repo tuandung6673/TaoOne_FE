@@ -195,3 +195,34 @@ export interface VoucherListItem {
     used_count: number;
     status: number;
 }
+
+export interface CheckApplyVoucherCartLine {
+    product_id: string;
+    price: number;
+    quantity: number;
+}
+
+export interface CheckApplyVoucherRequest {
+    code: string;
+    phone: string | null;
+    cart: CheckApplyVoucherCartLine[];
+}
+
+export interface VoucherApplicableProduct {
+    product_id: string;
+    discount_amount: number;
+}
+
+export interface VoucherIneligibleProduct {
+    product_id: string;
+    reason: string;
+}
+
+export interface CheckApplyVoucherResult {
+    valid: boolean;
+    message: string;
+    voucher_id?: string;
+    discount_amount: number;
+    applicable_products: VoucherApplicableProduct[];
+    ineligible_products: VoucherIneligibleProduct[];
+}

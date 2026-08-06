@@ -1,4 +1,5 @@
 import { Button } from "primereact/button";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -9,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { BANK_INFO, TIEN_COC } from "../../constants/constants";
 import { CartItem, ItemDetail, PaymentForm } from "../../constants/interface";
 import { useCart } from "../../custom-hook/CartContext";
+import { useVoucher } from "../../custom-hook/VoucherContext";
 import QrLogo from "../../images/qr-code.jpg";
 import ApiService from "../../services/api.service";
 import TelebotService from "../../services/telebot.service";
@@ -45,6 +47,12 @@ function Payment() {
     );
     const { itemId } = useParams<{ itemId?: string }>();
     const { cartItems, clearCart } = useCart();
+    const { appliedCode, discountAmount, applyVoucher, clearVoucher } = useVoucher();
+    const isCartFlow = !itemId;
+    const cartRawTotal = cartItems?.reduce((sum, it) => sum + it.salePrice * it.quantity, 0) || 0;
+    const rawTotal = isCartFlow ? cartRawTotal : (productDetail?.salePrice || 0);
+    const appliedDiscount = isCartFlow ? discountAmount : 0;
+    const finalTotal = Math.max(rawTotal - appliedDiscount, 0);
 
     useEffect(() => {
         // Scroll to top when Payment screen loads
@@ -67,6 +75,12 @@ function Payment() {
     ) => {
         const { name, value } = event.target;
         setPaymentForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handlePhoneBlur = async () => {
+        if (isCartFlow && appliedCode && paymentForm.phone) {
+            await applyVoucher(appliedCode, paymentForm.phone);
+        }
     };
 
     const handleClearCart = () => {
@@ -233,7 +247,10 @@ function Payment() {
                     .map((it) => `• ${it.name} - ${it.size} (x${it.quantity}) = ${(it.salePrice * it.quantity).toLocaleString("vi-VN")}đ`)
                     .join("\n");
                 const total = multiProducts.reduce((sum, it) => sum + it.salePrice * it.quantity, 0);
-                caption = `- Đơn hàng nhiều sản phẩm:\n${itemsText}\n\n- Tổng: ${total.toLocaleString("vi-VN")}đ\n\n- KH: ${formData?.name} - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}, ${formData?.px}, ${formData?.qh}, ${formData?.tp}\n\n- Ghi chú: ${formData?.note}\n\n(${formData?.payment_method == "bankTransfer" ? "Chuyển khoản full" : "Ship COD"})`;
+                const voucherLine = appliedCode
+                    ? `\n\n- Voucher: ${appliedCode} (-${appliedDiscount.toLocaleString("vi-VN")}đ)\n- Thành tiền sau giảm: ${Math.max(total - appliedDiscount, 0).toLocaleString("vi-VN")}đ`
+                    : "";
+                caption = `- Đơn hàng nhiều sản phẩm:\n${itemsText}\n\n- Tổng: ${total.toLocaleString("vi-VN")}đ${voucherLine}\n\n- KH: ${formData?.name} - ${formData?.phone}\n\n- Địa chỉ: ${formData?.address}, ${formData?.px}, ${formData?.qh}, ${formData?.tp}\n\n- Ghi chú: ${formData?.note}\n\n(${formData?.payment_method == "bankTransfer" ? "Chuyển khoản full" : "Ship COD"})`;
             }
             await TelebotService.postPhoto(photoUrl, caption);
         } catch (error) {
@@ -293,40 +310,71 @@ function Payment() {
                 return;
             }
 
-            const total = cartItems.reduce((sum, it) => sum + it.salePrice * it.quantity, 0);
-            data.products = cartItems.map((it) => ({
-                payment_id: payment_id,
-                product_id: it.id,
-                product_name: it.name,
-                img: it.img,
-                quantity: it.quantity,
-                price: it.price || 0,
-                salePrice: it.salePrice || 0,
-                size: it.size || ""
-            }));
-            data.total_bill = total;
-            // console.log(data);
-            try {
-                const response = await ApiService.postPayment(data);
-                if (response.status === "success" && toast.current) {
-                    toast.current.show({
-                        severity: "success",
-                        summary: "Thành công",
-                        detail: "Đặt hàng thành công !",
-                    });
+            const submitOrder = async (voucherCodeToSend: string | null) => {
+                const total = cartItems.reduce((sum, it) => sum + it.salePrice * it.quantity, 0);
+                data.products = cartItems.map((it) => ({
+                    payment_id: payment_id,
+                    product_id: it.id,
+                    product_name: it.name,
+                    img: it.img,
+                    quantity: it.quantity,
+                    price: it.price || 0,
+                    salePrice: it.salePrice || 0,
+                    size: it.size || ""
+                }));
+                data.total_bill = total;
+                data.voucher_code = voucherCodeToSend;
+                try {
+                    const response = await ApiService.postPayment(data);
+                    if (response.status === "success" && toast.current) {
+                        toast.current.show({
+                            severity: "success",
+                            summary: "Thành công",
+                            detail: "Đặt hàng thành công !",
+                        });
+                    }
+                    setShowThankYou(true);
+                    sendTeleMessage(data, undefined, cartItems);
+                    clearVoucher();
+                    handleClearCart();
+                } catch (error: any) {
+                    if (toast.current) {
+                        toast.current.show({
+                            severity: "error",
+                            summary: "Đặt hàng không thành công",
+                            detail: error?.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.",
+                        });
+                    }
                 }
-                setShowThankYou(true);
-                sendTeleMessage(data, undefined, cartItems);
-                handleClearCart();
-            } catch (error) {
-                console.log(error);
+            };
+
+            // Xác nhận lại lượt dùng chính xác cho khách này trước khi cho đặt hàng.
+            if (appliedCode) {
+                const codeAttempted = appliedCode;
+                const outcome = await applyVoucher(codeAttempted, paymentForm.phone);
+                if (!outcome.valid) {
+                    confirmDialog({
+                        header: "Mã giảm giá không áp dụng được",
+                        message: `${outcome.message || `Mã "${codeAttempted}" hiện không thể áp dụng.`} Đơn hàng sẽ giữ nguyên giá gốc (không được giảm giá). Bạn có muốn tiếp tục đặt hàng không?`,
+                        icon: "pi pi-exclamation-triangle",
+                        acceptLabel: "Tiếp tục đặt hàng",
+                        rejectLabel: "Hủy",
+                        accept: () => submitOrder(null),
+                    });
+                    return;
+                }
+                await submitOrder(codeAttempted);
+                return;
             }
+
+            await submitOrder(null);
         }
     };
 
     return (
         <>
             <Toast ref={toast} position="top-right" />
+            <ConfirmDialog />
             {showThankYou ? (
                 <ThankYou paymentForm={paymentForm} />
             ) : (
@@ -398,6 +446,7 @@ function Payment() {
                                     name="phone"
                                     value={paymentForm.phone}
                                     onChange={handleInputChange}
+                                    onBlur={handlePhoneBlur}
                                 />
                                 {formError.phone && (
                                     <div className="error">
@@ -513,12 +562,7 @@ function Payment() {
                         <div className="overview">
                             <div className="flex justify-content-between">
                                 <span>Tiền hàng (tạm tính):</span>
-                                <span>
-                                    {!!itemId && productDetail
-                                        ? productDetail?.salePrice.toLocaleString("vi-VN")
-                                        : (cartItems?.reduce((sum, it) => sum + it.salePrice * it.quantity, 0) || 0).toLocaleString("vi-VN")}
-                                    đ
-                                </span>
+                                <span>{rawTotal.toLocaleString("vi-VN")}đ</span>
                             </div>
                             <div className="flex justify-content-between mt-1">
                                 <span>Phí vận chuyển:</span>
@@ -530,15 +574,16 @@ function Payment() {
                                 <span>Tổng số lượng:</span>
                                 <span>{!!itemId && productDetail ? 1 : cartItems?.reduce((count, it) => count + it.quantity, 0) || 0}</span>
                             </div>
+                            {isCartFlow && appliedCode && (
+                                <div className="flex justify-content-between mt-1 voucher-discount-line">
+                                    <span>Giảm giá ({appliedCode}):</span>
+                                    <span>-{appliedDiscount.toLocaleString("vi-VN")}đ</span>
+                                </div>
+                            )}
                             <hr></hr>
                             <div className="flex justify-content-between total">
                                 <span>Tổng tiền:</span>
-                                <span>
-                                    {!!itemId && productDetail
-                                        ? productDetail?.salePrice.toLocaleString("vi-VN")
-                                        : (cartItems?.reduce((sum, it) => sum + it.salePrice * it.quantity, 0) || 0).toLocaleString("vi-VN")}
-                                    đ
-                                </span>
+                                <span>{finalTotal.toLocaleString("vi-VN")}đ</span>
                             </div>
                         </div>
                         <div className="method">
@@ -597,7 +642,7 @@ function Payment() {
                                     PaymentMethod.BankTransfer && (
                                         <>
                                             <div className="description">
-                                                Quý khách vui lòng chuyển tiền <span className="text-red-500">{((!!itemId && productDetail) ? productDetail?.salePrice : (cartItems?.reduce((sum, it) => sum + it.salePrice * it.quantity, 0) || 0)).toLocaleString("vi-VN")}</span> đến
+                                                Quý khách vui lòng chuyển tiền <span className="text-red-500">{finalTotal.toLocaleString("vi-VN")}</span> đến
                                                 tài khoản của chúng tôi <br></br>
                                                 Ngân hàng: {BANK_INFO.name} - {BANK_INFO.number} - {BANK_INFO.owner}
                                             </div>

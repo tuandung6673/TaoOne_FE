@@ -5,6 +5,11 @@
         .p-button {
             height: 40px;
         }
+
+        .p-calendar .p-button {
+            width: 2.5rem;
+            flex: 0 0 auto;
+        }
     }
 
     .voucher-section-title {

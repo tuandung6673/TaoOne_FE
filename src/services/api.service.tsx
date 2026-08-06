@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { AdviseForm, Login, PaymentForm } from "../constants/interface";
+import { AdviseForm, CheckApplyVoucherRequest, Login, PaymentForm } from "../constants/interface";
 import axiosInstance from "./api.interceptor";
 
 const ApiService = {
@@ -536,6 +536,19 @@ const ApiService = {
             return response.data;
         } catch (error) {
             console.error("Error deleting voucher:", error);
+            throw error;
+        }
+    },
+
+    checkApplyVoucher: async (data: CheckApplyVoucherRequest) => {
+        try {
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_BASE_URL}/Voucher/CheckApplyVoucher`,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error checking voucher:", error);
             throw error;
         }
     }

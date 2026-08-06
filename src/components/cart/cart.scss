@@ -326,6 +326,117 @@
     }
 }
 
+.item_voucher_warning {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #dc3545;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 4px;
+
+    i {
+        font-size: 13px;
+    }
+}
+
+.voucher_box {
+    margin-bottom: 20px;
+}
+
+.voucher_input_row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+
+    .p-inputtext {
+        flex: 1 1 auto;
+        min-width: 0;
+        height: 44px;
+        border-radius: 10px;
+    }
+
+    .p-button {
+        flex: 0 0 auto;
+        width: auto;
+        white-space: nowrap;
+        height: 44px;
+        padding: 0 18px;
+        border-radius: 10px;
+
+        .p-button-label {
+            white-space: nowrap;
+        }
+    }
+}
+
+.voucher_applied {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background: #eafaf1;
+    border: 1.5px solid $main-green-color;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #1a1a1a;
+}
+
+.voucher_applied_info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    i {
+        flex-shrink: 0;
+        color: $main-green-color;
+    }
+}
+
+.voucher_remove_btn {
+    flex-shrink: 0;
+    background: transparent;
+    border: none;
+    color: #999;
+    cursor: pointer;
+
+    &:hover {
+        color: #dc3545;
+    }
+}
+
+.voucher_error {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 8px;
+
+    i {
+        font-size: 13px;
+    }
+}
+
+.voucher_success_message {
+    color: $main-green-color;
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+.summary_discount {
+    color: #dc3545;
+    font-weight: 600;
+}
+
 .summary_total {
     display: flex;
     justify-content: space-between;

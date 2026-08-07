@@ -1,80 +1,79 @@
-import "./UserSearch.module.scss";
-import { useSearchParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { OverlayPanel } from "primereact/overlaypanel";
+import { Toast } from "primereact/toast";
 import queryString from "query-string";
-import ApiService from "../../services/api.service";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { BannerDetail, ItemDetail } from "../../constants/interface";
-import { Toast } from "primereact/toast";
-import { OverlayPanel } from "primereact/overlaypanel";
+import { useSearchParams } from "react-router-dom";
 import { SORTFILTER } from "../../constants/constants";
+import { BannerDetail, ItemDetail } from "../../constants/interface";
+import ApiService from "../../services/api.service";
 import ProductItem from "../product-item/ProductItem";
 import classes from "./UserSearch.module.scss";
 
+const SORT_OPTIONS = [
+    SORTFILTER.DEFAULT,
+    SORTFILTER.PRICE_ASC,
+    SORTFILTER.PRICE_DESC,
+];
+
 const UserSearch = () => {
     const [queryParams] = useSearchParams();
-    const filter = queryParams.get('filter');
+    const filter = queryParams.get("filter");
     const [banner, setBanner] = useState<BannerDetail[]>([]);
     const toast = useRef<Toast>(null);
-    const [sortFilterLabel, setSortFilterLabel] = useState<string>("Mặc định");
     const [sortFilterValue, setSortFilterValue] = useState<string>("");
-    const [product, setProduct] = useState<any[]>([]);
+    const [product, setProduct] = useState<ItemDetail[]>([]);
     const op = useRef<OverlayPanel>(null);
-    const productParams = {
-        filter: filter || ""
-    };
-    const slideParams = {
-        screen: "home"
-        // screen: "home"
-    };
+
+    const sortFilterLabel =
+        SORT_OPTIONS.find((option) => option.value === sortFilterValue)
+            ?.label ?? SORTFILTER.DEFAULT.label;
 
     useEffect(() => {
-        if (filter) {
-            fetchProduct();
-        }
+        if (!filter) return;
+
+        const fetchProduct = async () => {
+            try {
+                const productQueryParams = queryString.stringify({ filter });
+                const productList = await ApiService.getProductSearch(
+                    productQueryParams
+                );
+                setProduct(productList.data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchProduct();
     }, [filter, sortFilterValue]);
 
     useEffect(() => {
+        const fetchSlides = async () => {
+            try {
+                const slideQueryParams = queryString.stringify({ screen: "home" });
+                const slideList = await ApiService.getSlideList(slideQueryParams);
+                setBanner(slideList.data.data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
         fetchSlides();
     }, []);
 
-
-    const fetchProduct = async () => {
-        try {
-            const queryParams = queryString.stringify(productParams);
-            const productList = await ApiService.getProductSearch(queryParams);
-            setProduct(productList.data);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    const fetchSlides = async () => {
-        try {
-            const queryParams = queryString.stringify(slideParams);
-            const slideList = await ApiService.getSlideList(queryParams);
-            setBanner(slideList.data.data);
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const handleSortClick = (sortId: any) => {
-        setSortFilterLabel(sortId?.label);
-        setSortFilterValue(sortId?.value);
+    const handleSortClick = useCallback((sortValue: string) => {
+        setSortFilterValue(sortValue);
         op.current?.hide();
-    };
+    }, []);
 
-    const handleAddToCart = (productName: string) => {
-        if (toast.current) {
-            toast.current.show({
-                severity: "success",
-                summary: "Thành công",
-                detail: `Đã thêm ${productName} vào giỏ hàng!`,
-            });
-        }
-    };
+    const handleAddToCart = useCallback((productName: string) => {
+        toast.current?.show({
+            severity: "success",
+            summary: "Thành công",
+            detail: `Đã thêm ${productName} vào giỏ hàng!`,
+        });
+    }, []);
 
     return (
         <div className={classes.main}>
@@ -88,8 +87,8 @@ const UserSearch = () => {
                     showThumbs={false}
                     showStatus={false}
                 >
-                    {banner.map((sl, index) => (
-                        <div key={index} className={classes.slider}>
+                    {banner.map((sl) => (
+                        <div key={sl.id} className={classes.slider}>
                             <img src={sl.img} alt={sl.name} />
                         </div>
                     ))}
@@ -108,60 +107,34 @@ const UserSearch = () => {
                 </div>
             </div>
             <OverlayPanel ref={op}>
-                <div
-                    className={`${classes.sort_option} ${sortFilterValue === SORTFILTER.DEFAULT.value
-                        ? classes.sort_active
-                        : ""
-                        }`}
-                    onClick={() => handleSortClick(SORTFILTER.DEFAULT)}
-                >
-                    {sortFilterValue === SORTFILTER.DEFAULT.value && (
-                        <span style={{ marginRight: "8px" }}>
-                            <i className="pi pi-check"></i>
-                        </span>
-                    )}
-                    {SORTFILTER.DEFAULT.label}
-                </div>
-                <div
-                    className={`${classes.sort_option} ${sortFilterValue === SORTFILTER.PRICE_ASC.value
-                        ? classes.sort_active
-                        : ""
-                        }`}
-                    onClick={() => handleSortClick(SORTFILTER.PRICE_ASC)}
-                >
-                    {sortFilterValue === SORTFILTER.PRICE_ASC.value && (
-                        <span style={{ marginRight: "8px" }}>
-                            <i className="pi pi-check"></i>
-                        </span>
-                    )}
-                    {SORTFILTER.PRICE_ASC.label}
-                </div>
-                <div
-                    className={`${classes.sort_option} ${sortFilterValue === SORTFILTER.PRICE_DESC.value
-                        ? classes.sort_active
-                        : ""
-                        }`}
-                    onClick={() => handleSortClick(SORTFILTER.PRICE_DESC)}
-                >
-                    {sortFilterValue === SORTFILTER.PRICE_DESC.value && (
-                        <span style={{ marginRight: "8px" }}>
-                            <i className="pi pi-check"></i>
-                        </span>
-                    )}
-                    {SORTFILTER.PRICE_DESC.label}
-                </div>
-            </OverlayPanel >
+                {SORT_OPTIONS.map((option) => (
+                    <div
+                        key={option.value}
+                        className={`${classes.sort_option} ${sortFilterValue === option.value
+                            ? classes.sort_active
+                            : ""
+                            }`}
+                        onClick={() => handleSortClick(option.value)}
+                    >
+                        {sortFilterValue === option.value && (
+                            <span style={{ marginRight: "8px" }}>
+                                <i className="pi pi-check"></i>
+                            </span>
+                        )}
+                        {option.label}
+                    </div>
+                ))}
+            </OverlayPanel>
             <div className={classes.category_wrapper}>
-                {product.map((category: ItemDetail, index: any) => (
+                {product.map((category: ItemDetail) => (
                     <ProductItem
                         productItem={category}
-                        key={index}
-                        categoryCode={category.category_code}
+                        key={category.id}
                         onAddToCart={handleAddToCart}
                     />
                 ))}
             </div>
-        </div >
+        </div>
     );
 };
 

@@ -1,49 +1,64 @@
 import moment from "moment";
 import { BreadCrumb } from 'primereact/breadcrumb';
+import { MenuItem } from 'primereact/menuitem';
 import queryString from 'query-string';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { NewsDetail } from '../../../constants/interface';
 import ApiService from '../../../services/api.service';
 import './UserNewsDetail.scss';
 
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "/" };
+const HEADER_HEIGHT = 110;
+
+interface TocItem {
+    id: string;
+    text: string;
+    level: string;
+}
+
 const UserNewsDetail = () => {
     const navigate = useNavigate();
-    const [tocItems, setTocItems] = useState<any[]>([]);
+    const [tocItems, setTocItems] = useState<TocItem[]>([]);
     const [newsDetail, setNewsDetail] = useState<NewsDetail>();
-    const [breadcrumbItems, setBreadcrumbItems] = useState<any[]>([
+    const [breadcrumbItems, setBreadcrumbItems] = useState<MenuItem[]>([
         { label: "Tin tức", url: "/news" }
     ]);
     const { newsSlug } = useParams();
-    const home = { icon: "pi pi-home", url: "/" };
-    const newsDetailParams = {
-        id: null,
-        slug: newsSlug || ""
-    }
     const [relatedNews, setRelatedNews] = useState<NewsDetail[]>([]);
-    const relatedNewsParams = {
-        currentNews: newsSlug
-    };
     const contentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (newsSlug) {
-            fetchDetailNews();
-            fetchRelatedNews();
-        }
-    }, [newsSlug]);
+        if (!newsSlug) return;
 
-    // Scroll to top whenever navigating to a different news detail
-    useEffect(() => {
+        const fetchDetailNews = async () => {
+            const params = queryString.stringify({ id: null, slug: newsSlug });
+            const response = await ApiService.getNewsDetail(params);
+            setNewsDetail(response.data);
+            setBreadcrumbItems([
+                { label: "Tin tức", url: "/news" },
+                { label: response.data?.title || "" }
+            ]);
+        };
+
+        const fetchRelatedNews = async () => {
+            const params = queryString.stringify({ currentNews: newsSlug });
+            const response = await ApiService.getNewsRelated(params);
+            setRelatedNews(response.data.data);
+        };
+
+        fetchDetailNews();
+        fetchRelatedNews();
+
+        // Scroll to top and reset TOC while new content loads
         window.scrollTo({ top: 0, behavior: 'auto' });
-        // Optionally reset TOC while new content loads
         setTocItems([]);
     }, [newsSlug]);
 
     useEffect(() => {
         if (!contentRef.current) return;
         const headers = contentRef.current.querySelectorAll("h2, h3");
-        const items: any[] = [];
+        const items: TocItem[] = [];
         headers.forEach((header, index) => {
             if (!(header as HTMLElement).id) {
                 (header as HTMLElement).id = `heading-${index}`;
@@ -57,41 +72,24 @@ const UserNewsDetail = () => {
         setTocItems(items);
     }, [newsDetail?.contentHtml]);
 
-    const fetchDetailNews = async () => {
-        const params = queryString.stringify(newsDetailParams);
-        const response = await ApiService.getNewsDetail(params);
-        setNewsDetail(response.data);
-        setBreadcrumbItems([
-            { label: "Tin tức", url: "/news" },
-            { label: response.data?.title || "" }
-        ]);
-    }
-
-    const fetchRelatedNews = async () => {
-        const params = queryString.stringify(relatedNewsParams);
-        const response = await ApiService.getNewsRelated(params);
-        setRelatedNews(response.data.data);
-    }
-
-    const handleTocClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    const handleTocClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
         e.preventDefault();
         const targetElement = document.getElementById(targetId);
         if (targetElement) {
-            const headerHeight = 110; // Fixed header height
-            const targetPosition = targetElement.offsetTop - headerHeight;
+            const targetPosition = targetElement.offsetTop - HEADER_HEIGHT;
             window.scrollTo({
                 top: targetPosition,
                 behavior: 'smooth'
             });
         }
-    }
+    }, []);
 
     return (
         <div className="main">
             <div className='header w-full'>
                 <BreadCrumb
                     model={breadcrumbItems}
-                    home={home}
+                    home={HOME_BREADCRUMB}
                 ></BreadCrumb>
             </div>
             <div className='news-detail'>
@@ -100,7 +98,7 @@ const UserNewsDetail = () => {
                     <div className='news-time'>
                         <span>TaoOne Team - </span><span>{moment(newsDetail?.publishedAt).format("DD/MM/YYYY")}</span>
                     </div>
-                    <b className='news-excerpt' dangerouslySetInnerHTML={{ __html: newsDetail?.excerpt! }}>
+                    <b className='news-excerpt' dangerouslySetInnerHTML={{ __html: newsDetail?.excerpt || "" }}>
                     </b>
                     <div className='news-image w-full'>
                         <img src={newsDetail?.thumbnailUrl} alt={newsDetail?.title} />
@@ -116,7 +114,7 @@ const UserNewsDetail = () => {
                         </div>
                     </nav>}
                     <div className='news-content'>
-                        <div className='news-content-body' ref={contentRef} dangerouslySetInnerHTML={{ __html: newsDetail?.contentHtml! }}>
+                        <div className='news-content-body' ref={contentRef} dangerouslySetInnerHTML={{ __html: newsDetail?.contentHtml || "" }}>
 
                         </div>
                     </div>

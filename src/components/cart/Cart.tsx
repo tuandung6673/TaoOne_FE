@@ -1,11 +1,13 @@
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
-import { useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../custom-hook/CartContext";
 import { useVoucher } from "../../custom-hook/VoucherContext";
 import "./cart.scss";
+
+const formatNumber = (number: number) => new Intl.NumberFormat("vi-VN").format(number);
 
 function Cart() {
     const { cartItems, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
@@ -14,68 +16,57 @@ function Cart() {
     const toast = useRef<Toast>(null);
     const navigate = useNavigate();
 
-    const ineligibleReasonByProductId: Record<string, string> = {};
-    voucherResult?.ineligible_products?.forEach((p) => {
-        ineligibleReasonByProductId[p.product_id] = p.reason;
-    });
-
-    const handleApplyVoucher = async () => {
-        await applyVoucher(voucherInput);
-    };
-
-    const handleRemoveVoucher = () => {
-        setVoucherInput("");
-        clearVoucher();
-    };
+    const ineligibleReasonByProductId = useMemo(() => {
+        const map: Record<string, string> = {};
+        voucherResult?.ineligible_products?.forEach((p) => {
+            map[p.product_id] = p.reason;
+        });
+        return map;
+    }, [voucherResult]);
 
     const finalTotal = Math.max(getCartTotal() - discountAmount, 0);
 
-    const formatNumber = (number: number) => {
-        return new Intl.NumberFormat("vi-VN").format(number);
-    };
+    const handleApplyVoucher = useCallback(async () => {
+        await applyVoucher(voucherInput);
+    }, [applyVoucher, voucherInput]);
 
-    const handleQuantityChange = (itemId: string, newQuantity: number, size?: string) => {
-        updateQuantity(itemId, newQuantity, size);
-    };
+    const handleRemoveVoucher = useCallback(() => {
+        setVoucherInput("");
+        clearVoucher();
+    }, [clearVoucher]);
 
-    const handleRemoveItem = (itemId: string, size?: string) => {
+    const handleRemoveItem = useCallback((itemId: string, size?: string) => {
         removeFromCart(itemId, size);
-        if (toast.current) {
-            toast.current.show({
-                severity: "info",
-                summary: "Đã xóa",
-                detail: "Sản phẩm đã được xóa khỏi giỏ hàng",
-            });
-        }
-    };
+        toast.current?.show({
+            severity: "info",
+            summary: "Đã xóa",
+            detail: "Sản phẩm đã được xóa khỏi giỏ hàng",
+        });
+    }, [removeFromCart]);
 
-    const handleCheckout = () => {
+    const handleCheckout = useCallback(() => {
         if (cartItems.length === 0) {
-            if (toast.current) {
-                toast.current.show({
-                    severity: "warn",
-                    summary: "Thông báo",
-                    detail: "Giỏ hàng trống!",
-                });
-            }
+            toast.current?.show({
+                severity: "warn",
+                summary: "Thông báo",
+                detail: "Giỏ hàng trống!",
+            });
             return;
         }
-        
+
         // For now, navigate to payment with the first item
         // In a real app, you might want to create a multi-item checkout
         navigate("/thanh-toan-gio-hang");
-    };
+    }, [cartItems.length, navigate]);
 
-    const handleClearCart = () => {
+    const handleClearCart = useCallback(() => {
         clearCart();
-        if (toast.current) {
-            toast.current.show({
-                severity: "info",
-                summary: "Đã xóa",
-                detail: "Đã xóa tất cả sản phẩm khỏi giỏ hàng",
-            });
-        }
-    };
+        toast.current?.show({
+            severity: "info",
+            summary: "Đã xóa",
+            detail: "Đã xóa tất cả sản phẩm khỏi giỏ hàng",
+        });
+    }, [clearCart]);
 
     if (cartItems.length === 0) {
         return (
@@ -146,14 +137,14 @@ function Cart() {
                             </div>
                             <div className="item_quantity">
                                 <button
-                                    onClick={() => handleQuantityChange(item.id, item.quantity - 1, item.size)}
+                                    onClick={() => updateQuantity(item.id, item.quantity - 1, item.size)}
                                     disabled={item.quantity <= 1}
                                 >
                                     <i className="pi pi-minus"></i>
                                 </button>
                                 <span>{item.quantity}</span>
                                 <button
-                                    onClick={() => handleQuantityChange(item.id, item.quantity + 1, item.size)}
+                                    onClick={() => updateQuantity(item.id, item.quantity + 1, item.size)}
                                 >
                                     <i className="pi pi-plus"></i>
                                 </button>

@@ -1,10 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { BreadCrumb } from "primereact/breadcrumb";
+import { MenuItem } from "primereact/menuitem";
 import { Button } from "primereact/button";
 import { TabPanel, TabView } from "primereact/tabview";
 import { Toast } from "primereact/toast";
 import queryString from "query-string";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { useNavigate, useParams } from "react-router-dom";
@@ -13,14 +13,35 @@ import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss/navigation";
 import { AllRouteType, CAM_KET, QUA_TANG } from "../../constants/constants";
-import { ItemDetail } from "../../constants/interface";
+import { ItemDetail, SubImage } from "../../constants/interface";
 import { useCart } from "../../custom-hook/CartContext";
 import GiftIcon from "../../icons/giftbox.png";
 import saleLogo from "../../images/sale_tag_2.png";
 import ApiService from "../../services/api.service";
+import LeadForm from "../event/LeadForm";
 import ProductItem from "../product-item/ProductItem";
 import "./ProductDetail.scss";
-import LeadForm from "../event/LeadForm";
+
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "/" };
+
+const RELATED_PRODUCTS_BREAKPOINTS = {
+    1200: { slidesPerView: 4, spaceBetween: 25 },
+    768: { slidesPerView: 3, spaceBetween: 20 },
+    0: { slidesPerView: 2, spaceBetween: 15 },
+};
+
+const LIST_IMAGE_BREAKPOINTS = {
+    1200: { slidesPerView: 5 },
+    576: { slidesPerView: 4 },
+    0: { slidesPerView: 3 },
+};
+
+const SWIPER_MODULES = [Navigation, Pagination, Scrollbar, A11y];
+
+const formatNumber = (number: number) => new Intl.NumberFormat("de-DE").format(number);
+
+const parseSizes = (size?: string) =>
+    size ? size.split(",").map((s) => s.trim()) : [];
 
 function ProductDetail() {
     const toast = useRef<Toast>(null);
@@ -30,10 +51,10 @@ function ProductDetail() {
     const [mainImage, setMainImage] = useState<string>();
     const [selectedSize, setSelectedSize] = useState<string>("");
     const { categoryName, itemId } = useParams();
-    const [breadcrumbItems, setBreadcrumbItems] = useState<any[]>([]);
+    const [breadcrumbItems, setBreadcrumbItems] = useState<MenuItem[]>([]);
     const { addToCart } = useCart();
-    const home = { icon: "pi pi-home", url: "/" };
-    const breadcrumItem = useMemo(
+
+    const categoryBreadcrumbItems = useMemo(
         () => [
             {
                 label: "Apple Watch",
@@ -69,112 +90,96 @@ function ProductDetail() {
         [categoryName]
     );
 
-    const formatNumber = (number: number) => {
-        return new Intl.NumberFormat("de-DE").format(number);
-    };
+    const sizeOptions = useMemo(() => parseSizes(detailData.size), [detailData.size]);
+    const salePercent = useMemo(() => {
+        if (!detailData.price) return 0;
+        return Math.round((1 - detailData.salePrice / detailData.price) * 100);
+    }, [detailData.price, detailData.salePrice]);
 
     useEffect(() => {
-        if (itemId) {
-            fetchProductDetail(itemId);
-        }
-    }, [itemId]);
+        if (!itemId) return;
 
-    // Ensure the page starts at the top when navigating to a new product
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [itemId]);
+        const fetchProductDetail = async () => {
+            try {
+                const { data } = await ApiService.getProductDetail(itemId);
+                setDetailData(data);
+                setMainImage(data.img);
 
-    useEffect(() => {
-        if (detailData) {
-            const newBreadcrumbItems = [
-                // Tạo breadcrumb cho các loại sản phẩm
-                ...breadcrumItem,
-                {
-                    label: detailData.category_detail_name,
-                    command: () => {
-                        navigate(`/${detailData.category_code}?ctgDetail=${detailData.category_detail_id}`);
-                    }
-                },
-            ];
-            setBreadcrumbItems(newBreadcrumbItems);
-        }
-    }, [detailData, breadcrumItem]);
-
-    const fetchProductDetail = async (id: string) => {
-        try {
-            const productDetail = await ApiService.getProductDetail(id);
-            setDetailData(productDetail.data);
-            setMainImage(productDetail.data.img);
-            
-            // Set first size as default if sizes exist
-            if (productDetail.data.size) {
-                const sizes = productDetail.data.size.split(',');
+                const sizes = parseSizes(data.size);
                 if (sizes.length > 0) {
-                    setSelectedSize(sizes[0].trim());
+                    setSelectedSize(sizes[0]);
                 }
-            }
-            if (productDetail.data.id) {
-                fetchRelatedProducts(productDetail.data.id);
-            }
-        } catch (error) { }
-    };
 
-    const fetchRelatedProducts = async (productId: string) => {
-        try {
-            const response = await ApiService.getRelatedProducts(productId);
-            setRelatedProducts(response.data);
-        } catch (error) {
-            console.log(error);
-        }
-    };
+                if (data.id) {
+                    const related = await ApiService.getRelatedProducts(data.id);
+                    setRelatedProducts(related.data);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
 
-    const changeImage = (item: any) => {
+        fetchProductDetail();
+        window.scrollTo(0, 0);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [itemId]);
+
+    useEffect(() => {
+        const newBreadcrumbItems = [
+            ...categoryBreadcrumbItems,
+            {
+                label: detailData.category_detail_name,
+                command: () => {
+                    navigate(
+                        `/${detailData.category_code}?ctgDetail=${detailData.category_detail_id}`
+                    );
+                },
+            },
+        ];
+        setBreadcrumbItems(newBreadcrumbItems);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [detailData, categoryBreadcrumbItems]);
+
+    const changeImage = useCallback((item: SubImage) => {
         setMainImage(item.imgSource);
-    };
+    }, []);
 
-    const buynow = () => {
-        let queryParams = "";
-        if (selectedSize) {
-            queryParams = queryString.stringify({
-                size: selectedSize
-            });
-        } 
-        navigate("/thanh-toan/" + itemId + (selectedSize ? "?" + queryParams : ""));
-    };
+    const buynow = useCallback(() => {
+        const queryParams = selectedSize
+            ? "?" + queryString.stringify({ size: selectedSize })
+            : "";
+        navigate(`/thanh-toan/${itemId}${queryParams}`);
+    }, [navigate, itemId, selectedSize]);
 
-    const bagnow = () => {
-        if (detailData && detailData.id) {
-            addToCart({
-                id: detailData.id,
-                name: detailData.name || "",
-                price: detailData.price,
-                salePrice: detailData.salePrice,
-                img: detailData.img || "",
-                quantity: 1,
-                category_code: detailData.category_code,
-                category_detail_name: detailData.category_detail_name,
-                size: selectedSize
-            });
+    const bagnow = useCallback(() => {
+        if (!detailData.id) return;
 
-            if (toast.current) {
-                toast.current.show({
-                    severity: "success",
-                    summary: "Thành công",
-                    detail: "Đã thêm sản phẩm vào giỏ hàng!",
-                });
-            }
-        }
-    };
+        addToCart({
+            id: detailData.id,
+            name: detailData.name || "",
+            price: detailData.price,
+            salePrice: detailData.salePrice,
+            img: detailData.img || "",
+            quantity: 1,
+            category_code: detailData.category_code,
+            category_detail_name: detailData.category_detail_name,
+            size: selectedSize,
+        });
 
-    const handleAddToCart = (productName: string) => {
-        if (toast.current) {
-            toast.current.show({
-                severity: "success",
-                summary: "Thành công",
-                detail: `Đã thêm ${productName} vào giỏ hàng!`,
-            });
-        }
-    };
+        toast.current?.show({
+            severity: "success",
+            summary: "Thành công",
+            detail: "Đã thêm sản phẩm vào giỏ hàng!",
+        });
+    }, [addToCart, detailData, selectedSize]);
+
+    const handleAddToCart = useCallback((productName: string) => {
+        toast.current?.show({
+            severity: "success",
+            summary: "Thành công",
+            detail: `Đã thêm ${productName} vào giỏ hàng!`,
+        });
+    }, []);
 
     return (
         <div className="product">
@@ -182,11 +187,11 @@ function ProductDetail() {
             <div className="product1">
                 <div className="product_up">
                     <div className="breadcrumb_mb p-0">
-                        <BreadCrumb model={breadcrumbItems} home={home} />
+                        <BreadCrumb model={breadcrumbItems} home={HOME_BREADCRUMB} />
                     </div>
                     <div className="product_left">
                         <div className="product_left2">
-                            {detailData && detailData.img && (
+                            {detailData.img && (
                                 <Zoom>
                                     <img
                                         className="product_image"
@@ -196,7 +201,7 @@ function ProductDetail() {
                                     />
                                 </Zoom>
                             )}
-                            {detailData?.price !== detailData?.salePrice && (
+                            {detailData.price !== detailData.salePrice && (
                                 <div>
                                     <img
                                         className="sale_logo"
@@ -204,14 +209,7 @@ function ProductDetail() {
                                         alt="logo"
                                     />
                                     <span className="sale_percent">
-                                        -
-                                        {(
-                                            (1 -
-                                                detailData.salePrice /
-                                                detailData.price) *
-                                            100
-                                        ).toFixed(0)}
-                                        %
+                                        -{salePercent}%
                                     </span>
                                 </div>
                             )}
@@ -220,42 +218,25 @@ function ProductDetail() {
                             <Swiper
                                 spaceBetween={20}
                                 slidesPerView={5}
-                                breakpoints={{
-                                    1200: { slidesPerView: 5 }, // Từ 1200px trở lên, hiển thị 4 slides
-                                    576: { slidesPerView: 4 }, // Từ 576px trở lên, hiển thị 2 slides
-                                    0: { slidesPerView: 3 }, // Dưới 576px, hiển thị 1 slide
-                                }}
-                                modules={[
-                                    Navigation,
-                                    Pagination,
-                                    Scrollbar,
-                                    A11y,
-                                ]}
+                                breakpoints={LIST_IMAGE_BREAKPOINTS}
+                                modules={SWIPER_MODULES}
                             >
-                                {detailData &&
-                                    detailData.listImages?.map(
-                                        (item: any, index: any) => (
-                                            <SwiperSlide
-                                                onClick={() =>
-                                                    changeImage(item)
-                                                }
-                                                key={index}
-                                            >
-                                                <img
-                                                    src={item.imgSource}
-                                                    alt={item.name}
-                                                />
-                                            </SwiperSlide>
-                                        )
-                                    )}
+                                {detailData.listImages?.map((item, index) => (
+                                    <SwiperSlide
+                                        onClick={() => changeImage(item)}
+                                        key={index}
+                                    >
+                                        <img src={item.imgSource} alt="" />
+                                    </SwiperSlide>
+                                ))}
                             </Swiper>
                         </div>
                     </div>
                     <div className="product_right">
                         <div className="breadcrumb">
-                            <BreadCrumb model={breadcrumbItems} home={home} />
+                            <BreadCrumb model={breadcrumbItems} home={HOME_BREADCRUMB} />
                         </div>
-                        {detailData && detailData.name && (
+                        {detailData.name && (
                             <div className="product_name">
                                 {detailData.name}
                             </div>
@@ -266,28 +247,26 @@ function ProductDetail() {
                             </div>
                             |<span>5 Đánh giá</span>|<span>Nhận xét</span>
                         </div> */}
-                        {detailData &&
-                            detailData.price &&
-                            detailData.salePrice && (
-                                <div>
-                                    <span className="sale_price">
-                                        {formatNumber(detailData.salePrice)}đ
-                                    </span>
-                                    <span className="price">
-                                        {formatNumber(detailData.price)}đ
-                                    </span>
-                                </div>
-                            )}
-                        {detailData && detailData.size && (
+                        {detailData.price && detailData.salePrice && (
+                            <div>
+                                <span className="sale_price">
+                                    {formatNumber(detailData.salePrice)}đ
+                                </span>
+                                <span className="price">
+                                    {formatNumber(detailData.price)}đ
+                                </span>
+                            </div>
+                        )}
+                        {sizeOptions.length > 0 && (
                             <div className="product_size">
                                 Phiên bản:
-                                {detailData.size.split(',').map((item: any, index: any) => (
+                                {sizeOptions.map((size) => (
                                     <span
-                                        key={index}
-                                        className={`product_size_item ${selectedSize === item.trim() ? 'active' : ''}`}
-                                        onClick={() => setSelectedSize(item.trim())}
+                                        key={size}
+                                        className={`product_size_item ${selectedSize === size ? "active" : ""}`}
+                                        onClick={() => setSelectedSize(size)}
                                     >
-                                        {item.trim()}
+                                        {size}
                                     </span>
                                 ))}
                             </div>
@@ -307,8 +286,8 @@ function ProductDetail() {
                             </div>
                         </div>
                         <div className="status">
-                            {CAM_KET.map((item: any, index: any) => (
-                                <div className="status_item" key={index}>
+                            {CAM_KET.map((item) => (
+                                <div className="status_item" key={item}>
                                     <span className="status_icon pi pi pi-star-fill"></span>
                                     <span className="status_value">{item}</span>
                                 </div>
@@ -326,8 +305,8 @@ function ProductDetail() {
                                 </span>
                                 <span>Quà tặng</span>
                             </div>
-                            {QUA_TANG.map((item: any, index: any) => (
-                                <div key={index}>- {item}</div>
+                            {QUA_TANG.map((item) => (
+                                <div key={item}>- {item}</div>
                             ))}
                         </div>
                         <div className="lead_form_section">
@@ -345,7 +324,7 @@ function ProductDetail() {
                             <div
                                 className="descrip"
                                 dangerouslySetInnerHTML={{
-                                    __html: `${detailData.description}`,
+                                    __html: detailData.description || "",
                                 }}
                             ></div>
                         </TabPanel>
@@ -353,27 +332,22 @@ function ProductDetail() {
                             <div
                                 className="descrip"
                                 dangerouslySetInnerHTML={{
-                                    __html: `${detailData.specs}`,
+                                    __html: detailData.specs || "",
                                 }}
                             ></div>
                         </TabPanel>
                         <TabPanel header="Sản phẩm tương tự">
-                            {relatedProducts && relatedProducts.length > 0 && (
+                            {relatedProducts.length > 0 && (
                                 <div className="related_products">
                                     <div className="related_inner">
                                         <Swiper
-                                            breakpoints={{
-                                                1200: { slidesPerView: 4, spaceBetween: 25 },
-                                                768: { slidesPerView: 3, spaceBetween: 20 },
-                                                0: { slidesPerView: 2, spaceBetween: 15 },
-                                            }}
-                                            modules={[Navigation, Pagination, Scrollbar, A11y]}
+                                            breakpoints={RELATED_PRODUCTS_BREAKPOINTS}
+                                            modules={SWIPER_MODULES}
                                         >
                                             {relatedProducts.map((item: ItemDetail, index: number) => (
                                                 <SwiperSlide key={index}>
                                                     <ProductItem
                                                         productItem={item}
-                                                        categoryCode={detailData.category_code}
                                                         onAddToCart={handleAddToCart}
                                                     />
                                                 </SwiperSlide>

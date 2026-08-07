@@ -4,7 +4,7 @@ import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Toast } from "primereact/toast";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { BANK_INFO, TIEN_COC } from "../../constants/constants";
@@ -24,15 +24,21 @@ enum PaymentMethod {
     CashPayment = "cashPayment", //2
 }
 
+interface LocationOption {
+    label: string;
+    value: number;
+    divisionType?: string;
+}
+
 function Payment() {
     const [queryParams] = useSearchParams();
     const sizeOneItemSelected = queryParams.get('size');
-    const [cityList, setCityList] = useState([]);
-    const [selectCity, setSelectCity] = useState();
-    const [proviceList, setProviceList] = useState([]);
-    const [selectProvice, setSelectProvice] = useState();
-    const [districtList, setDistrictList] = useState([]);
-    const [selectDistrict, setSelectDistrict] = useState();
+    const [cityList, setCityList] = useState<LocationOption[]>([]);
+    const [selectCity, setSelectCity] = useState<number>();
+    const [proviceList, setProviceList] = useState<LocationOption[]>([]);
+    const [selectProvice, setSelectProvice] = useState<number>();
+    const [districtList, setDistrictList] = useState<LocationOption[]>([]);
+    const [selectDistrict, setSelectDistrict] = useState<number>();
     const [showThankYou, setShowThankYou] = useState(false);
     const toast = useRef<Toast>(null);
     const [productDetail, setProductDetail] = useState<ItemDetail>();
@@ -68,37 +74,38 @@ function Payment() {
             fetchDetailProduct(itemId);
         }
         fetchCity();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sizeOneItemSelected]);
 
-    const handleInputChange = (
+    const handleInputChange = useCallback((
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         const { name, value } = event.target;
         setPaymentForm((prev) => ({ ...prev, [name]: value }));
-    };
+    }, []);
 
-    const handlePhoneBlur = async () => {
+    const handlePhoneBlur = useCallback(async () => {
         if (isCartFlow && appliedCode && paymentForm.phone) {
             await applyVoucher(appliedCode, paymentForm.phone);
         }
-    };
+    }, [isCartFlow, appliedCode, paymentForm.phone, applyVoucher]);
 
-    const handleClearCart = () => {
+    const handleClearCart = useCallback(() => {
         setTimeout(() => {
             clearCart();
         }, 500);
-    };
+    }, [clearCart]);
 
     const fetchCity = async () => {
         try {
             const listCity = await VietnamUnitService.getCity();
-            const data = listCity?.data
+            const data: LocationOption[] = listCity?.data
                 .map((city: any) => ({
                     label: city.name,
                     value: city.code,
                     divisionType: city.division_type, // Thêm division_type để sử dụng
                 }))
-                .sort((a: any, b: any) => {
+                .sort((a: LocationOption, b: LocationOption) => {
                     // Ưu tiên "thành phố trung ương" lên trước
                     if (
                         a.divisionType === "thành phố trung ương" &&
@@ -130,12 +137,12 @@ function Payment() {
         }
     };
 
-    const fetchProvice = async (provice_code: any) => {
+    const fetchProvice = async (provice_code: number) => {
         try {
             const listProvice = await VietnamUnitService.getProvice(
                 provice_code
             );
-            const data = listProvice?.data?.districts?.map((provice: any) => ({
+            const data: LocationOption[] = listProvice?.data?.districts?.map((provice: any) => ({
                 label: provice.name,
                 value: provice.code,
             }));
@@ -145,12 +152,12 @@ function Payment() {
         }
     };
 
-    const fetchDistrict = async (district_code: any) => {
+    const fetchDistrict = async (district_code: number) => {
         try {
             const listDistrict = await VietnamUnitService.getDistrict(
                 district_code
             );
-            let data = listDistrict?.data?.wards?.map((wards: any) => ({
+            let data: LocationOption[] = listDistrict?.data?.wards?.map((wards: any) => ({
                 label: wards.name,
                 value: wards.code,
             }));
@@ -163,52 +170,52 @@ function Payment() {
         }
     };
 
-    const handleCityChange = (e: any) => {
-        if (e) {
-            setSelectCity(e.value);
+    const handleCityChange = useCallback((option?: LocationOption) => {
+        if (option) {
+            setSelectCity(option.value);
             setPaymentForm((prev) => ({
                 ...prev,
-                tp: e.label,
+                tp: option.label,
             }));
             setDistrictList([]);
         }
-        fetchProvice(e.value);
-    };
+        fetchProvice(option?.value ?? 0);
+    }, []);
 
-    const handleProvideChange = (e: any) => {
-        if (e) {
-            setSelectProvice(e.value);
+    const handleProvideChange = useCallback((option?: LocationOption) => {
+        if (option) {
+            setSelectProvice(option.value);
             setPaymentForm((prev) => ({
                 ...prev,
-                qh: e.label,
+                qh: option.label,
             }));
         }
-        fetchDistrict(e.value);
-    };
+        fetchDistrict(option?.value ?? 0);
+    }, []);
 
-    const handleDistrictChange = (e: any) => {
-        if (e) {
-            setSelectDistrict(e.value);
+    const handleDistrictChange = useCallback((option?: LocationOption) => {
+        if (option) {
+            setSelectDistrict(option.value);
             setPaymentForm((prev) => ({
                 ...prev,
-                px: e.label,
+                px: option.label,
             }));
         }
-    };
+    }, []);
 
-    const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleRadioChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedMethod(event.target.value as PaymentMethod);
         setPaymentForm((prev) => ({
             ...prev,
             payment_method: event.target.value,
         }));
-    };
+    }, []);
 
     const fetchDetailProduct = async (id: string) => {
         try {
             const prdDetail = await ApiService.getProductDetail(id);
-            if (!prdDetail.data && toast.current) {
-                toast.current.show({
+            if (!prdDetail.data) {
+                toast.current?.show({
                     severity: "error",
                     summary: "Thông báo",
                     detail: "Mã sản phẩm không hợp lệ !",
@@ -282,8 +289,8 @@ function Payment() {
             data.total_bill = productDetail.salePrice;
             try {
                 const response = await ApiService.postPayment(data);
-                if (response.status === "success" && toast.current) {
-                    toast.current.show({
+                if (response.status === "success") {
+                    toast.current?.show({
                         severity: "success",
                         summary: "Thành công",
                         detail: "Đặt hàng thành công !",
@@ -300,13 +307,11 @@ function Payment() {
         // Multiple products (from cart)
         if (!itemId) {
             if (!cartItems || cartItems.length === 0) {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "warn",
-                        summary: "Thông báo",
-                        detail: "Giỏ hàng trống!",
-                    });
-                }
+                toast.current?.show({
+                    severity: "warn",
+                    summary: "Thông báo",
+                    detail: "Giỏ hàng trống!",
+                });
                 return;
             }
 
@@ -326,8 +331,8 @@ function Payment() {
                 data.voucher_code = voucherCodeToSend;
                 try {
                     const response = await ApiService.postPayment(data);
-                    if (response.status === "success" && toast.current) {
-                        toast.current.show({
+                    if (response.status === "success") {
+                        toast.current?.show({
                             severity: "success",
                             summary: "Thành công",
                             detail: "Đặt hàng thành công !",
@@ -338,13 +343,11 @@ function Payment() {
                     clearVoucher();
                     handleClearCart();
                 } catch (error: any) {
-                    if (toast.current) {
-                        toast.current.show({
-                            severity: "error",
-                            summary: "Đặt hàng không thành công",
-                            detail: error?.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.",
-                        });
-                    }
+                    toast.current?.show({
+                        severity: "error",
+                        summary: "Đặt hàng không thành công",
+                        detail: error?.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.",
+                    });
                 }
             };
 
@@ -481,10 +484,7 @@ function Payment() {
                                     emptyMessage="Không có dữ liệu"
                                     onChange={(e) =>
                                         handleCityChange(
-                                            cityList.filter(
-                                                (item: any) =>
-                                                    item.value === e.value
-                                            )[0]
+                                            cityList.find((item) => item.value === e.value)
                                         )
                                     }
                                 />
@@ -502,10 +502,7 @@ function Payment() {
                                     emptyMessage="Không có dữ liệu"
                                     onChange={(e) =>
                                         handleProvideChange(
-                                            proviceList.filter(
-                                                (item: any) =>
-                                                    item.value === e.value
-                                            )[0]
+                                            proviceList.find((item) => item.value === e.value)
                                         )
                                     }
                                 />
@@ -523,10 +520,7 @@ function Payment() {
                                     emptyMessage="Không có dữ liệu"
                                     onChange={(e) =>
                                         handleDistrictChange(
-                                            districtList.filter(
-                                                (item: any) =>
-                                                    item.value === e.value
-                                            )[0]
+                                            districtList.find((item) => item.value === e.value)
                                         )
                                     }
                                 />

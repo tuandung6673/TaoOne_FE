@@ -1,6 +1,5 @@
-import { Button } from "primereact/button";
+// import { Button } from "primereact/button";
 import { useNavigate } from "react-router";
-import { useParams } from "react-router-dom";
 import { useRef } from "react";
 import { ItemDetail } from "../../constants/interface";
 import { useCart } from "../../custom-hook/CartContext";
@@ -8,13 +7,11 @@ import classes from "./ProductItem.module.scss";
 
 interface Props {
     productItem: ItemDetail;
-    categoryCode?: string;
     onAddToCart?: (productName: string) => void;
 }
 
-function ProductItem({ productItem, categoryCode, onAddToCart }: Props) {
+function ProductItem({ productItem, onAddToCart }: Props) {
     const navigate = useNavigate();
-    // const { categoryName } = useParams<{ categoryName?: string }>();
     const { addToCart } = useCart();
     const touchStartTime = useRef<number>(0);
     const touchStartPosition = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -23,24 +20,24 @@ function ProductItem({ productItem, categoryCode, onAddToCart }: Props) {
         navigate(`/${productItem.category_code}/${productItem.id}`)
     }
 
-    const handleAddToCart = (e: React.MouseEvent) => {
-        e.stopPropagation(); // Prevent navigation to product detail
-        addToCart({
-            id: productItem.id,
-            name: productItem.name || "",
-            price: productItem.price,
-            salePrice: productItem.salePrice,
-            img: productItem.img || "",
-            quantity: 1,
-            category_code: productItem.category_code,
-            category_detail_name: productItem.category_detail_name
-        });
+    // const handleAddToCart = (e: React.MouseEvent) => {
+    //     e.stopPropagation(); // Prevent navigation to product detail
+    //     addToCart({
+    //         id: productItem.id,
+    //         name: productItem.name || "",
+    //         price: productItem.price,
+    //         salePrice: productItem.salePrice,
+    //         img: productItem.img || "",
+    //         quantity: 1,
+    //         category_code: productItem.category_code,
+    //         category_detail_name: productItem.category_detail_name
+    //     });
         
-        // Call the callback to show toast from parent component
-        if (onAddToCart) {
-            onAddToCart(productItem.name || "");
-        }
-    };
+    //     // Call the callback to show toast from parent component
+    //     if (onAddToCart) {
+    //         onAddToCart(productItem.name || "");
+    //     }
+    // };
 
     const handleTouchStart = (e: React.TouchEvent) => {
         touchStartTime.current = Date.now();

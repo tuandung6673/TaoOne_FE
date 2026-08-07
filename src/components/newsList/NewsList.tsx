@@ -1,65 +1,60 @@
-import { useEffect, useState } from 'react';
-import './NewsList.scss';
+import he from 'he';
+import { Paginator, PaginatorPageChangeEvent } from 'primereact/paginator';
+import queryString from 'query-string';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { NewsDetail } from '../../constants/interface';
 import ApiService from '../../services/api.service';
-import queryString from 'query-string';
-import { Paginator } from 'primereact/paginator';
-import he from 'he';
-import { useNavigate } from 'react-router-dom';
+import './NewsList.scss';
+
+const stripHtmlAndDecode = (html: string) => {
+    // Bỏ thẻ HTML
+    const stripped = html.replace(/<\/?[^>]+(>|$)/g, '');
+    // Decode HTML entities
+    return he.decode(stripped);
+};
 
 const NewsList = () => {
     const navigate = useNavigate();
     const [newsList, setNewsList] = useState<NewsDetail[]>([]);
-    const [params, setParams] = useState({
-        filter: '',
-        status: 1,
-        offSet: 0,
-        pageSize: 10
-    });
     const [first, setFirst] = useState(0);
     const [rows, setRows] = useState(10);
     const [recordsTotal, setRecordsTotal] = useState(0);
+
     useEffect(() => {
+        const fetchNews = async () => {
+            try {
+                const queryParams = queryString.stringify({
+                    filter: '',
+                    status: 1,
+                    offSet: first,
+                    pageSize: rows,
+                });
+                const response = await ApiService.getNewsList(queryParams);
+                setRecordsTotal(response.data.recordsTotal);
+                setNewsList(response.data.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
         fetchNews();
-    }, [params])
+    }, [first, rows]);
 
-    const fetchNews = async () => {
-        try {
-            const queryParams = queryString.stringify(params);
-            const response = await ApiService.getNewsList(queryParams);
-            setRecordsTotal(response.data.recordsTotal);
-            setNewsList(response.data.data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const onPageChange = (event: any) => {
+    const onPageChange = useCallback((event: PaginatorPageChangeEvent) => {
         setRows(event.rows);
         setFirst(event.first);
-        setParams((prevParams) => ({
-            ...prevParams,
-            offSet: event.first,
-            pageSize: event.rows,
-        }));
-        
+
         // Scroll to top of page when page changes
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
-    };
+    }, []);
 
-    const stripHtmlAndDecode = (html: string) => {
-        // Bỏ thẻ HTML
-        const stripped = html.replace(/<\/?[^>]+(>|$)/g, '');
-        // Decode HTML entities
-        return he.decode(stripped);
-    };
-
-    const handleNewsClick = (slug: string) => {
+    const handleNewsClick = useCallback((slug: string) => {
         navigate(`/news/${slug}`);
-    }
+    }, [navigate]);
 
     return (
         <div className="main news-list-container">

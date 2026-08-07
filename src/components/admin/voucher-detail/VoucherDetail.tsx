@@ -232,7 +232,7 @@ function VoucherDetail() {
             <div className="header">
                 <BreadCrumb model={breadcrumbItems} home={home} />
                 <div className="header-main flex justify-content-between align-items-center">
-                    <div className="header-left main-title">{!!voucherId ? "Chỉnh sửa voucher" : "Thêm mới voucher"}</div>
+                    {/* <div className="header-left main-title">{!!voucherId ? "Chỉnh sửa voucher" : "Thêm mới voucher"}</div> */}
                     <div className="flex">
                         <div className="cancel-btn mr-2">
                             <Button label="Hủy" className="p-button-outlined" style={{ height: "40px" }} onClick={handleBack} />

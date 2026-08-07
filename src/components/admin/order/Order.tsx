@@ -4,33 +4,57 @@ import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { DataTable, DataTableExpandedRows, DataTableValueArray } from "primereact/datatable";
-import { Dropdown } from "primereact/dropdown";
+import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { OverlayPanel } from "primereact/overlaypanel";
+import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
 import { Toast } from "primereact/toast";
 import queryString from "query-string";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { PaymentForm } from "../../../constants/interface";
 import ApiService from "../../../services/api.service";
 import "./Order.scss";
-import { Paginator } from "primereact/paginator";
+
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "" };
+const BREADCRUMB_ITEMS = [{ label: "Đơn hàng" }];
+
+const STATUS_OPTIONS = [
+    { label: "Tất cả", value: -1 },
+    { label: "0. Khởi tạo", value: 0 },
+    { label: "1. Đã xác nhận", value: 1 },
+    { label: "2. Hoàn thành", value: 2 },
+    { label: "3. Trả lại", value: 3 },
+    { label: "4. Hủy", value: 4 },
+];
+
+const ORDER_STATUS_LABELS: Record<number, string> = {
+    0: "Khởi tạo",
+    1: "Đã xác nhận",
+    2: "Hoàn thành",
+    3: "Trả lại",
+    4: "Hủy",
+};
+
+const PAYMENT_METHOD_LABELS: Record<number, string> = {
+    0: "Chuyển khoản ngân hàng",
+    1: "Kiểm tra thanh toán",
+    2: "Trả tiền mặt khi nhận hàng",
+};
+
+interface OrderLineItem {
+    img: string;
+    product_name: string;
+    size: string;
+    quantity: number;
+    salePrice: number;
+}
 
 function Order() {
-    const [selectStatus, setSelectStatus] = useState(null);
+    const [selectStatus, setSelectStatus] = useState<number | null>(null);
     const op2 = useRef<OverlayPanel>(null);
     const op = useRef<OverlayPanel>(null);
     const toast = useRef<Toast>(null);
-    const home = { icon: "pi pi-home", url: "" };
     const [selectedId, setSelectedId] = useState<string>();
-    const breadcrumbItems = [{ label: "Đơn hàng" }];
-    const statusOptions = [
-        { label: "Tất cả", value: -1 },
-        { label: "0. Khởi tạo", value: 0 },
-        { label: "1. Đã xác nhận", value: 1 },
-        { label: "2. Hoàn thành", value: 2 },
-        { label: "3. Trả lại", value: 3 },
-        { label: "4. Hủy", value: 4 },
-    ];
     const [searchValue, setSearchValue] = useState("");
     const [orderList, setOrderList] = useState<PaymentForm[]>([]);
     const [orderParams, setOrderParams] = useState({
@@ -42,22 +66,35 @@ function Order() {
     const [recordsTotal, setRecordsTotal] = useState(0);
     const [first, setFirst] = useState(0);
     const [rows, setRows] = useState(10);
+    const [expandedRows, setExpandedRows] = useState<
+        DataTableExpandedRows | DataTableValueArray | undefined
+    >(undefined);
 
+    const fetchOrder = useCallback(async (params: typeof orderParams) => {
+        try {
+            const queryParams = queryString.stringify(params);
+            const response = await ApiService.getPaymentList(queryParams);
+            setOrderList(response.data.data);
+            setRecordsTotal(response.data.recordsTotal);
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
 
     useEffect(() => {
         fetchOrder(orderParams);
-    }, [orderParams]);
+    }, [orderParams, fetchOrder]);
 
-    const changeCtgHanlder = (e: any) => {
+    const changeCtgHanlder = useCallback((e: DropdownChangeEvent) => {
         setSelectStatus(e.value);
         setOrderParams((prevParams) => ({
             ...prevParams,
             status: e.value ? e.value : "0",
         }));
-        op2.current?.toggle(e);
-    };
+        op2.current?.toggle(e.originalEvent);
+    }, []);
 
-    const onPageChange = (event: any) => {
+    const onPageChange = useCallback((event: PaginatorPageChangeEvent) => {
         setRows(event.rows);
         setFirst(event.first);
         setOrderParams((prevParams) => ({
@@ -65,91 +102,84 @@ function Order() {
             offSet: event.first,
             pageSize: event.rows,
         }));
-    };
+    }, []);
 
-    const fetchOrder = async (orderParams: any) => {
-        try {
-            const queryParams = queryString.stringify(orderParams);
-            const slideList = await ApiService.getPaymentList(queryParams);
-            setOrderList(slideList.data.data);
-            setRecordsTotal(slideList.data.recordsTotal);
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const [expandedRows, setExpandedRows] = useState<
-        DataTableExpandedRows | DataTableValueArray | undefined
-    >(undefined);
-
-    const searchHandler = () => {
+    const searchHandler = useCallback(() => {
         setOrderParams((prevParams) => ({
             ...prevParams,
             filter: searchValue,
         }));
-    };
+    }, [searchValue]);
 
-    const handleKeyDown = (event: any) => {
-        if (event && event.key === "Enter") {
+    const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
             searchHandler();
         }
-    };
+    }, [searchHandler]);
 
-    const statusTemplate = (product: any) => {
-        let template;
-        if (product.status === 0) {
-            template = <div className="status status-0">Khởi tạo</div>;
-        } else if (product.status === 1) {
-            template = <div className="status status-1">Đã xác nhận</div>;
-        } else if (product.status === 2) {
-            template = <div className="status status-2">Hoàn thành</div>;
-        } else if (product.status === 3) {
-            template = <div className="status status-3">Trả lại</div>;
-        } else if (product.status === 4) {
-            template = <div className="status status-4">Hủy</div>;
-        }
-        return template;
-    };
+    const statusTemplate = useCallback((product: PaymentForm) => {
+        const label = product.status !== undefined ? ORDER_STATUS_LABELS[product.status] : undefined;
+        if (!label) return null;
+        return <div className={`status status-${product.status}`}>{label}</div>;
+    }, []);
 
-    const methodTemplate = (product: any) => {
-        let template;
-        if (product.payment_method == 0) {
-            template = <div>Chuyển khoản ngân hàng</div>;
-        } else if (product.payment_method == 1) {
-            template = <div>Kiểm tra thanh toán</div>;
-        } else if (product.payment_method == 2) {
-            template = <div>Trả tiền mặt khi nhận hàng</div>;
-        }
-        return template;
-    };
+    const methodTemplate = useCallback((product: PaymentForm) => {
+        const label = PAYMENT_METHOD_LABELS[Number(product.payment_method)];
+        return label ? <div>{label}</div> : null;
+    }, []);
 
-    const dateTemplate = (product: any) => {
+    const dateTemplate = useCallback((product: PaymentForm) => {
         return moment(product.date).format("DD/MM/YYYY");
-    };
+    }, []);
 
-    const optionsTemplate = (rowData: any) => {
-        return (
-            <span
-                className="flex justify-content-center"
-                onClick={(e) => {
-                    op.current?.toggle(e);
-                    setSelectedId(rowData.id);
-                }}
-            >
-                <i className="pi pi-ellipsis-v"></i>
-            </span>
-        );
-    };
+    const optionsTemplate = useCallback((rowData: PaymentForm) => (
+        <span
+            className="flex justify-content-center"
+            onClick={(e) => {
+                op.current?.toggle(e);
+                setSelectedId(rowData.id);
+            }}
+        >
+            <i className="pi pi-ellipsis-v"></i>
+        </span>
+    ), []);
 
-    const priceFormatTemplate = (rowData: any) => {
-        return (
-            <span className="total-bill ">
-                {rowData.toLocaleString("vi-VN")}
-            </span>
-        );
-    };
+    const priceFormatTemplate = useCallback((value: number) => (
+        <span className="total-bill ">
+            {value.toLocaleString("vi-VN")}
+        </span>
+    ), []);
 
-    const confirmDelete = () => {
+    const acceptDeleteOrder = useCallback(async () => {
+        try {
+            const deleteCtg = await ApiService.deletePayment(selectedId || "");
+            if (deleteCtg.status === "success") {
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Thông báo",
+                    detail: "Xóa bản ghi thành công !",
+                    life: 3000,
+                });
+                fetchOrder(orderParams);
+            } else {
+                toast.current?.show({
+                    severity: "error",
+                    summary: "Thông báo",
+                    detail: deleteCtg.message || "Không thành công !",
+                    life: 3000,
+                });
+            }
+        } catch (err) {
+            toast.current?.show({
+                severity: "error",
+                summary: "Thông báo",
+                detail: "Không thành công !",
+                life: 2000,
+            });
+        }
+    }, [selectedId, orderParams, fetchOrder]);
+
+    const confirmDelete = useCallback(() => {
         confirmDialog({
             header: "Xác nhận",
             message: "Bạn muốn xóa bản ghi này không ?",
@@ -159,52 +189,17 @@ function Order() {
             rejectLabel: "Hủy",
             accept: acceptDeleteOrder,
         });
-    };
+    }, [acceptDeleteOrder]);
 
-    const acceptDeleteOrder = async () => {
-        try {
-            const deleteCtg = await ApiService.deletePayment(selectedId || "");
-            if (deleteCtg.status === "success") {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "success",
-                        summary: "Thông báo",
-                        detail: "Xóa bản ghi thành công !",
-                        life: 3000,
-                    });
-                }
-                fetchOrder(orderParams);
-            } else {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "error",
-                        summary: "Thông báo",
-                        detail: deleteCtg.message || "Không thành công !",
-                        life: 3000,
-                    });
-                }
-            }
-        } catch (err) {
-            if (toast.current) {
-                toast.current.show({
-                    severity: "error",
-                    summary: "Thông báo",
-                    detail: "Không thành công !",
-                    life: 2000,
-                });
-            }
-        }
-    };
-
-    const changeOrderStatus = async (newStatus: number) => {
+    const changeOrderStatus = useCallback(async (newStatus: number) => {
         const data = {
             id: selectedId,
             status: newStatus,
         };
         try {
             const response = await ApiService.updatePaymentStatus(data);
-            if (response.status === "success" && toast.current) {
-                toast.current.show({
+            if (response.status === "success") {
+                toast.current?.show({
                     severity: "success",
                     summary: "Thành công",
                     detail: "Cập nhật trạng thái thành công !",
@@ -214,44 +209,38 @@ function Order() {
         } catch (error) {
             console.log(error);
         }
-    };
+    }, [selectedId, orderParams, fetchOrder]);
 
-    const imageBodyTemplate = (product: any) => {
-        return (
-            <img
-                src={product.img}
-                alt={product.img}
-                style={{ objectFit: "contain" }}
-                className="w-3rem h-3rem shadow-2 border-round"
-            />
-        );
-    };
+    const imageBodyTemplate = useCallback((product: OrderLineItem) => (
+        <img
+            src={product.img}
+            alt={product.img}
+            style={{ objectFit: "contain" }}
+            className="w-3rem h-3rem shadow-2 border-round"
+        />
+    ), []);
 
-    const rowExpansionTemplate = (data: any) => {
-        return (
-            <>
-                <DataTable value={data.products} scrollable={false}>
-                    <Column field="img" header="Hình ảnh" body={imageBodyTemplate} style={{ width: "11rem" }}></Column>
-                    <Column field="product_name" header="Sản phẩm" style={{ width: "700px" }}></Column>
-                    <Column field="size" header="Phiên bản" style={{ width: "180px" }}></Column>
-                    <Column
-                        header="Số lượng"
-                        field="quantity"
-                        style={{ width: "200px" }}
-                    ></Column>
-                    <Column
-                        header="Đơn giá"
-                        field="salePrice"
-                        body={(rowData) => priceFormatTemplate(rowData.salePrice)}
-                    ></Column>
-                </DataTable>
-            </>
-        );
-    };
+    const rowExpansionTemplate = useCallback((data: PaymentForm) => (
+        <DataTable value={data.products as unknown as OrderLineItem[]} scrollable={false}>
+            <Column field="img" header="Hình ảnh" body={imageBodyTemplate} style={{ width: "11rem" }}></Column>
+            <Column field="product_name" header="Sản phẩm" style={{ width: "700px" }}></Column>
+            <Column field="size" header="Phiên bản" style={{ width: "180px" }}></Column>
+            <Column
+                header="Số lượng"
+                field="quantity"
+                style={{ width: "200px" }}
+            ></Column>
+            <Column
+                header="Đơn giá"
+                field="salePrice"
+                body={(rowData: OrderLineItem) => priceFormatTemplate(rowData.salePrice)}
+            ></Column>
+        </DataTable>
+    ), [imageBodyTemplate, priceFormatTemplate]);
 
-    const allowExpansion = (rowData: any) => {
-        return rowData.products?.length > 0;
-    };
+    const allowExpansion = useCallback((rowData: PaymentForm) => {
+        return (rowData.products?.length || 0) > 0;
+    }, []);
 
     return (
         <>
@@ -259,7 +248,7 @@ function Order() {
             <ConfirmDialog />
             <div className="order-wrapper">
                 <div className="header">
-                    <BreadCrumb model={breadcrumbItems} home={home} />
+                    <BreadCrumb model={BREADCRUMB_ITEMS} home={HOME_BREADCRUMB} />
                     <div className="grid">
                         <div className="col-6 header-left flex">
                             <div className="empty"></div>
@@ -272,13 +261,13 @@ function Order() {
                                 <InputText
                                     placeholder="Nhập SĐT hoặc Tên KH"
                                     value={searchValue}
-                                    onKeyDown={(e) => handleKeyDown(e)}
+                                    onKeyDown={handleKeyDown}
                                     onChange={(e) =>
                                         setSearchValue(e.target.value)
                                     }
                                 />
                                 <Button
-                                    onClick={() => searchHandler()}
+                                    onClick={searchHandler}
                                     icon="pi pi-search"
                                 />
                             </div>
@@ -295,10 +284,8 @@ function Order() {
                                         <div className="pb-1">Trạng thái</div>
                                         <Dropdown
                                             value={selectStatus}
-                                            onChange={(e) =>
-                                                changeCtgHanlder(e)
-                                            }
-                                            options={statusOptions}
+                                            onChange={changeCtgHanlder}
+                                            options={STATUS_OPTIONS}
                                             placeholder="Lựa chọn"
                                             className="w-full"
                                         />

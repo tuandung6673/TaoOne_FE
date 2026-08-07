@@ -1,31 +1,30 @@
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
-import { Checkbox } from "primereact/checkbox";
+import { Checkbox, CheckboxChangeEvent } from "primereact/checkbox";
 import { Column } from "primereact/column";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { DataTable } from "primereact/datatable";
-import { Dropdown } from "primereact/dropdown";
+import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { Sidebar } from "primereact/sidebar";
 import { Toast } from "primereact/toast";
 import queryString from "query-string";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ROLE } from "../../../constants/constants";
 import {
     BannerDetail,
     DropdownInterface,
-    ItemDetail,
 } from "../../../constants/interface";
-import { useSpinner } from "../../../custom-hook/SpinnerContext";
-import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
-import "./banner.scss";
 import ImagePickerDialog from "../../PickerDialog/ImagePickerDialog";
+import "./banner.scss";
+
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "" };
+const BREADCRUMB_ITEMS = [{ label: "Banner" }];
+const EMPTY_IMAGE_URL = "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png";
 
 function Banner() {
-    const { showSpinner, hideSpinner } = useSpinner();
     const toast = useRef<Toast>(null);
     const op = useRef<OverlayPanel>(null);
     const [visibleRight, setVisibleRight] = useState(false);
@@ -33,14 +32,12 @@ function Banner() {
     const [image, setImage] = useState<File | null>(null);
     const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
     const [imageUrl, setImageUrl] = useState<string>("");
-    const home = { icon: "pi pi-home", url: "" };
-    const breadcrumbItems = [{ label: "Banner" }];
     const [slideParams, setSlideParams] = useState({
         screen: "",
         rules: (window.location.pathname).includes(ROLE.admin) ? 'admin' : null
     });
-    const [slideList, setSlideList] = useState<ItemDetail[]>([]);
-    const [selectCtg, setSelectCtg] = useState(null);
+    const [slideList, setSlideList] = useState<BannerDetail[]>([]);
+    const [selectCtg, setSelectCtg] = useState<string | null>(null);
     const [selectedId, setSelectedId] = useState<string>();
     const [showImagePicker, setShowImagePicker] = useState<boolean>(false);
     const [listCtg, setListCtg] = useState<DropdownInterface[]>([]);
@@ -48,141 +45,109 @@ function Banner() {
         new BannerDetail()
     );
 
+    const fetchSlide = useCallback(async (params: typeof slideParams) => {
+        try {
+            const queryParams = queryString.stringify(params);
+            const response = await ApiService.getSlideList(queryParams);
+            setSlideList(response.data.data);
+        } catch (err) {
+            console.error(err);
+        }
+    }, []);
+
     useEffect(() => {
+        const fetchCategoryDetail = async () => {
+            try {
+                const ctgDetailList = await ApiService.getCategoryList(
+                    queryString.stringify({
+                        filter: "",
+                    })
+                );
+                const formattedList = ctgDetailList.data.data.map((item: any) => ({
+                    label: item.name,
+                    value: item.code,
+                }));
+
+                setListCtg([
+                    { label: "Trang chủ", value: "home" },
+                    ...formattedList,
+                ]);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
         fetchCategoryDetail();
     }, []);
 
-    const fetchSlide = async (slideParams: any) => {
-        try {
-            const queryParams = queryString.stringify(slideParams);
-            const slideList = await ApiService.getSlideList(queryParams);
-            setSlideList(slideList.data.data);
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
     useEffect(() => {
         fetchSlide(slideParams);
-    }, [slideParams]);
+    }, [slideParams, fetchSlide]);
 
-    const fetchCategoryDetail = async () => {
-        try {
-            const ctgDetailList = await ApiService.getCategoryList(
-                queryString.stringify({
-                    filter: "",
-                })
-            );
-            const formattedList = ctgDetailList.data.data.map((item: any) => {
-                return {
-                    label: item.name,
-                    value: item.code,
-                };
-            });
+    const imageBodyTemplate = useCallback((banner: BannerDetail) => (
+        <img
+            src={banner.img}
+            alt={banner.img}
+            style={{ objectFit: "cover" }}
+            className="w-9rem h-3rem shadow-2 border-round"
+        />
+    ), []);
 
-            setListCtg([
-                { label: "Trang chủ", value: "home" },
-                ...formattedList,
-            ]);
-        } catch (err) {
-            console.error(err);
-        }
-    };
+    const optionsTemplate = useCallback((banner: BannerDetail) => (
+        <span
+            className="flex justify-content-center"
+            onClick={(e) => {
+                op.current?.toggle(e);
+                setSelectedId(banner.id);
+            }}
+        >
+            <i className="pi pi-ellipsis-v"></i>
+        </span>
+    ), []);
 
-    const imageBodyTemplate = (product: any) => {
-        return (
-            <img
-                src={product.img}
-                alt={product.img}
-                style={{ objectFit: "cover" }}
-                className="w-9rem h-3rem shadow-2 border-round"
-            />
-        );
-    };
+    const showHomeTemplate = useCallback((banner: BannerDetail) => (
+        <Checkbox checked={String(banner.status) === "1"}></Checkbox>
+    ), []);
 
-    const optionsTemplate = (rowData: any) => {
-        return (
-            <span
-                className="flex justify-content-center"
-                onClick={(e) => {
-                    op.current?.toggle(e);
-                    setSelectedId(rowData.id);
-                }}
-            >
-                <i className="pi pi-ellipsis-v"></i>
-            </span>
-        );
-    };
-
-    const changeCtgHanlder = (e: any) => {
+    const changeCtgHanlder = useCallback((e: DropdownChangeEvent) => {
         setSelectCtg(e.value);
         setSlideParams((prevParams) => ({
             ...prevParams,
             screen: e.value ? e.value : "",
         }));
-        op2.current?.toggle(e);
-    };
+        op2.current?.toggle(e.originalEvent);
+    }, []);
 
-    const accept = () => {
-        deleteSlide();
-    };
-
-    const deleteSlide = async () => {
+    const deleteSlide = useCallback(async () => {
         try {
-            const deleteSlide = await ApiService.deleteSlide(selectedId || "");
-            if (deleteSlide.status === "success") {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "success",
-                        summary: "Thông báo",
-                        detail: "Xóa bản ghi thành công !",
-                        life: 2000,
-                    });
-                }
+            const deleteResult = await ApiService.deleteSlide(selectedId || "");
+            if (deleteResult.status === "success") {
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Thông báo",
+                    detail: "Xóa bản ghi thành công !",
+                    life: 2000,
+                });
                 fetchSlide(slideParams);
             } else {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "error",
-                        summary: "Thông báo",
-                        detail: "Không thành công !",
-                        life: 2000,
-                    });
-                }
-            }
-        } catch (err) {
-            if (toast.current) {
-                toast.current.show({
+                toast.current?.show({
                     severity: "error",
                     summary: "Thông báo",
                     detail: "Không thành công !",
                     life: 2000,
                 });
             }
+        } catch (err) {
+            toast.current?.show({
+                severity: "error",
+                summary: "Thông báo",
+                detail: "Không thành công !",
+                life: 2000,
+            });
         }
-    };
+    }, [selectedId, slideParams, fetchSlide]);
 
-    const onSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const selectedImage = e.target.files[0];
-            setImage(selectedImage);
-            // setAvatarImageName(image.name);
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                setImageUrl(reader.result as string);
-            };
-
-            reader.readAsDataURL(selectedImage);
-            setIsChangeAvatar(true);
-        }
-    };
-
-    const showHomeTemplate = (product: any) => {
-        return <Checkbox checked={product.status == "1"}></Checkbox>;
-    };
-
-    const confirmDelete = () => {
+    const confirmDelete = useCallback(() => {
         confirmDialog({
             header: "Xác nhận",
             message: "Bạn muốn xóa bản ghi này không ?",
@@ -190,11 +155,11 @@ function Banner() {
             acceptClassName: "p-button-danger",
             acceptLabel: "Xóa",
             rejectLabel: "Hủy",
-            accept,
+            accept: deleteSlide,
         });
-    };
+    }, [deleteSlide]);
 
-    const fetchDetailBanner = async () => {
+    const fetchDetailBanner = useCallback(async () => {
         try {
             const detailBanner = await ApiService.getSlideDetail(
                 selectedId || ""
@@ -204,29 +169,29 @@ function Banner() {
         } catch (error) {
             console.log(error);
         }
-    };
+    }, [selectedId]);
 
-    const viewDetail = () => {
+    const viewDetail = useCallback(() => {
         fetchDetailBanner();
         setVisibleRight(true);
-    };
+    }, [fetchDetailBanner]);
 
-    const handleChangeScreen = (e: any) => {
+    const handleChangeScreen = useCallback((e: DropdownChangeEvent) => {
         setBannerDetail((prev) => ({
             ...prev,
             screen: e.value,
         }));
-    };
+    }, []);
 
-    const handleChange = (e: any) => {
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement> | CheckboxChangeEvent) => {
         const { name, checked, value } = e.target;
         setBannerDetail((prev) => ({
             ...prev,
-            [name]: value != null ? value : checked ? 1 : 0,
+            [name as string]: value != null ? value : checked ? 1 : 0,
         }));
-    };
+    }, []);
 
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
         const data: any = bannerDetail;
         data.img = isChangeAvatar
             ? image?.name
@@ -237,56 +202,52 @@ function Banner() {
         try {
             const response = await ApiService.postSlide(data);
             if (response.status === "success") {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "success",
-                        summary: "Thành công",
-                        detail:
-                            (!!selectedId ? "Lưu" : "Thêm mới") +
-                            " thành công !",
-                    });
-                }
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Thành công",
+                    detail:
+                        (!!selectedId ? "Lưu" : "Thêm mới") +
+                        " thành công !",
+                });
                 setVisibleRight(false);
                 fetchSlide(slideParams);
             }
         } catch (error) {
-            if (toast.current) {
-                toast.current.show({
-                    severity: "error",
-                    summary: "Thông báo",
-                    detail: "Không thành công !",
-                    life: 2000,
-                });
-            }
+            toast.current?.show({
+                severity: "error",
+                summary: "Thông báo",
+                detail: "Không thành công !",
+                life: 2000,
+            });
         }
-    };
+    }, [bannerDetail, isChangeAvatar, image, selectedId, slideParams, fetchSlide]);
 
-    const handleCancel = () => {
+    const handleCancel = useCallback(() => {
         setSelectedId(undefined);
         setVisibleRight(false);
-    };
+    }, []);
 
-    const handleAddBanner = () => {
+    const handleAddBanner = useCallback(() => {
         setSelectedId(undefined);
         setVisibleRight(true);
         setBannerDetail(new BannerDetail());
         setImageUrl("");
-    };
+    }, []);
 
-    const openImagePicker = () => {
+    const openImagePicker = useCallback(() => {
         setShowImagePicker(true);
-    };
+    }, []);
 
-    const handleImagePickerHide = () => {
+    const handleImagePickerHide = useCallback(() => {
         setShowImagePicker(false);
-    };
+    }, []);
 
-    const handleImageSelect = (selectedImageUrl: string) => {
+    const handleImageSelect = useCallback((selectedImageUrl: string) => {
         setImageUrl(selectedImageUrl);
         setIsChangeAvatar(true);
         // Set a dummy file object to maintain compatibility with existing logic
         setImage(new File([], selectedImageUrl));
-    };
+    }, []);
 
     return (
         <>
@@ -294,7 +255,7 @@ function Banner() {
             <ConfirmDialog />
             <div className="wrapper">
                 <div className="header">
-                    <BreadCrumb model={breadcrumbItems} home={home} />
+                    <BreadCrumb model={BREADCRUMB_ITEMS} home={HOME_BREADCRUMB} />
                     <div className="grid">
                         <div className="col-6 header-left flex">
                             <div className="empty"></div>
@@ -316,9 +277,7 @@ function Banner() {
                                         <div className="pb-1">Màn hình</div>
                                         <Dropdown
                                             value={selectCtg}
-                                            onChange={(e) =>
-                                                changeCtgHanlder(e)
-                                            }
+                                            onChange={changeCtgHanlder}
                                             options={listCtg}
                                             showClear
                                             placeholder="Lựa chọn"
@@ -371,7 +330,7 @@ function Banner() {
                 </div>
             </div>
             <OverlayPanel ref={op}>
-                <div className="sort_option" onClick={() => viewDetail()}>
+                <div className="sort_option" onClick={viewDetail}>
                     <span className="mr-2">
                         <i className="pi pi-pencil"></i>
                     </span>
@@ -401,13 +360,9 @@ function Banner() {
                         /> */}
                         {/* <label htmlFor="avatar-input"> */}
                         <img
-                            onClick={() => openImagePicker()}
+                            onClick={openImagePicker}
                             className="w-full"
-                            src={
-                                imageUrl
-                                    ? imageUrl
-                                    : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
-                            }
+                            src={imageUrl || EMPTY_IMAGE_URL}
                             alt={imageUrl || "error"}
                         />
                         {/* </label> */}
@@ -418,7 +373,7 @@ function Banner() {
                             value={bannerDetail.screen}
                             className="w-full"
                             options={listCtg}
-                            onChange={(e) => handleChangeScreen(e)}
+                            onChange={handleChangeScreen}
                         />
                     </div>
                     <div className="col-6">
@@ -427,14 +382,14 @@ function Banner() {
                             className="w-full"
                             value={bannerDetail.name}
                             name="name"
-                            onChange={(e) => handleChange(e)}
+                            onChange={handleChange}
                         />
                     </div>
                     <div className="col-6">
                         <div>Hiển thị</div>
                         <Checkbox
                             name="status"
-                            onChange={(e) => handleChange(e)}
+                            onChange={handleChange}
                             checked={
                                 bannerDetail.status === 1 ? true : false
                             }

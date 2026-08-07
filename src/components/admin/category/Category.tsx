@@ -2,7 +2,8 @@
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
-import { Checkbox } from "primereact/checkbox";
+import { Checkbox, CheckboxChangeEvent } from "primereact/checkbox";
+import { Chips } from "primereact/chips";
 import { Column } from "primereact/column";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import {
@@ -17,7 +18,7 @@ import { OverlayPanel } from "primereact/overlaypanel";
 import { Sidebar } from "primereact/sidebar";
 import { Toast } from "primereact/toast";
 import queryString from "query-string";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
     CategoryDetail,
     Category as Ctg,
@@ -26,16 +27,21 @@ import {
 import { useSpinner } from "../../../custom-hook/SpinnerContext";
 import { storage } from "../../../firebase/firebaseConfig";
 import ApiService from "../../../services/api.service";
-import "./Category.scss";
 import ImagePickerDialog from "../../PickerDialog/ImagePickerDialog";
-import { Chips } from "primereact/chips";
+import "./Category.scss";
+
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "" };
+const BREADCRUMB_ITEMS = [{ label: "Phân loại" }, { label: "Loại" }];
+const EMPTY_IMAGE_URL = "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png";
+
+interface CombinedCategory extends Ctg {
+    childs: CategoryDetail[];
+}
 
 function Category() {
     const toast = useRef<Toast>(null);
-    const home = { icon: "pi pi-home", url: "" };
     const op = useRef<OverlayPanel>(null);
     const op2 = useRef<OverlayPanel>(null);
-    const breadcrumbItems = [{ label: "Phân loại" }, { label: "Loại" }];
 
     const [selectedId, setSelectedId] = useState<string>();
     const [selectedDetailId, setSelectedDetailId] = useState<string>();
@@ -43,7 +49,7 @@ function Category() {
     const [detailDetailCtg, setDetailDetailCtg] = useState<CategoryDetail>(
         new CategoryDetail()
     );
-    const [combinedData, setCombinedData] = useState([]);
+    const [combinedData, setCombinedData] = useState<CombinedCategory[]>([]);
     const [visibleRight, setVisibleRight] = useState(false);
     const [visibleLeft, setVisibleLeft] = useState(false);
     const [listCtg, setListCtg] = useState<DropdownInterface[]>([]);
@@ -51,20 +57,12 @@ function Category() {
     const [isChangeAvatar, setIsChangeAvatar] = useState<boolean>(false);
     const [imageUrl, setImageUrl] = useState<string>("");
     const [showImagePicker, setShowImagePicker] = useState<boolean>(false);
+    const [expandedRows, setExpandedRows] = useState<
+        DataTableExpandedRows | DataTableValueArray | undefined
+    >(undefined);
     const { showSpinner, hideSpinner } = useSpinner();
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
-        const { categories, categoryDetails } =
-            await fetchCategoriesAndDetails();
-        const combined = combineCategoryAndDetails(categories, categoryDetails);
-        setCombinedData(combined);
-    };
-
-    const fetchCategoriesAndDetails = async () => {
+    const fetchCategoriesAndDetails = useCallback(async () => {
         try {
             const [categoryResponse, categoryDetailResponse] =
                 await Promise.all([
@@ -79,160 +77,136 @@ function Category() {
                     ), // Giả sử đây là API lấy danh sách category detail
                 ]);
 
-            const categories = categoryResponse?.data?.data;
-            const listCtg = categories.map((item: any) => {
-                return {
-                    label: item.name,
-                    value: item.id,
-                };
-            });
-            setListCtg(listCtg);
-            const categoryDetails = categoryDetailResponse?.data?.data;
+            const categories: Ctg[] = categoryResponse?.data?.data ?? [];
+            setListCtg(categories.map((item) => ({
+                label: item.name,
+                value: item.id || "",
+            })));
+            const categoryDetails: CategoryDetail[] = categoryDetailResponse?.data?.data ?? [];
 
             return { categories, categoryDetails };
         } catch (err) {
             console.error(err);
             return { categories: [], categoryDetails: [] };
         }
-    };
+    }, []);
 
-    const combineCategoryAndDetails = (
-        categories: any,
-        categoryDetails: any
-    ) => {
-        return categories.map((category: any) => {
-            const childs = categoryDetails
-                ? categoryDetails.filter(
-                    (detail: any) => detail.category_id === category.id
-                )
-                : [];
-            return {
-                ...category,
-                childs,
-            };
-        });
-    };
+    const fetchData = useCallback(async () => {
+        const { categories, categoryDetails } =
+            await fetchCategoriesAndDetails();
+        const combined: CombinedCategory[] = categories.map((category) => ({
+            ...category,
+            childs: categoryDetails.filter(
+                (detail) => detail.category_id === category.id
+            ),
+        }));
+        setCombinedData(combined);
+    }, [fetchCategoriesAndDetails]);
 
-    const allowExpansion = (rowData: any) => {
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    const allowExpansion = useCallback((rowData: CombinedCategory) => {
         return rowData.childs?.length > 0;
-    };
+    }, []);
 
-    const imageBodyTemplate = (product: any) => {
-        return (
-            <img
-                src={product.img}
-                alt={product.img}
-                style={{ objectFit: "contain" }}
-                className="w-9rem h-3rem shadow-2 border-round"
-            />
-        );
-    };
+    const imageBodyTemplate = useCallback((category: CombinedCategory) => (
+        <img
+            src={category.img}
+            alt={category.img}
+            style={{ objectFit: "contain" }}
+            className="w-9rem h-3rem shadow-2 border-round"
+        />
+    ), []);
 
-    const statusTemplate = (product: any) => {
-        return <Checkbox checked={product.status == "1"}></Checkbox>;
-    };
+    const statusTemplate = useCallback((category: CombinedCategory) => (
+        <Checkbox checked={String(category.status) === "1"}></Checkbox>
+    ), []);
 
-    const showHomeTemplate = (product: any) => {
-        return <Checkbox checked={product.is_show_home == "1"}></Checkbox>;
-    };
+    const showHomeTemplate = useCallback((category: CombinedCategory) => (
+        <Checkbox checked={String(category.is_show_home) === "1"}></Checkbox>
+    ), []);
 
-    const [expandedRows, setExpandedRows] = useState<
-        DataTableExpandedRows | DataTableValueArray | undefined
-    >(undefined);
+    const optionsTemplate = useCallback((rowData: CombinedCategory) => (
+        <span
+            className="flex justify-content-center"
+            onClick={(e) => {
+                op.current?.toggle(e);
+                setSelectedId(rowData.id);
+            }}
+        >
+            <i className="pi pi-ellipsis-v"></i>
+        </span>
+    ), []);
 
-    const optionsTemplate = (rowData: any) => {
-        return (
-            <span
-                className="flex justify-content-center"
-                onClick={(e) => {
-                    op.current?.toggle(e);
-                    setSelectedId(rowData.id);
-                }}
-            >
-                <i className="pi pi-ellipsis-v"></i>
-            </span>
-        );
-    };
+    const optionsTemplate2 = useCallback((rowData: CategoryDetail) => (
+        <span
+            className="flex justify-content-center"
+            onClick={(e) => {
+                op2.current?.toggle(e);
+                setSelectedDetailId(rowData.id);
+            }}
+        >
+            <i className="pi pi-ellipsis-v"></i>
+        </span>
+    ), []);
 
-    const optionsTemplate2 = (rowData: any) => {
-        return (
-            <span
-                className="flex justify-content-center"
-                onClick={(e) => {
-                    op2.current?.toggle(e);
-                    setSelectedDetailId(rowData.id);
-                }}
-            >
-                <i className="pi pi-ellipsis-v"></i>
-            </span>
-        );
-    };
-
-    const acceptCtg = async () => {
+    const acceptCtg = useCallback(async () => {
         try {
             const deleteCtg = await ApiService.deleteCategory(selectedId || "");
             if (deleteCtg.status === "success") {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "success",
-                        summary: "Thông báo",
-                        detail: "Xóa bản ghi thành công !",
-                        life: 3000,
-                    });
-                }
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Thông báo",
+                    detail: "Xóa bản ghi thành công !",
+                    life: 3000,
+                });
                 fetchData();
             } else {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "error",
-                        summary: "Thông báo",
-                        detail: deleteCtg.message || "Không thành công !",
-                        life: 3000,
-                    });
-                }
-            }
-        } catch (err) {
-            if (toast.current) {
-                toast.current.show({
+                toast.current?.show({
                     severity: "error",
                     summary: "Thông báo",
-                    detail: "Không thành công !",
-                    life: 2000,
+                    detail: deleteCtg.message || "Không thành công !",
+                    life: 3000,
                 });
             }
+        } catch (err) {
+            toast.current?.show({
+                severity: "error",
+                summary: "Thông báo",
+                detail: "Không thành công !",
+                life: 2000,
+            });
         }
-    };
+    }, [selectedId, fetchData]);
 
-    const acceptCtgDetail = async () => {
+    const acceptCtgDetail = useCallback(async () => {
         try {
             const deleteCtg = await ApiService.deleteCategoryDetail(
                 selectedDetailId || ""
             );
-            if (toast.current) {
-                toast.current.show({
-                    severity:
-                        deleteCtg.status === "success" ? "success" : "error",
-                    summary: "Thông báo",
-                    detail: deleteCtg.message,
-                    life: 3000,
-                });
-            }
+            toast.current?.show({
+                severity:
+                    deleteCtg.status === "success" ? "success" : "error",
+                summary: "Thông báo",
+                detail: deleteCtg.message,
+                life: 3000,
+            });
             if (deleteCtg.status === "success") {
                 fetchData();
             }
         } catch (err) {
-            if (toast.current) {
-                toast.current.show({
-                    severity: "error",
-                    summary: "Thông báo",
-                    detail: "Không thành công !",
-                    life: 2000,
-                });
-            }
+            toast.current?.show({
+                severity: "error",
+                summary: "Thông báo",
+                detail: "Không thành công !",
+                life: 2000,
+            });
         }
-    };
+    }, [selectedDetailId, fetchData]);
 
-    const confirmDelete = () => {
+    const confirmDelete = useCallback(() => {
         confirmDialog({
             header: "Xác nhận",
             message: "Bạn muốn xóa bản ghi này không ?",
@@ -242,9 +216,9 @@ function Category() {
             rejectLabel: "Hủy",
             accept: acceptCtg,
         });
-    };
+    }, [acceptCtg]);
 
-    const confirmDeleteCtgDetail = () => {
+    const confirmDeleteCtgDetail = useCallback(() => {
         confirmDialog({
             header: "Xác nhận",
             message: "Bạn muốn xóa bản ghi này không ?",
@@ -254,25 +228,9 @@ function Category() {
             rejectLabel: "Hủy",
             accept: acceptCtgDetail,
         });
-    };
+    }, [acceptCtgDetail]);
 
-    const onSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const selectedImage = e.target.files[0];
-            setImage(selectedImage);
-            // setAvatarImageName(image.name);
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                setImageUrl(reader.result as string);
-            };
-
-            reader.readAsDataURL(selectedImage);
-            setIsChangeAvatar(true);
-        }
-    };
-
-    const uploadAvatar = (): Promise<void> => {
+    const uploadAvatar = useCallback((): Promise<void> => {
         showSpinner();
         return new Promise((resolve, reject) => {
             if (image) {
@@ -302,75 +260,66 @@ function Category() {
                 resolve();
             }
         });
-    };
+    }, [image, showSpinner, hideSpinner]);
 
-    const fetchCtgDetail = async () => {
+    const fetchCtgDetail = useCallback(async () => {
         try {
-            const detailCtg = await ApiService.getCategoryDetail(
-                selectedId || ""
-            );
-            setDetailCtg(detailCtg.data);
-            setImageUrl(detailCtg.data.img);
+            const detail = await ApiService.getCategoryDetail(selectedId || "");
+            setDetailCtg(detail.data);
+            setImageUrl(detail.data.img);
         } catch (error) {
             console.log(error);
         }
-    };
+    }, [selectedId]);
 
-    const fetchCtgDetailDetail = async () => {
+    const fetchCtgDetailDetail = useCallback(async () => {
         try {
-            const detailDetailCtg = await ApiService.getCategoryDetailDetail(
+            const detail = await ApiService.getCategoryDetailDetail(
                 selectedDetailId || ""
             );
             setDetailDetailCtg(() => ({
-                ...detailDetailCtg.data,
-                size: detailDetailCtg.data.size ? detailDetailCtg.data.size.split(',') : [],
+                ...detail.data,
+                size: detail.data.size ? detail.data.size.split(',') : [],
             }));
         } catch (error) {
             console.log(error);
         }
-    };
+    }, [selectedDetailId]);
 
-    // const changeCtgHanlder = (e: any) => {
-    //     setDetailDetailCtg((prevParams) => ({
-    //         ...prevParams,
-    //         category_id: e.value ? e.value : "",
-    //     }));
-    // };
-
-    const viewCtgDetail = () => {
+    const viewCtgDetail = useCallback(() => {
         fetchCtgDetail();
         setVisibleRight(true);
-    };
+    }, [fetchCtgDetail]);
 
-    const handleEditDetailDetailCtg = () => {
+    const handleEditDetailDetailCtg = useCallback(() => {
         fetchCtgDetailDetail();
         setVisibleLeft(true);
-    };
+    }, [fetchCtgDetailDetail]);
 
-    const handleCtgChange = (e: any) => {
+    const handleCtgChange = useCallback((e: React.ChangeEvent<HTMLInputElement> | CheckboxChangeEvent) => {
         const { name, checked, value } = e.target;
         setDetailCtg((prev) => ({
             ...prev,
-            [name]: value != null ? value : checked ? 1 : 0,
+            [name as string]: value != null ? value : checked ? 1 : 0,
         }));
-    };
+    }, []);
 
-    const handleChange = (e: any) => {
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setDetailDetailCtg((prev) => ({
             ...prev,
             [name]: value,
         }));
-    };
+    }, []);
 
-    const handleChangeSize = (e: any) => {
+    const handleChangeSize = useCallback((size?: string[] | null) => {
         setDetailDetailCtg((prev) => ({
             ...prev,
-            size: [...e],
+            size: size ? [...size] : [],
         }));
-    };
+    }, []);
 
-    const handleSaveDetailCtg = async () => {
+    const handleSaveDetailCtg = useCallback(async () => {
         const data: Ctg = detailCtg;
         data.img = isChangeAvatar
             ? image?.name
@@ -382,15 +331,13 @@ function Category() {
         try {
             const response = await ApiService.postCategory(data);
             if (response.status === "success") {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "success",
-                        summary: "Thành công",
-                        detail:
-                            (!!selectedId ? "Lưu" : "Thêm mới") +
-                            " thành công !",
-                    });
-                }
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Thành công",
+                    detail:
+                        (!!selectedId ? "Lưu" : "Thêm mới") +
+                        " thành công !",
+                });
                 if (isChangeAvatar) {
                     await uploadAvatar();
                 }
@@ -400,10 +347,10 @@ function Category() {
         } catch (error) {
             console.log(error);
         }
-    };
+    }, [detailCtg, isChangeAvatar, image, selectedId, uploadAvatar, fetchData]);
 
-    const submitDetailDetail = async () => {
-        const data: any = {...detailDetailCtg};
+    const submitDetailDetail = useCallback(async () => {
+        const data: any = { ...detailDetailCtg };
         data.size = data.size ? data.size.join(',') : data.size;
         if (!selectedDetailId || selectedDetailId == "" || data.id == "" || !data.id) {
             delete data.id;
@@ -411,8 +358,8 @@ function Category() {
         delete data.product_count;
         try {
             const response = await ApiService.postCategoryDetail(data);
-            if (response.status === "success" && toast.current) {
-                toast.current.show({
+            if (response.status === "success") {
+                toast.current?.show({
                     severity: "success",
                     summary: "Thành công",
                     detail:
@@ -423,32 +370,30 @@ function Category() {
                 setVisibleLeft(false);
             }
         } catch (error) {
-            if (toast.current) {
-                toast.current.show({
-                    severity: "error",
-                    summary: "Thông báo",
-                    detail: "Không thành công !",
-                    life: 2000,
-                });
-            }
+            toast.current?.show({
+                severity: "error",
+                summary: "Thông báo",
+                detail: "Không thành công !",
+                life: 2000,
+            });
         }
-    };
+    }, [detailDetailCtg, selectedDetailId, fetchData]);
 
-    const handleAddCtg = () => {
+    const handleAddCtg = useCallback(() => {
         setSelectedId(undefined);
         setVisibleRight(true);
         setDetailCtg(new Ctg());
         setImageUrl("");
-    };
+    }, []);
 
-    const addCtgDetail = () => {
+    const addCtgDetail = useCallback(() => {
         setVisibleLeft(true);
         const newData: CategoryDetail = new CategoryDetail();
         newData.category_id = selectedId || "";
         setDetailDetailCtg(newData);
-    };
+    }, [selectedId]);
 
-    const rowExpansionTemplate = (data: any) => {
+    const rowExpansionTemplate = useCallback((data: CombinedCategory) => {
         return (
             <>
                 <div>
@@ -489,22 +434,22 @@ function Category() {
                 </OverlayPanel>
             </>
         );
-    };
+    }, [optionsTemplate2, handleEditDetailDetailCtg, confirmDeleteCtgDetail]);
 
-    const openImagePicker = () => {
+    const openImagePicker = useCallback(() => {
         setShowImagePicker(true);
-    };
+    }, []);
 
-    const handleImagePickerHide = () => {
+    const handleImagePickerHide = useCallback(() => {
         setShowImagePicker(false);
-    };
+    }, []);
 
-    const handleImageSelect = (selectedImageUrl: string) => {
+    const handleImageSelect = useCallback((selectedImageUrl: string) => {
         setImageUrl(selectedImageUrl);
         setIsChangeAvatar(true);
         // Set a dummy file object to maintain compatibility with existing logic
         setImage(new File([], selectedImageUrl));
-    };
+    }, []);
 
     return (
         <>
@@ -512,7 +457,7 @@ function Category() {
             <ConfirmDialog />
             <div className="wrapper">
                 <div className="header">
-                    <BreadCrumb model={breadcrumbItems} home={home} />
+                    <BreadCrumb model={BREADCRUMB_ITEMS} home={HOME_BREADCRUMB} />
                     <div className="grid">
                         <div className="col-6 header-left flex">
                             <div className="empty"></div>
@@ -601,12 +546,8 @@ function Category() {
                     <div className="col-12 avatar">
                         <img
                             className="w-full"
-                            onClick={() => openImagePicker()}
-                            src={
-                                imageUrl
-                                    ? imageUrl
-                                    : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
-                            }
+                            onClick={openImagePicker}
+                            src={imageUrl || EMPTY_IMAGE_URL}
                             alt={imageUrl || "error"}
                         />
                     </div>
@@ -616,7 +557,7 @@ function Category() {
                             className="w-full"
                             value={detailCtg.code}
                             name="code"
-                            onChange={(e) => handleCtgChange(e)}
+                            onChange={handleCtgChange}
                             disabled={!!selectedId}
                         />
                     </div>
@@ -626,7 +567,7 @@ function Category() {
                             className="w-full"
                             value={detailCtg.name}
                             name="name"
-                            onChange={(e) => handleCtgChange(e)}
+                            onChange={handleCtgChange}
                         />
                     </div>
                     <div className="col-6">
@@ -635,14 +576,14 @@ function Category() {
                             className="w-full"
                             value={detailCtg.order.toString()}
                             name="order"
-                            onChange={(e) => handleCtgChange(e)}
+                            onChange={handleCtgChange}
                         />
                     </div>
                     <div className="col-3">
                         <div>Trạng thái</div>
                         <Checkbox
                             name="status"
-                            onChange={(e) => handleCtgChange(e)}
+                            onChange={handleCtgChange}
                             checked={detailCtg.status === 1 ? true : false}
                         ></Checkbox>
                     </div>
@@ -650,7 +591,7 @@ function Category() {
                         <div>Hiển thị Trang chủ</div>
                         <Checkbox
                             name="is_show_home"
-                            onChange={(e) => handleCtgChange(e)}
+                            onChange={handleCtgChange}
                             checked={
                                 detailCtg.is_show_home === 1 ? true : false
                             }
@@ -693,7 +634,6 @@ function Category() {
                             className="w-full"
                             options={listCtg}
                             value={detailDetailCtg.category_id}
-                            // onChange={(e) => changeCtgHanlder(e)}
                             disabled={true}
                         />
                     </div>
@@ -703,12 +643,12 @@ function Category() {
                             className="w-full"
                             name="name"
                             value={detailDetailCtg.name}
-                            onChange={(e) => handleChange(e)}
+                            onChange={handleChange}
                         />
                     </div>
                     <div className="col-12">
                         <div>Phân loại</div>
-                        <Chips value={detailDetailCtg.size} onChange={(e: any) => handleChangeSize(e.value)}/>
+                        <Chips value={detailDetailCtg.size} onChange={(e) => handleChangeSize(e.value)} />
                     </div>
                 </div>
                 <div className="flex mt-5 mr-2 justify-content-end">

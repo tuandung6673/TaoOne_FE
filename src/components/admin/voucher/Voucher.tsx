@@ -3,19 +3,22 @@ import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { DataTable } from "primereact/datatable";
-import { Dropdown } from "primereact/dropdown";
+import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { InputSwitch } from "primereact/inputswitch";
 import { InputText } from "primereact/inputtext";
-import { Paginator } from "primereact/paginator";
+import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
 import { Tag } from "primereact/tag";
 import { Toast } from "primereact/toast";
 import queryString from "query-string";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AllRouteType, ROLE } from "../../../constants/constants";
 import { VoucherListItem } from "../../../constants/interface";
 import ApiService from "../../../services/api.service";
 import "./Voucher.scss";
+
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "" };
+const BREADCRUMB_ITEMS = [{ label: "Voucher" }];
 
 const STATUS_OPTIONS = [
     { label: "Tất cả trạng thái", value: null },
@@ -34,10 +37,21 @@ const formatDiscountValue = (rowData: VoucherListItem) =>
         ? `${rowData.discount_value}%`
         : rowData.discount_value.toLocaleString("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 });
 
+const discountTypeTemplate = (rowData: VoucherListItem) => (
+    <Tag
+        value={rowData.discount_type === "percent" ? "% Phần trăm" : "Số tiền"}
+        severity={rowData.discount_type === "percent" ? "info" : "warning"}
+    />
+);
+
+const effectiveTimeTemplate = (rowData: VoucherListItem) =>
+    `${formatDate(rowData.start_date)} - ${formatDate(rowData.end_date)}`;
+
+const usageTemplate = (rowData: VoucherListItem) =>
+    `${rowData.used_count ?? 0}/${rowData.usage_limit ?? "Không giới hạn"}`;
+
 function Voucher() {
     const navigate = useNavigate();
-    const home = { icon: "pi pi-home", url: "" };
-    const breadcrumbItems = [{ label: "Voucher" }];
     const toast = useRef<Toast>(null);
 
     const [list, setList] = useState<VoucherListItem[]>([]);
@@ -50,7 +64,7 @@ function Voucher() {
     const [status, setStatus] = useState<number | null>(null);
     const [selectedId, setSelectedId] = useState<string | null>(null);
 
-    const fetchList = async () => {
+    const fetchList = useCallback(async () => {
         setLoading(true);
         try {
             const queryParams = queryString.stringify({
@@ -68,38 +82,43 @@ function Voucher() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [search, status, first, rows]);
 
     useEffect(() => {
         fetchList();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [first, rows, search, status]);
 
-    const searchHandler = () => {
+    const searchHandler = useCallback(() => {
         setFirst(0);
         setSearch(searchInput.trim());
-    };
+    }, [searchInput]);
 
-    const handleKeyDown = (event: any) => {
-        if (event && event.key === "Enter") {
+    const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
             searchHandler();
         }
-    };
+    }, [searchHandler]);
 
-    const onPageChange = (event: any) => {
+    const onPageChange = useCallback((event: PaginatorPageChangeEvent) => {
         setFirst(event.first);
         setRows(event.rows);
-    };
+    }, []);
 
-    const handleAdd = () => {
+    const handleStatusFilterChange = useCallback((e: DropdownChangeEvent) => {
+        setFirst(0);
+        setStatus(e.value);
+    }, []);
+
+    const handleAdd = useCallback(() => {
         navigate(`${ROLE.admin}/${AllRouteType.voucher}/them-moi`);
-    };
+    }, [navigate]);
 
-    const handleEdit = (rowData: VoucherListItem) => {
+    const handleEdit = useCallback((rowData: VoucherListItem) => {
         navigate(`${ROLE.admin}/${AllRouteType.voucher}/${rowData.id}`);
-    };
+    }, [navigate]);
 
-    const handleToggleStatus = async (rowData: VoucherListItem) => {
+    const handleToggleStatus = useCallback(async (rowData: VoucherListItem) => {
         try {
             const detail = await ApiService.getVoucherDetail(rowData.id);
             const fullData = detail?.data ?? detail;
@@ -124,9 +143,9 @@ function Voucher() {
                 life: 2000
             });
         }
-    };
+    }, [fetchList]);
 
-    const handleDelete = async () => {
+    const handleDelete = useCallback(async () => {
         if (!selectedId) return;
         try {
             const response = await ApiService.deleteVoucher(selectedId);
@@ -149,9 +168,9 @@ function Voucher() {
                 life: 2000
             });
         }
-    };
+    }, [selectedId, fetchList]);
 
-    const confirmDelete = (rowData: VoucherListItem) => {
+    const confirmDelete = useCallback((rowData: VoucherListItem) => {
         setSelectedId(rowData.id);
         confirmDialog({
             header: "Xác nhận",
@@ -162,26 +181,13 @@ function Voucher() {
             rejectLabel: "Hủy",
             accept: handleDelete
         });
-    };
+    }, [handleDelete]);
 
-    const discountTypeTemplate = (rowData: VoucherListItem) => (
-        <Tag
-            value={rowData.discount_type === "percent" ? "% Phần trăm" : "Số tiền"}
-            severity={rowData.discount_type === "percent" ? "info" : "warning"}
-        />
-    );
-
-    const effectiveTimeTemplate = (rowData: VoucherListItem) =>
-        `${formatDate(rowData.start_date)} - ${formatDate(rowData.end_date)}`;
-
-    const usageTemplate = (rowData: VoucherListItem) =>
-        `${rowData.used_count ?? 0}/${rowData.usage_limit ?? "Không giới hạn"}`;
-
-    const statusTemplate = (rowData: VoucherListItem) => (
+    const statusTemplate = useCallback((rowData: VoucherListItem) => (
         <InputSwitch checked={rowData.status === 1} onChange={() => handleToggleStatus(rowData)} />
-    );
+    ), [handleToggleStatus]);
 
-    const actionTemplate = (rowData: VoucherListItem) => (
+    const actionTemplate = useCallback((rowData: VoucherListItem) => (
         <div className="flex gap-2">
             <Button icon="pi pi-pencil" className="p-button-text" onClick={() => handleEdit(rowData)} />
             <Button
@@ -190,14 +196,14 @@ function Voucher() {
                 onClick={() => confirmDelete(rowData)}
             />
         </div>
-    );
+    ), [handleEdit, confirmDelete]);
 
     return (
         <div className="wrapper voucher-admin">
             <Toast ref={toast} />
             <ConfirmDialog />
             <div className="header">
-                <BreadCrumb model={breadcrumbItems} home={home} />
+                <BreadCrumb model={BREADCRUMB_ITEMS} home={HOME_BREADCRUMB} />
                 <div className="grid">
                     <div className="col-6 header-left flex">
                         <div className="empty"></div>
@@ -208,18 +214,15 @@ function Voucher() {
                             <InputText
                                 placeholder="Nhập tên hoặc mã voucher"
                                 value={searchInput}
-                                onKeyDown={(e) => handleKeyDown(e)}
+                                onKeyDown={handleKeyDown}
                                 onChange={(e) => setSearchInput(e.target.value)}
                             />
-                            <Button onClick={() => searchHandler()} icon="pi pi-search" />
+                            <Button onClick={searchHandler} icon="pi pi-search" />
                         </div>
                         <Dropdown
                             value={status}
                             options={STATUS_OPTIONS}
-                            onChange={(e) => {
-                                setFirst(0);
-                                setStatus(e.value);
-                            }}
+                            onChange={handleStatusFilterChange}
                             placeholder="Trạng thái"
                         />
                         <Button label="Thêm mới" icon="pi pi-plus" onClick={handleAdd} />

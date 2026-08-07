@@ -1,26 +1,40 @@
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
-import { Column } from "primereact/column";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
-import { DataTable } from "primereact/datatable";
-import { InputText } from "primereact/inputtext";
-import { OverlayPanel } from "primereact/overlaypanel";
 import { Checkbox } from "primereact/checkbox";
+import { Column } from "primereact/column";
+import { ConfirmDialog } from "primereact/confirmdialog";
+import { DataTable } from "primereact/datatable";
+import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
+import { OverlayPanel } from "primereact/overlaypanel";
+import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
 import { Toast } from "primereact/toast";
-import { useEffect, useMemo, useRef, useState } from "react";
-import ApiService from "../../../services/api.service";
-import { AdviseForm } from "../../../constants/interface";
-import "./advise.scss";
 import queryString from "query-string";
-import { Paginator } from "primereact/paginator";
-import { Dropdown } from "primereact/dropdown";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AdviseForm } from "../../../constants/interface";
+import ApiService from "../../../services/api.service";
+import "./advise.scss";
+
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "" };
+const BREADCRUMB_ITEMS = [{ label: "Tư vấn" }];
+
+const STATUS_OPTIONS = [
+    { label: "Tất cả", value: null },
+    { label: "Chưa tư vấn", value: 0 },
+    { label: "Đã tư vấn", value: 1 }
+];
+
+const submitDateTemplate = (rowData: AdviseForm) => {
+    if (!rowData.submitDate) return "";
+    const d = new Date(rowData.submitDate);
+    return isNaN(d.getTime())
+        ? rowData.submitDate
+        : d.toLocaleString("vi-VN");
+};
 
 function Advise() {
-    const [selectStatus, setSelectStatus] = useState(null);
+    const [selectStatus, setSelectStatus] = useState<number | null>(null);
     const toast = useRef<Toast>(null);
     const op2 = useRef<OverlayPanel>(null);
-    const home = { icon: "pi pi-home", url: "" };
-    const breadcrumbItems = [{ label: "Tư vấn" }];
     const [adviseParams, setAdviseParams] = useState({
         status: null,
         offSet: 0,
@@ -29,14 +43,9 @@ function Advise() {
     const [recordsTotal, setRecordsTotal] = useState(0);
     const [first, setFirst] = useState(0);
     const [rows, setRows] = useState(10);
-    const statusOptions = [
-        { label: "Tất cả", value: null },
-        { label: "Chưa tư vấn", value: 0 },
-        { label: "Đã tư vấn", value: 1 }
-    ];
 
     const [adviseList, setAdviseList] = useState<AdviseForm[]>([]);
-    const [searchValue, setSearchValue] = useState("");
+    const [searchValue] = useState("");
 
     const filteredList = useMemo(() => {
         const q = searchValue.trim().toLowerCase();
@@ -49,7 +58,7 @@ function Advise() {
         });
     }, [adviseList, searchValue]);
 
-    const fetchAdviseList = async () => {
+    const fetchAdviseList = useCallback(async () => {
         try {
             const queryParams = queryString.stringify(adviseParams);
             const res = await ApiService.getAdviseList(queryParams);
@@ -62,18 +71,18 @@ function Advise() {
             console.error(err);
             setAdviseList([]);
         }
-    };
+    }, [adviseParams]);
 
-    const changeCtgHanlder = (e: any) => {
+    const changeCtgHanlder = useCallback((e: DropdownChangeEvent) => {
         setSelectStatus(e.value);
         setAdviseParams((prevParams) => ({
             ...prevParams,
             status: e.value,
         }));
-        op2.current?.toggle(e);
-    };
+        op2.current?.toggle(e.originalEvent);
+    }, []);
 
-    const onPageChange = (event: any) => {
+    const onPageChange = useCallback((event: PaginatorPageChangeEvent) => {
         setRows(event.rows);
         setFirst(event.first);
         setAdviseParams((prevParams) => ({
@@ -81,13 +90,13 @@ function Advise() {
             offSet: event.first,
             pageSize: event.rows,
         }));
-    };
+    }, []);
 
     useEffect(() => {
         fetchAdviseList();
-    }, [adviseParams]);
+    }, [fetchAdviseList]);
 
-    const toggleAdviseStatus = async (rowData: AdviseForm) => {
+    const toggleAdviseStatus = useCallback(async (rowData: AdviseForm) => {
         try {
             const currentStatus = Number(rowData.status ?? 0);
             const nextStatus = currentStatus === 1 ? 0 : 1;
@@ -117,9 +126,9 @@ function Advise() {
                 life: 2000,
             });
         }
-    };
+    }, [fetchAdviseList]);
 
-    const showStatusTemplate = (rowData: AdviseForm) => {
+    const showStatusTemplate = useCallback((rowData: AdviseForm) => {
         const checked = Number(rowData.status ?? 0) === 1;
 
         return (
@@ -133,7 +142,7 @@ function Advise() {
                 <Checkbox
                     checked={checked}
                     // Disable single-click behavior; only double-click should trigger API call.
-                    onChange={() => {}}
+                    onChange={() => { }}
                     onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
@@ -141,7 +150,7 @@ function Advise() {
                 />
             </div>
         );
-    };
+    }, [toggleAdviseStatus]);
 
     return (
         <>
@@ -149,7 +158,7 @@ function Advise() {
             <ConfirmDialog />
             <div className="wrapper">
                 <div className="header">
-                    <BreadCrumb model={breadcrumbItems} home={home} />
+                    <BreadCrumb model={BREADCRUMB_ITEMS} home={HOME_BREADCRUMB} />
                     <div className="grid">
                         <div className="col-6 header-left flex">
                             <div className="empty"></div>
@@ -177,10 +186,8 @@ function Advise() {
                                         <div className="pb-1">Trạng thái</div>
                                         <Dropdown
                                             value={selectStatus}
-                                            onChange={(e) =>
-                                                changeCtgHanlder(e)
-                                            }
-                                            options={statusOptions}
+                                            onChange={changeCtgHanlder}
+                                            options={STATUS_OPTIONS}
                                             placeholder="Lựa chọn"
                                             className="w-full"
                                         />
@@ -201,13 +208,7 @@ function Advise() {
                             <Column
                                 field="submitDate"
                                 header="Thời gian"
-                                body={(rowData: AdviseForm) => {
-                                    if (!rowData.submitDate) return "";
-                                    const d = new Date(rowData.submitDate);
-                                    return isNaN(d.getTime())
-                                        ? rowData.submitDate
-                                        : d.toLocaleString("vi-VN");
-                                }}
+                                body={submitDateTemplate}
                             />
                             <Column
                                 field="status"

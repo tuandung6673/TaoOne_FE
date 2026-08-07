@@ -1,24 +1,68 @@
 import { Editor } from "@tinymce/tinymce-react";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
+import { Checkbox, CheckboxChangeEvent } from "primereact/checkbox";
+import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
+import { MultiSelect, MultiSelectChangeEvent } from "primereact/multiselect";
 import { TabPanel, TabView } from "primereact/tabview";
 import { Toast } from "primereact/toast";
-import { MultiSelect } from "primereact/multiselect";
 import queryString from "query-string";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Editor as TinyMCEEditor } from "tinymce";
 import {
     Category,
     CategoryDetail,
+    DropdownInterface,
     ItemDetail,
 } from "../../../constants/interface";
 import ApiService from "../../../services/api.service";
 import ImagePickerDialog from "../../PickerDialog/ImagePickerDialog";
 import "./WatchDetail.scss";
-import { Checkbox } from "primereact/checkbox";
+
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "" };
+const EMPTY_IMAGE_URL = "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png";
+const EMPTY_SUB_IMAGE_URL = "https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg";
+const MAX_SUB_IMAGES = 6;
+
+const EDITOR_INIT = {
+    height: 500,
+    menubar: true,
+    plugins: [
+        "advlist",
+        "autolink",
+        "lists",
+        "link",
+        "image",
+        "charmap",
+        "preview",
+        "anchor",
+        "searchreplace",
+        "visualblocks",
+        "code",
+        "fullscreen",
+        "insertdatetime",
+        "media",
+        "table",
+        "code",
+        "help",
+        "wordcount",
+    ],
+    toolbar:
+        "undo redo | blocks fontfamily fontsize | " +
+        "bold italic forecolor | alignleft aligncenter " +
+        "alignright alignjustify | bullist numlist outdent indent | " +
+        "removeformat | help",
+    content_style:
+        "body { font-family:Arial,sans-serif; font-size:14px;}",
+};
+
+interface CategoryOption {
+    label: string;
+    value: string;
+    code: string;
+}
 
 function WatchDetail() {
     const navigate = useNavigate();
@@ -29,12 +73,12 @@ function WatchDetail() {
     const [showSubImagePicker, setShowSubImagePicker] = useState<boolean>(false);
     const [selectedSubImageIndex, setSelectedSubImageIndex] = useState<number>(-1);
     const [formData, setFormData] = useState<ItemDetail>(new ItemDetail());
-    const [categoryList, setCategoryList] = useState<Category[]>([]);
+    const [categoryList, setCategoryList] = useState<CategoryOption[]>([]);
     const [categoryDetailList, setCategoryDetailList] = useState<
         CategoryDetail[]
     >([]);
-    const [categoryDetailOptions, setCategoryDetailOptions] = useState<{label: string, value: string}[]>([]);
-    const [sizeOptions, setSizeOptions] = useState<{label: string, value: string}[]>([]);
+    const [categoryDetailOptions, setCategoryDetailOptions] = useState<DropdownInterface[]>([]);
+    const [sizeOptions, setSizeOptions] = useState<DropdownInterface[]>([]);
     const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
     const editorRef = useRef<TinyMCEEditor | null>(null);
     const toast = useRef<Toast>(null);
@@ -44,193 +88,184 @@ function WatchDetail() {
         { label: "Sản phẩm" },
         { label: !!productId ? "Chi tiết" : "Thêm mới" },
     ];
-    const home = { icon: "pi pi-home", url: "" };
+
+    const loadSizeOptions = useCallback((categoryDetailId: string, list: CategoryDetail[]) => {
+        const selectedCategoryDetail = list.find(item => item.id === categoryDetailId);
+        if (selectedCategoryDetail && selectedCategoryDetail.size) {
+            setSizeOptions(selectedCategoryDetail.size.split(',').map((size: string) => ({
+                label: size.trim(),
+                value: size.trim()
+            })));
+        } else {
+            setSizeOptions([]);
+        }
+    }, []);
 
     useEffect(() => {
+        const fetchDetailProduct = async (id: string) => {
+            try {
+                const productDetail = await ApiService.getProductDetail(id);
+                setFormData(productDetail.data);
+                setImageUrl(productDetail.data.img);
+
+                // Parse existing size string to array for multi-select
+                if (productDetail.data.size) {
+                    const sizes = productDetail.data.size.split(',').map((s: string) => s.trim()).filter((s: string) => s);
+                    setSelectedSizes(sizes);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        const fetchCategory = async () => {
+            try {
+                const categoryList = await ApiService.getCategoryList("");
+                setCategoryList(categoryList.data.data.map((item: Category) => ({
+                    label: item.name,
+                    value: item.id || "",
+                    code: item.code,
+                })));
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
         if (!!productId) {
             fetchDetailProduct(productId);
         }
         fetchCategory();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        if (formData.category_id) {
-            fetchCategoryDetail();
-        }
+        if (!formData.category_id) return;
+
+        const fetchCategoryDetail = async () => {
+            try {
+                const queryParams = queryString.stringify({
+                    category_code: formData.category_code,
+                });
+                const categoryDetailList = await ApiService.getCategoryDetailList(
+                    queryParams
+                );
+                setCategoryDetailList(categoryDetailList.data.data);
+                setCategoryDetailOptions(categoryDetailList.data.data.map(
+                    (item: CategoryDetail) => ({
+                        label: item.name,
+                        value: item.id,
+                    })
+                ));
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchCategoryDetail();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData.category_code]);
 
     useEffect(() => {
         // Load size options when category details are loaded and there's a selected category detail
         if (categoryDetailList.length > 0 && formData.category_detail_id) {
-            loadSizeOptions(formData.category_detail_id);
+            loadSizeOptions(formData.category_detail_id, categoryDetailList);
         }
-    }, [categoryDetailList, formData.category_detail_id]);
+    }, [categoryDetailList, formData.category_detail_id, loadSizeOptions]);
 
-    const handleImageSelect = (selectedImageUrl: string) => {
+    const handleImageSelect = useCallback((selectedImageUrl: string) => {
         setImageUrl(selectedImageUrl);
         setIsChangeAvatar(true);
         // Set a dummy file object to maintain compatibility with existing logic
         setImage(new File([], selectedImageUrl));
-    };
+    }, []);
 
-    const openImagePicker = () => {
+    const openImagePicker = useCallback(() => {
         setShowImagePicker(true);
-    };
+    }, []);
 
-    const handleImagePickerHide = () => {
+    const handleImagePickerHide = useCallback(() => {
         setShowImagePicker(false);
-    };
+    }, []);
 
-    const handleSubImagePickerHide = () => {
+    const handleSubImagePickerHide = useCallback(() => {
         setShowSubImagePicker(false);
         setSelectedSubImageIndex(-1);
-    };
+    }, []);
 
-    const openSubImagePicker = (index: number) => {
+    const openSubImagePicker = useCallback((index: number) => {
         setSelectedSubImageIndex(index);
         setShowSubImagePicker(true);
-    };
+    }, []);
 
-    const handleSubImageSelect = (selectedImageUrl: string) => {
-        if (selectedSubImageIndex === -1) {
-            // Adding new image
-            const newListImages = [
-                ...formData.listImages,
-                { imgSource: selectedImageUrl },
-            ];
-            setFormData({ ...formData, listImages: newListImages });
-        } else {
-            // Updating existing image
-            const newListImages = [...formData.listImages];
-            newListImages[selectedSubImageIndex] = {
-                ...newListImages[selectedSubImageIndex],
-                imgSource: selectedImageUrl,
-            };
-            setFormData({ ...formData, listImages: newListImages });
-        }
-        handleSubImagePickerHide();
-    };
-
-    const fetchDetailProduct = async (id: string) => {
-        try {
-            const productDetail = await ApiService.getProductDetail(id);
-            setFormData(productDetail.data);
-            setImageUrl(productDetail.data.img);
-            
-            // Parse existing size string to array for multi-select
-            if (productDetail.data.size) {
-                const sizes = productDetail.data.size.split(',').map((s: string) => s.trim()).filter((s: string) => s);
-                setSelectedSizes(sizes);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const fetchCategory = async (queryParams = "") => {
-        try {
-            const categoryList = await ApiService.getCategoryList(queryParams);
-            const ctgList = categoryList.data.data.map((item: Category) => {
-                return {
-                    label: item.name,
-                    value: item.id,
-                    code: item.code,
+    const handleSubImageSelect = useCallback((selectedImageUrl: string) => {
+        setFormData((prev) => {
+            const newListImages = [...prev.listImages];
+            if (selectedSubImageIndex === -1) {
+                newListImages.push({ imgSource: selectedImageUrl });
+            } else {
+                newListImages[selectedSubImageIndex] = {
+                    ...newListImages[selectedSubImageIndex],
+                    imgSource: selectedImageUrl,
                 };
-            });
-            setCategoryList(ctgList);
-        } catch (err) {
-            console.log(err);
-        }
-    };
+            }
+            return { ...prev, listImages: newListImages };
+        });
+        handleSubImagePickerHide();
+    }, [selectedSubImageIndex, handleSubImagePickerHide]);
 
-    const fetchCategoryDetail = async () => {
-        try {
-            const queryParams = queryString.stringify({
-                category_code: formData.category_code,
-            });
-            const categoryDetailList = await ApiService.getCategoryDetailList(
-                queryParams
-            );
-            const ctgDList = categoryDetailList.data.data.map(
-                (item: CategoryDetail) => {
-                    return {
-                        label: item.name,
-                        value: item.id,
-                    };
-                }
-            );
-            setCategoryDetailList(categoryDetailList.data.data);
-            setCategoryDetailOptions(ctgDList);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const loadSizeOptions = (categoryDetailId: string) => {
-        const selectedCategoryDetail = categoryDetailList.find(item => item.id === categoryDetailId);
-        if (selectedCategoryDetail && selectedCategoryDetail.size) {
-            const sizeOpts = selectedCategoryDetail.size.split(',').map((size: string) => ({
-                label: size.trim(),
-                value: size.trim()
-            }));
-            setSizeOptions(sizeOpts);
-        } else {
-            setSizeOptions([]);
-        }
-    };
-
-    const handleCategoryChange = (e: any) => {
+    const handleCategoryChange = useCallback((option?: CategoryOption) => {
+        if (!option) return;
         setFormData((prevFormData) => ({
             ...prevFormData,
-            category_code: e.code,
-            category_id: e.value,
+            category_code: option.code,
+            category_id: option.value,
         }));
         setCategoryDetailList([]);
         setCategoryDetailOptions([]);
         setSizeOptions([]);
         setSelectedSizes([]);
-    };
+    }, []);
 
-    const handleCategoryDetailChange = (e: any) => {
+    const handleCategoryDetailChange = useCallback((e: DropdownChangeEvent) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
             category_detail_id: e.value,
         }));
-        
-        // Load size options from selected category detail
-        loadSizeOptions(e.value);
-        setSelectedSizes([]);
-    };
 
-    const handleChange = (e: any) => {
+        // Load size options from selected category detail
+        loadSizeOptions(e.value, categoryDetailList);
+        setSelectedSizes([]);
+    }, [loadSizeOptions, categoryDetailList]);
+
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement> | CheckboxChangeEvent) => {
         const { name, checked, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: value != null ? value : checked ? 1 : 0,
+            [name as string]: value != null ? value : checked ? 1 : 0,
         }));
-    };
+    }, []);
 
-    const handleSizeChange = (e: any) => {
+    const handleSizeChange = useCallback((e: MultiSelectChangeEvent) => {
         setSelectedSizes(e.value);
         // Convert array to comma-separated string for formData
         setFormData((prev) => ({
             ...prev,
             size: e.value.join(',')
         }));
-    };
+    }, []);
 
-    const handleEditorChange = (content: any, key: string) => {
+    const handleEditorChange = useCallback((content: string, key: "description" | "specs") => {
         setFormData((prev) => ({
             ...prev,
             [key]: content,
         }));
-    };
+    }, []);
 
-    const handleBack = () => {
+    const handleBack = useCallback(() => {
         navigate(-1);
-    };
+    }, [navigate]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
         const data: any = formData;
         data.img = isChangeAvatar
             ? image?.name
@@ -244,37 +279,32 @@ function WatchDetail() {
         try {
             const response = await ApiService.postProduct(data);
             if (response.status === "success") {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "success",
-                        summary: "Thành công",
-                        detail:
-                            (!!productId ? "Lưu" : "Thêm mới") +
-                            " thành công !",
-                    });
-                }
-                // if (isChangeAvatar) {
-                //     await uploadAvatar();
-                // }
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Thành công",
+                    detail:
+                        (!!productId ? "Lưu" : "Thêm mới") +
+                        " thành công !",
+                });
                 navigate(-1);
             }
         } catch (error) {
-            if (toast.current) {
-                toast.current.show({
-                    severity: "error",
-                    summary: "Thông báo",
-                    detail: "Không thành công !",
-                    life: 2000,
-                });
-            }
+            toast.current?.show({
+                severity: "error",
+                summary: "Thông báo",
+                detail: "Không thành công !",
+                life: 2000,
+            });
         }
-    };
+    }, [formData, isChangeAvatar, image, productId, navigate]);
 
-    const handleDeleteSubImage = (index: number) => {
-        const newListImages = [...formData.listImages];
-        newListImages.splice(index, 1);
-        setFormData({ ...formData, listImages: newListImages });
-    };
+    const handleDeleteSubImage = useCallback((index: number) => {
+        setFormData((prev) => {
+            const newListImages = [...prev.listImages];
+            newListImages.splice(index, 1);
+            return { ...prev, listImages: newListImages };
+        });
+    }, []);
 
     return (
         <>
@@ -283,7 +313,7 @@ function WatchDetail() {
                 <div className="header mb-3">
                     <BreadCrumb
                         model={breadcrumbItems}
-                        home={home}
+                        home={HOME_BREADCRUMB}
                     ></BreadCrumb>
                     <div className="header-main flex justify-content-between">
                         <div className="header-left flex">
@@ -316,11 +346,7 @@ function WatchDetail() {
                             <div className="avatar-preview">
                                 <img
                                     className="w-full"
-                                    src={
-                                        imageUrl
-                                            ? imageUrl
-                                            : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
-                                    }
+                                    src={imageUrl || EMPTY_IMAGE_URL}
                                     alt={imageUrl || "error"}
                                 />
                             </div>
@@ -335,18 +361,14 @@ function WatchDetail() {
                         </div>
                         <div className="grid mt-2">
                             {formData &&
-                                formData.listImages?.map((item: any, index) => (
+                                formData.listImages?.map((item, index) => (
                                     <div
                                         className="col-4 sub-image"
                                         key={index}
                                     >
                                         <img
                                             onClick={() => openSubImagePicker(index)}
-                                            src={
-                                                item.imgSource
-                                                    ? item.imgSource
-                                                    : "https://static.vecteezy.com/system/resources/previews/004/141/669/non_2x/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg"
-                                            }
+                                            src={item.imgSource || EMPTY_SUB_IMAGE_URL}
                                             alt=""
                                         />
                                         <button
@@ -359,7 +381,7 @@ function WatchDetail() {
                                         </button>
                                     </div>
                                 ))}
-                            {formData && formData.listImages?.length < 6 && (
+                            {formData && formData.listImages?.length < MAX_SUB_IMAGES && (
                                 <div className="col-4 sub-image add-image cursor-pointer" onClick={() => openSubImagePicker(-1)}>
                                     <div
                                         className="flex justify-content-center align-items-center h-full"
@@ -381,9 +403,7 @@ function WatchDetail() {
                                     options={categoryList}
                                     onChange={(e) =>
                                         handleCategoryChange(
-                                            categoryList.filter(
-                                                (item) => item.code === e.value
-                                            )[0]
+                                            categoryList.find((item) => item.code === e.value)
                                         )
                                     }
                                 />
@@ -394,9 +414,7 @@ function WatchDetail() {
                                     className="w-full"
                                     value={formData.category_detail_id}
                                     options={categoryDetailOptions}
-                                    onChange={(e) =>
-                                        handleCategoryDetailChange(e)
-                                    }
+                                    onChange={handleCategoryDetailChange}
                                 />
                             </div>
                             <div className="col-12">
@@ -405,7 +423,7 @@ function WatchDetail() {
                                     className="w-full"
                                     value={formData.name}
                                     name="name"
-                                    onChange={(e) => handleChange(e)}
+                                    onChange={handleChange}
                                 />
                             </div>
                             <div className="col-6">
@@ -417,7 +435,7 @@ function WatchDetail() {
                                         "vi-VN"
                                     )}
                                     name="salePrice"
-                                    onChange={(e) => handleChange(e)}
+                                    onChange={handleChange}
                                 />
                             </div>
                             <div className="col-6">
@@ -429,7 +447,7 @@ function WatchDetail() {
                                         "vi-VN"
                                     )}
                                     name="price"
-                                    onChange={(e) => handleChange(e)}
+                                    onChange={handleChange}
                                 />
                             </div>
                             <div className="col-6">
@@ -447,7 +465,7 @@ function WatchDetail() {
                                 <div className="">Hiển thị</div>
                                 <Checkbox
                                     name="status"
-                                    onChange={(e: any) => handleChange(e)}
+                                    onChange={handleChange}
                                     checked={formData.status === 1 ? true : false}
                                 ></Checkbox>
                             </div>
@@ -461,38 +479,7 @@ function WatchDetail() {
                                             (editorRef.current = editor)
                                         }
                                         value={formData.description}
-                                        init={{
-                                            height: 500,
-                                            menubar: true,
-                                            plugins: [
-                                                "advlist",
-                                                "autolink",
-                                                "lists",
-                                                "link",
-                                                "image",
-                                                "charmap",
-                                                "preview",
-                                                "anchor",
-                                                "searchreplace",
-                                                "visualblocks",
-                                                "code",
-                                                "fullscreen",
-                                                "insertdatetime",
-                                                "media",
-                                                "table",
-                                                "code",
-                                                "help",
-                                                "wordcount",
-                                            ],
-                                            toolbar:
-                                                "undo redo | blocks fontfamily fontsize | " +
-                                                "bold italic forecolor | alignleft aligncenter " +
-                                                "alignright alignjustify | bullist numlist outdent indent | " +
-                                                "removeformat | help",
-                                            content_style:
-                                                "body { font-family:Arial,sans-serif; font-size:14px;}",
-                                            // language: 'vi'
-                                        }}
+                                        init={EDITOR_INIT}
                                         onEditorChange={
                                             (content) => handleEditorChange(content, 'description')
                                         }
@@ -505,38 +492,7 @@ function WatchDetail() {
                                             (editorRef.current = editor)
                                         }
                                         value={formData.specs}
-                                        init={{
-                                            height: 500,
-                                            menubar: true,
-                                            plugins: [
-                                                "advlist",
-                                                "autolink",
-                                                "lists",
-                                                "link",
-                                                "image",
-                                                "charmap",
-                                                "preview",
-                                                "anchor",
-                                                "searchreplace",
-                                                "visualblocks",
-                                                "code",
-                                                "fullscreen",
-                                                "insertdatetime",
-                                                "media",
-                                                "table",
-                                                "code",
-                                                "help",
-                                                "wordcount",
-                                            ],
-                                            toolbar:
-                                                "undo redo | blocks fontfamily fontsize | " +
-                                                "bold italic forecolor | alignleft aligncenter " +
-                                                "alignright alignjustify | bullist numlist outdent indent | " +
-                                                "removeformat | help",
-                                            content_style:
-                                                "body { font-family:Arial,sans-serif; font-size:14px;}",
-                                            // language: 'vi'
-                                        }}
+                                        init={EDITOR_INIT}
                                         onEditorChange={(content) => handleEditorChange(content, 'specs')}
                                     />
                                 </TabPanel>

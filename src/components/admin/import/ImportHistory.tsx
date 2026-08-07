@@ -4,9 +4,12 @@ import { Column } from "primereact/column";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { DataTable } from "primereact/datatable";
 import { Toast } from "primereact/toast";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ApiService from "../../../services/api.service";
 import "./Import.scss";
+
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "" };
+const BREADCRUMB_ITEMS = [{ label: "Import" }, { label: "Lịch sử" }];
 
 interface ImportHistoryItem {
     importBatchId: string;
@@ -17,15 +20,20 @@ interface ImportHistoryItem {
     importedAt: string;
 }
 
+const sttTemplate = (_rowData: ImportHistoryItem, options: { rowIndex: number }) => options.rowIndex + 1;
+
+const monthYearTemplate = (rowData: ImportHistoryItem) => `Tháng ${rowData.month}/${rowData.year}`;
+
+const importedAtTemplate = (rowData: ImportHistoryItem) =>
+    new Date(rowData.importedAt).toLocaleString("vi-VN");
+
 function ImportHistory() {
-    const home = { icon: "pi pi-home", url: "" };
-    const breadcrumbItems = [{ label: "Import" }, { label: "Lịch sử" }];
     const toast = useRef<Toast>(null);
 
     const [history, setHistory] = useState<ImportHistoryItem[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const fetchHistory = async () => {
+    const fetchHistory = useCallback(async () => {
         setLoading(true);
         try {
             const res = await ApiService.getImportHistory();
@@ -35,13 +43,13 @@ function ImportHistory() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchHistory();
-    }, []);
+    }, [fetchHistory]);
 
-    const handleDelete = async (rowData: ImportHistoryItem) => {
+    const handleDelete = useCallback(async (rowData: ImportHistoryItem) => {
         try {
             await ApiService.deleteImportHistory(rowData.importBatchId);
             toast.current?.show({
@@ -59,9 +67,9 @@ function ImportHistory() {
                 life: 2000
             });
         }
-    };
+    }, [fetchHistory]);
 
-    const confirmDelete = (rowData: ImportHistoryItem) => {
+    const confirmDelete = useCallback((rowData: ImportHistoryItem) => {
         confirmDialog({
             message: `Bạn có chắc muốn xóa lịch sử import file "${rowData.fileName}"?`,
             header: "Xác nhận xóa",
@@ -71,29 +79,22 @@ function ImportHistory() {
             acceptClassName: "p-button-danger",
             accept: () => handleDelete(rowData)
         });
-    };
+    }, [handleDelete]);
 
-    const sttTemplate = (_rowData: ImportHistoryItem, options: { rowIndex: number }) => options.rowIndex + 1;
-
-    const monthYearTemplate = (rowData: ImportHistoryItem) => `Tháng ${rowData.month}/${rowData.year}`;
-
-    const importedAtTemplate = (rowData: ImportHistoryItem) =>
-        new Date(rowData.importedAt).toLocaleString("vi-VN");
-
-    const actionTemplate = (rowData: ImportHistoryItem) => (
+    const actionTemplate = useCallback((rowData: ImportHistoryItem) => (
         <Button
             icon="pi pi-trash"
             className="p-button-text p-button-danger"
             onClick={() => confirmDelete(rowData)}
         />
-    );
+    ), [confirmDelete]);
 
     return (
         <div className="wrapper import-admin">
             <Toast ref={toast} />
             <ConfirmDialog />
             <div className="header">
-                <BreadCrumb model={breadcrumbItems} home={home} />
+                <BreadCrumb model={BREADCRUMB_ITEMS} home={HOME_BREADCRUMB} />
                 <div className="grid">
                     <div className="col-6 header-left flex">
                         <div className="empty"></div>

@@ -1,4 +1,3 @@
-import he from 'he';
 import moment from 'moment';
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
@@ -8,117 +7,104 @@ import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 import { DataTable } from "primereact/datatable";
 import { InputText } from "primereact/inputtext";
 import { OverlayPanel } from "primereact/overlaypanel";
-import { Paginator } from "primereact/paginator";
+import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
 import { Toast } from "primereact/toast";
 import queryString from "query-string";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ItemDetail } from "../../../constants/interface";
+import { NewsDetail } from "../../../constants/interface";
 import ApiService from "../../../services/api.service";
+
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "" };
+const BREADCRUMB_ITEMS = [{ label: "Tin tức" }];
 
 const NewsAdmin = () => {
     const navigate = useNavigate();
     const toast = useRef<Toast>(null);
     const op = useRef<OverlayPanel>(null);
-    const home = { icon: "pi pi-home", url: "" };
-    const breadcrumbItems = [{ label: "Tin tức" }];
     const [newsParams, setNewsParams] = useState({
         filter: "",
         status: null,
         offSet: 0,
         pageSize: 10
     });
-    const [newsList, setNewsList] = useState<ItemDetail[]>([]);
+    const [newsList, setNewsList] = useState<NewsDetail[]>([]);
     const [selectedId, setSelectedId] = useState<string>();
     const [searchValue, setSearchValue] = useState("");
     const [recordsTotal, setRecordsTotal] = useState(0);
     const [first, setFirst] = useState(0);
     const [rows, setRows] = useState(10);
 
-    const fetchNews = async (newsParams: any) => {
+    const fetchNews = useCallback(async (params: typeof newsParams) => {
         try {
-            const queryParams = queryString.stringify(newsParams);
-            const newsList = await ApiService.getNewsList(queryParams);
-            setRecordsTotal(newsList.data.recordsTotal);
-            setNewsList(newsList.data.data);
+            const queryParams = queryString.stringify(params);
+            const response = await ApiService.getNewsList(queryParams);
+            setRecordsTotal(response.data.recordsTotal);
+            setNewsList(response.data.data);
         } catch (err) {
             console.error(err);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchNews(newsParams);
-    }, [newsParams]);
+    }, [newsParams, fetchNews]);
 
-    const imageBodyTemplate = (product: any) => {
-        return (
-            <img
-                src={product.thumbnailUrl}
-                alt={product.thumbnailUrl}
-                style={{ objectFit: "cover" }}
-                className="w-9rem h-4rem shadow-2 border-round"
-            />
-        );
-    };
+    const imageBodyTemplate = useCallback((product: NewsDetail) => (
+        <img
+            src={product.thumbnailUrl}
+            alt={product.thumbnailUrl}
+            style={{ objectFit: "cover" }}
+            className="w-9rem h-4rem shadow-2 border-round"
+        />
+    ), []);
 
-    const optionsTemplate = (rowData: any) => {
-        return (
-            <span
-                className="flex justify-content-center"
-                onClick={(e) => {
-                    op.current?.toggle(e);
-                    setSelectedId(rowData.id);
-                }}
-            >
-                <i className="pi pi-ellipsis-v"></i>
-            </span>
-        );
-    };
+    const optionsTemplate = useCallback((rowData: NewsDetail) => (
+        <span
+            className="flex justify-content-center"
+            onClick={(e) => {
+                op.current?.toggle(e);
+                setSelectedId(rowData.id);
+            }}
+        >
+            <i className="pi pi-ellipsis-v"></i>
+        </span>
+    ), []);
 
-    const accept = () => {
-        deleteNews();
-    };
-
-    const deleteNews = async () => {
+    const deleteNews = useCallback(async () => {
         try {
-            const deleteNews = await ApiService.deleteNews(selectedId || "");
-            if (deleteNews.status === "success") {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "success",
-                        summary: "Thông báo",
-                        detail: "Xóa bản ghi thành công !",
-                        life: 2000,
-                    });
-                }
+            const response = await ApiService.deleteNews(selectedId || "");
+            if (response.status === "success") {
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Thông báo",
+                    detail: "Xóa bản ghi thành công !",
+                    life: 2000,
+                });
                 fetchNews(newsParams);
             } else {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "error",
-                        summary: "Thông báo",
-                        detail: "Không thành công !",
-                        life: 2000,
-                    });
-                }
-            }
-        } catch (err) {
-            if (toast.current) {
-                toast.current.show({
+                toast.current?.show({
                     severity: "error",
                     summary: "Thông báo",
                     detail: "Không thành công !",
                     life: 2000,
                 });
             }
+        } catch (err) {
+            toast.current?.show({
+                severity: "error",
+                summary: "Thông báo",
+                detail: "Không thành công !",
+                life: 2000,
+            });
         }
-    };
+    }, [selectedId, newsParams, fetchNews]);
 
-    const showStatusTemplate = (product: any) => {
-        return <Checkbox checked={product.status == "1"}></Checkbox>;
-    };
+    const showStatusTemplate = useCallback((product: NewsDetail) => (
+        <Checkbox checked={String(product.status) === "1"}></Checkbox>
+    ), []);
 
-    const confirmDelete = () => {
+    const confirmDelete = useCallback(() => {
         confirmDialog({
             header: "Xác nhận",
             message: "Bạn muốn xóa bản ghi này không ?",
@@ -126,46 +112,39 @@ const NewsAdmin = () => {
             acceptClassName: "p-button-danger",
             acceptLabel: "Xóa",
             rejectLabel: "Hủy",
-            accept,
+            accept: deleteNews,
         });
-    };
+    }, [deleteNews]);
 
-    const viewDetail = () => {
+    const viewDetail = useCallback(() => {
         navigate(`/admin/news/${selectedId}`);
-    };
+    }, [navigate, selectedId]);
 
-    const handleAddBanner = () => {
+    const handleAddBanner = useCallback(() => {
         const currentPath = window.location.pathname;
         navigate(`${currentPath}/them-moi`);
-    };
+    }, [navigate]);
 
-    const searchHandler = () => {
+    const searchHandler = useCallback(() => {
         setNewsParams((prevParams) => ({
             ...prevParams,
             filter: searchValue,
         }));
-    };
+    }, [searchValue]);
 
-    const handleKeyDown = (event: any) => {
-        if (event && event.key === "Enter") {
+    const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
             searchHandler();
         }
-    };
+    }, [searchHandler]);
 
-    const stripHtmlAndDecode = (html: string) => {
-        // Bỏ thẻ HTML
-        const stripped = html.replace(/<\/?[^>]+(>|$)/g, '');
-        // Decode HTML entities
-        return he.decode(stripped);
-    };
-
-    const dateBodyTemplate = (rowData: any, field: 'publishedAt' | 'updatedAt') => {
+    const dateBodyTemplate = useCallback((rowData: NewsDetail, field: 'publishedAt' | 'updatedAt') => {
         const value = rowData?.[field];
         if (!value) return '';
         return moment(value).format('DD/MM/YYYY hh:mm:ss');
-    };
+    }, []);
 
-    const onPageChange = (event: any) => {
+    const onPageChange = useCallback((event: PaginatorPageChangeEvent) => {
         setRows(event.rows);
         setFirst(event.first);
         setNewsParams((prevParams) => ({
@@ -173,7 +152,7 @@ const NewsAdmin = () => {
             offSet: event.first,
             pageSize: event.rows,
         }));
-    };
+    }, []);
 
     return (
         <>
@@ -181,7 +160,7 @@ const NewsAdmin = () => {
             <ConfirmDialog />
             <div className="wrapper">
                 <div className="header">
-                    <BreadCrumb model={breadcrumbItems} home={home} />
+                    <BreadCrumb model={BREADCRUMB_ITEMS} home={HOME_BREADCRUMB} />
                     <div className="grid">
                         <div className="col-6 header-left flex">
                             <div className="empty"></div>
@@ -194,13 +173,13 @@ const NewsAdmin = () => {
                                 <InputText
                                     placeholder="Nhập nội dung tìm kiếm"
                                     value={searchValue}
-                                    onKeyDown={(e) => handleKeyDown(e)}
+                                    onKeyDown={handleKeyDown}
                                     onChange={(e) =>
                                         setSearchValue(e.target.value)
                                     }
                                 />
                                 <Button
-                                    onClick={() => searchHandler()}
+                                    onClick={searchHandler}
                                     icon="pi pi-search"
                                 />
                             </div>
@@ -250,7 +229,7 @@ const NewsAdmin = () => {
                 </div>
             </div>
             <OverlayPanel ref={op}>
-                <div className="sort_option" onClick={() => viewDetail()}>
+                <div className="sort_option" onClick={viewDetail}>
                     <span className="mr-2">
                         <i className="pi pi-pencil"></i>
                     </span>
@@ -267,4 +246,4 @@ const NewsAdmin = () => {
     );
 }
 
-export default NewsAdmin;    
+export default NewsAdmin;

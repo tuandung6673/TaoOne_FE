@@ -2,11 +2,11 @@ import { Editor } from "@tinymce/tinymce-react";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
-import { Checkbox } from "primereact/checkbox";
+import { Checkbox, CheckboxChangeEvent } from "primereact/checkbox";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import queryString from 'query-string';
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Editor as TinyMCEEditor } from "tinymce";
 import { NewsDetail } from "../../../../constants/interface";
@@ -15,6 +15,41 @@ import { storage } from "../../../../firebase/firebaseConfig";
 import ApiService from "../../../../services/api.service";
 import ImagePickerDialog from "../../../PickerDialog/ImagePickerDialog";
 
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "" };
+const EMPTY_IMAGE_URL = "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png";
+
+const EDITOR_BASE_INIT = {
+    plugins: [
+        "advlist",
+        "autolink",
+        "lists",
+        "link",
+        "image",
+        "charmap",
+        "preview",
+        "anchor",
+        "searchreplace",
+        "visualblocks",
+        "code",
+        "fullscreen",
+        "insertdatetime",
+        "media",
+        "table",
+        "code",
+        "help",
+        "wordcount",
+    ],
+    toolbar:
+        "undo redo | blocks fontfamily fontsize | " +
+        "bold italic forecolor | alignleft aligncenter " +
+        "alignright alignjustify | bullist numlist outdent indent | " +
+        "removeformat | help",
+    content_style:
+        "body { font-family:Arial,sans-serif; font-size:14px;}",
+};
+
+const EXCERPT_EDITOR_INIT = { ...EDITOR_BASE_INIT, height: 300, menubar: false };
+const CONTENT_EDITOR_INIT = { ...EDITOR_BASE_INIT, height: 800, menubar: true };
 
 const NewsAdminDetail = () => {
     const navigate = useNavigate();
@@ -33,63 +68,40 @@ const NewsAdminDetail = () => {
         { label: "Sản phẩm" },
         { label: !!newsId ? "Chi tiết" : "Thêm mới" },
     ];
-    const home = { icon: "pi pi-home", url: "" };
-    const newsDetailParams = {
-        id: newsId,
-        slug: ""
-    }
 
     useEffect(() => {
-        if (!!newsId) {
-            fetchDetailNews(newsId)
-        }
+        if (!newsId) return;
+
+        const fetchDetailNews = async () => {
+            try {
+                const queryParam = queryString.stringify({ id: newsId, slug: "" });
+                const detailBanner = await ApiService.getNewsDetail(queryParam);
+                setNewsDetail(detailBanner.data);
+                setImageUrl(detailBanner.data.thumbnailUrl);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchDetailNews();
     }, [newsId]);
 
-    const fetchDetailNews = async (queryParams: string) => {
-        try {
-            const queryParam = queryString.stringify(newsDetailParams);
-            const detailBanner = await ApiService.getNewsDetail(
-                queryParam
-            );
-            setNewsDetail(detailBanner.data);
-            setImageUrl(detailBanner.data.thumbnailUrl);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const handleChange = (e: any) => {
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement> | CheckboxChangeEvent) => {
         const { name, checked, value } = e.target;
         setNewsDetail((prev) => ({
             ...prev,
-            [name]: value != null ? value : checked ? 1 : 0,
+            [name as string]: value != null ? value : checked ? 1 : 0,
         }));
-    };
+    }, []);
 
-    const onSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const selectedImage = e.target.files[0];
-            setImage(selectedImage);
-            // setAvatarImageName(image.name);
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                setImageUrl(reader.result as string);
-            };
-
-            reader.readAsDataURL(selectedImage);
-            setIsChangeAvatar(true);
-        }
-    };
-
-    const handleEditorChange = (content: any, key: 'excerpt' | 'contentHtml') => {
+    const handleEditorChange = useCallback((content: string, key: 'excerpt' | 'contentHtml') => {
         setNewsDetail((prev) => ({
             ...prev,
             [key]: content,
         }));
-    };
+    }, []);
 
-    const uploadAvatar = (): Promise<void> => {
+    const uploadAvatar = useCallback((): Promise<void> => {
         showSpinner();
         return new Promise((resolve, reject) => {
             if (image) {
@@ -119,9 +131,9 @@ const NewsAdminDetail = () => {
                 resolve();
             }
         });
-    };
+    }, [image, showSpinner, hideSpinner]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
         const data: any = newsDetail;
         data.thumbnailUrl = isChangeAvatar
             ? image?.name
@@ -132,13 +144,11 @@ const NewsAdminDetail = () => {
         try {
             const response = await ApiService.postNews(data);
             if (response.status === "success") {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "success",
-                        summary: "Thành công",
-                        detail: response.message
-                    });
-                }
+                toast.current?.show({
+                    severity: "success",
+                    summary: "Thành công",
+                    detail: response.message
+                });
                 if (isChangeAvatar) {
                     await uploadAvatar();
                 }
@@ -147,37 +157,35 @@ const NewsAdminDetail = () => {
                     navigate(-1);
                 }, 500);
             } else {
-                if (toast.current) {
-                    toast.current.show({
-                        severity: "error",
-                        summary: "Thông báo",
-                        detail: response.message,
-                        life: 2000,
-                    });
-                }
+                toast.current?.show({
+                    severity: "error",
+                    summary: "Thông báo",
+                    detail: response.message,
+                    life: 2000,
+                });
             }
         } catch (error) {
         }
-    };
+    }, [newsDetail, isChangeAvatar, image, newsId, uploadAvatar, navigate]);
 
-    const handleImagePickerHide = () => {
+    const handleImagePickerHide = useCallback(() => {
         setShowImagePicker(false);
-    };
+    }, []);
 
-    const handleImageSelect = (selectedImageUrl: string) => {
+    const handleImageSelect = useCallback((selectedImageUrl: string) => {
         setImageUrl(selectedImageUrl);
         setIsChangeAvatar(true);
         // Set a dummy file object to maintain compatibility with existing logic
         setImage(new File([], selectedImageUrl));
-    };
+    }, []);
 
-    const openImagePicker = () => {
+    const openImagePicker = useCallback(() => {
         setShowImagePicker(true);
-    };
+    }, []);
 
-    const handleBack = () => {
+    const handleBack = useCallback(() => {
         navigate(-1);
-    };
+    }, [navigate]);
 
     return (
         <>
@@ -186,7 +194,7 @@ const NewsAdminDetail = () => {
                 <div className="header mb-3 w-full">
                     <BreadCrumb
                         model={breadcrumbItems}
-                        home={home}
+                        home={HOME_BREADCRUMB}
                     ></BreadCrumb>
                     <div className="header-main flex justify-content-between">
                         <div className="header-left flex">
@@ -216,12 +224,8 @@ const NewsAdminDetail = () => {
                 <div className="col-12 avatar">
                     <img
                         className="w-full"
-                        onClick={() => openImagePicker()}
-                        src={
-                            imageUrl
-                                ? imageUrl
-                                : "https://hochieuqua7.web.app/images/admin/setting/slide/empty-image.png"
-                        }
+                        onClick={openImagePicker}
+                        src={imageUrl || EMPTY_IMAGE_URL}
                         alt={imageUrl || "error"}
                     />
                 </div>
@@ -231,7 +235,7 @@ const NewsAdminDetail = () => {
                         className="w-full"
                         value={newsDetail.title}
                         name="title"
-                        onChange={(e) => handleChange(e)}
+                        onChange={handleChange}
                     />
                 </div>
                 <div className="col-12">
@@ -241,14 +245,14 @@ const NewsAdminDetail = () => {
                         value={newsDetail.slug}
                         name="slug"
                         disabled={!!newsId}
-                        onChange={(e) => handleChange(e)}
+                        onChange={handleChange}
                     />
                 </div>
                 <div className="col-12">
                     <div>Hiển thị</div>
                     <Checkbox
                         name="status"
-                        onChange={(e) => handleChange(e)}
+                        onChange={handleChange}
                         checked={
                             newsDetail.status === 1 ? true : false
                         }
@@ -262,38 +266,7 @@ const NewsAdminDetail = () => {
                             (editorRef.current = editor)
                         }
                         value={newsDetail.excerpt}
-                        init={{
-                            height: 300,
-                            menubar: false,
-                            plugins: [
-                                "advlist",
-                                "autolink",
-                                "lists",
-                                "link",
-                                "image",
-                                "charmap",
-                                "preview",
-                                "anchor",
-                                "searchreplace",
-                                "visualblocks",
-                                "code",
-                                "fullscreen",
-                                "insertdatetime",
-                                "media",
-                                "table",
-                                "code",
-                                "help",
-                                "wordcount",
-                            ],
-                            toolbar:
-                                "undo redo | blocks fontfamily fontsize | " +
-                                "bold italic forecolor | alignleft aligncenter " +
-                                "alignright alignjustify | bullist numlist outdent indent | " +
-                                "removeformat | help",
-                            content_style:
-                                "body { font-family:Arial,sans-serif; font-size:14px;}",
-                            // language: 'vi'
-                        }}
+                        init={EXCERPT_EDITOR_INIT}
                         onEditorChange={
                             (content) => handleEditorChange(content, 'excerpt')
                         }
@@ -307,38 +280,7 @@ const NewsAdminDetail = () => {
                             (editorRef.current = editor)
                         }
                         value={newsDetail.contentHtml}
-                        init={{
-                            height: 800,
-                            menubar: true,
-                            plugins: [
-                                "advlist",
-                                "autolink",
-                                "lists",
-                                "link",
-                                "image",
-                                "charmap",
-                                "preview",
-                                "anchor",
-                                "searchreplace",
-                                "visualblocks",
-                                "code",
-                                "fullscreen",
-                                "insertdatetime",
-                                "media",
-                                "table",
-                                "code",
-                                "help",
-                                "wordcount",
-                            ],
-                            toolbar:
-                                "undo redo | blocks fontfamily fontsize | " +
-                                "bold italic forecolor | alignleft aligncenter " +
-                                "alignright alignjustify | bullist numlist outdent indent | " +
-                                "removeformat | help",
-                            content_style:
-                                "body { font-family:Arial,sans-serif; font-size:14px;}",
-                            // language: 'vi'
-                        }}
+                        init={CONTENT_EDITOR_INIT}
                         onEditorChange={
                             (content) => handleEditorChange(content, 'contentHtml')
                         }

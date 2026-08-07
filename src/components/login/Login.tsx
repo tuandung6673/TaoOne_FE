@@ -1,5 +1,5 @@
 import { Toast } from 'primereact/toast';
-import { useRef, useState, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROLE } from '../../constants/constants';
 import bg from '../../images/trees.png';
@@ -23,16 +23,16 @@ const LoginForm = () => {
         }
     }, [navigate]);
 
-    const handleSubmit = async (event: any) => {
+    const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         // Xử lý logic đăng nhập ở đây
         const data = { username, password }
         try {
             const response = await ApiService.postLogin(data);
-            if (response.status === "success" && toast.current) {
+            if (response.status === "success") {
                 localStorage.setItem("token", response.data.token);
                 localStorage.setItem("username", username);
-                toast.current.show({
+                toast.current?.show({
                     severity: "success",
                     summary: "Thành công",
                     detail: "Đăng nhập thành công !",
@@ -48,7 +48,7 @@ const LoginForm = () => {
         } catch (error) {
             console.log(error);
         }
-    };
+    }, [username, password, navigate]);
 
     return (
         <div className='login-container'>

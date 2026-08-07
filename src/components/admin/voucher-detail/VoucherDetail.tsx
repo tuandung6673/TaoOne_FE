@@ -2,17 +2,19 @@ import { addLocale } from "primereact/api";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
-import { Checkbox } from "primereact/checkbox";
+import { Checkbox, CheckboxChangeEvent } from "primereact/checkbox";
 import { InputText } from "primereact/inputtext";
 import { MultiSelect } from "primereact/multiselect";
 import { RadioButton } from "primereact/radiobutton";
 import { Toast } from "primereact/toast";
 import queryString from "query-string";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Category, CategoryDetail, VoucherModel } from "../../../constants/interface";
 import ApiService from "../../../services/api.service";
 import "./VoucherDetail.scss";
+
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "" };
 
 addLocale("vi", {
     monthNames: [
@@ -42,7 +44,6 @@ function VoucherDetail() {
     const { voucherId } = useParams<{ voucherId?: string }>();
     const toast = useRef<Toast>(null);
 
-    const home = { icon: "pi pi-home", url: "" };
     const breadcrumbItems = [{ label: "Voucher" }, { label: !!voucherId ? "Chỉnh sửa" : "Thêm mới" }];
 
     const [formData, setFormData] = useState<VoucherModel>(new VoucherModel());
@@ -53,7 +54,7 @@ function VoucherDetail() {
     const [detailsByCategory, setDetailsByCategory] = useState<Record<string, CategoryDetail[]>>({});
     const [selectedDetailsMap, setSelectedDetailsMap] = useState<Record<string, string[]>>({});
 
-    const fetchCategoryOptions = async () => {
+    const fetchCategoryOptions = useCallback(async () => {
         try {
             const res = await ApiService.getCategoryList(queryString.stringify({ filter: "" }));
             const data: Category[] = res?.data?.data ?? [];
@@ -63,19 +64,19 @@ function VoucherDetail() {
             setCategoryOptions([]);
             return [];
         }
-    };
+    }, []);
 
     // CategoryDetail chỉ lọc được theo category_code — categoryId vẫn dùng làm key lưu trữ/submit.
-    const fetchCategoryDetails = async (categoryId: string, categoryCode: string) => {
+    const fetchCategoryDetails = useCallback(async (categoryId: string, categoryCode: string) => {
         try {
             const res = await ApiService.getCategoryDetailList(queryString.stringify({ category_code: categoryCode }));
             setDetailsByCategory((prev) => ({ ...prev, [categoryId]: res?.data?.data ?? [] }));
         } catch (err) {
             setDetailsByCategory((prev) => ({ ...prev, [categoryId]: [] }));
         }
-    };
+    }, []);
 
-    const fetchVoucherDetail = async (id: string, categoryList: Category[]) => {
+    const fetchVoucherDetail = useCallback(async (id: string, categoryList: Category[]) => {
         try {
             const res = await ApiService.getVoucherDetail(id);
             const detail: VoucherModel = res?.data ?? res;
@@ -106,7 +107,7 @@ function VoucherDetail() {
                 life: 2000
             });
         }
-    };
+    }, [fetchCategoryDetails]);
 
     useEffect(() => {
         const init = async () => {
@@ -119,15 +120,15 @@ function VoucherDetail() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleChange = (e: any) => {
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement> | CheckboxChangeEvent) => {
         const { name, checked, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: value != null ? value : checked ? 1 : 0
+            [name as string]: value != null ? value : checked ? 1 : 0
         }));
-    };
+    }, []);
 
-    const handleCategorySelectChange = (ids: string[]) => {
+    const handleCategorySelectChange = useCallback((ids: string[]) => {
         setSelectedCategoryIds(ids);
         ids.forEach((catId) => {
             if (!detailsByCategory[catId]) {
@@ -144,26 +145,26 @@ function VoucherDetail() {
             });
             return next;
         });
-    };
+    }, [detailsByCategory, categoryOptions, fetchCategoryDetails]);
 
-    const toggleApplyAll = (categoryId: string, applyAll: boolean) => {
+    const toggleApplyAll = useCallback((categoryId: string, applyAll: boolean) => {
         setSelectedDetailsMap((prev) => ({
             ...prev,
             [categoryId]: applyAll ? [] : prev[categoryId] ?? []
         }));
-    };
+    }, []);
 
-    const toggleDetailChecked = (categoryId: string, detailId: string, checked: boolean) => {
+    const toggleDetailChecked = useCallback((categoryId: string, detailId: string, checked: boolean) => {
         setSelectedDetailsMap((prev) => {
             const current = prev[categoryId] ?? [];
             const next = checked ? [...current, detailId] : current.filter((id) => id !== detailId);
             return { ...prev, [categoryId]: next };
         });
-    };
+    }, []);
 
-    const handleBack = () => navigate(-1);
+    const handleBack = useCallback(() => navigate(-1), [navigate]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
         if (!formData.code.trim() || !formData.name.trim()) {
             toast.current?.show({
                 severity: "warn",
@@ -224,13 +225,13 @@ function VoucherDetail() {
                 life: 2000
             });
         }
-    };
+    }, [formData, dateRange, selectedCategoryIds, selectedDetailsMap, voucherId, navigate]);
 
     return (
         <div className="detail-wrapper voucher-detail-admin">
             <Toast ref={toast} />
             <div className="header">
-                <BreadCrumb model={breadcrumbItems} home={home} />
+                <BreadCrumb model={breadcrumbItems} home={HOME_BREADCRUMB} />
                 <div className="header-main flex justify-content-between align-items-center">
                     {/* <div className="header-left main-title">{!!voucherId ? "Chỉnh sửa voucher" : "Thêm mới voucher"}</div> */}
                     <div className="flex">
@@ -345,7 +346,7 @@ function VoucherDetail() {
                         <label className="voucher-label">Thời gian hiệu lực</label>
                         <Calendar
                             className="w-full"
-                            value={dateRange as any}
+                            value={dateRange as Date[] | null}
                             onChange={(e) => setDateRange(e.value as (Date | null)[])}
                             selectionMode="range"
                             readOnlyInput

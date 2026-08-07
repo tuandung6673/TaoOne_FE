@@ -3,7 +3,7 @@ import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
 import { Toast } from "primereact/toast";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import ApiService from "../../../services/api.service";
 import "./Import.scss";
 
@@ -18,9 +18,10 @@ const YEAR_OPTIONS = Array.from({ length: 6 }, (_, i) => {
     return { label: String(year), value: year };
 });
 
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "" };
+const BREADCRUMB_ITEMS = [{ label: "Import" }];
+
 function Import() {
-    const home = { icon: "pi pi-home", url: "" };
-    const breadcrumbItems = [{ label: "Import" }];
     const toast = useRef<Toast>(null);
     const fileUploadRef = useRef<FileUpload>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -28,16 +29,16 @@ function Import() {
     const [year, setYear] = useState<number>(CURRENT_YEAR);
     const [uploading, setUploading] = useState(false);
 
-    const handleSelectFile = (e: FileUploadSelectEvent) => {
+    const handleSelectFile = useCallback((e: FileUploadSelectEvent) => {
         setSelectedFile(e.files[0] ?? null);
-    };
+    }, []);
 
-    const handleClearFile = () => {
+    const handleClearFile = useCallback(() => {
         setSelectedFile(null);
         fileUploadRef.current?.clear();
-    };
+    }, []);
 
-    const handleDownloadTemplate = async () => {
+    const handleDownloadTemplate = useCallback(async () => {
         try {
             const blob = await ApiService.downloadProductSample();
             const url = window.URL.createObjectURL(new Blob([blob]));
@@ -56,9 +57,9 @@ function Import() {
                 life: 2000
             });
         }
-    };
+    }, []);
 
-    const handleImport = async () => {
+    const handleImport = useCallback(async () => {
         if (!selectedFile) {
             toast.current?.show({
                 severity: "warn",
@@ -89,13 +90,13 @@ function Import() {
         } finally {
             setUploading(false);
         }
-    };
+    }, [selectedFile, month, year, handleClearFile]);
 
     return (
         <div className="wrapper import-admin">
             <Toast ref={toast} />
             <div className="header">
-                <BreadCrumb model={breadcrumbItems} home={home} />
+                <BreadCrumb model={BREADCRUMB_ITEMS} home={HOME_BREADCRUMB} />
                 <div className="grid">
                     <div className="col-6 header-left flex">
                         <div className="empty"></div>

@@ -1,7 +1,7 @@
 import { addLocale } from "primereact/api";
 import { Calendar } from "primereact/calendar";
 import queryString from "query-string";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ApiService from "../../../services/api.service";
 import "./Dashboard.scss";
 import TrendPieChart, { TrendItem } from "./TrendPieChart";
@@ -76,7 +76,7 @@ function Dashboard() {
     const [fromMonth, setFromMonth] = useState<Date>(PROJECT_START_MONTH);
     const [toMonth, setToMonth] = useState<Date>(now);
 
-    const statCards = [
+    const statCards = useMemo(() => [
         { key: "order", label: "Đơn hàng", value: String(stats.orderCount), icon: "pi pi-shopping-cart" },
         {
             key: "revenue",
@@ -86,7 +86,11 @@ function Dashboard() {
         },
         { key: "news", label: "Tin tức", value: String(stats.newsCount), icon: "pi pi-book" },
         { key: "advise", label: "Tư vấn", value: String(stats.adviseCount), icon: "pi pi-comments" }
-    ];
+    ], [stats, showRevenue]);
+
+    const toggleShowRevenue = useCallback(() => {
+        setShowRevenue((prev) => !prev);
+    }, []);
 
     useEffect(() => {
         const queryParams = queryString.stringify({
@@ -182,7 +186,7 @@ function Dashboard() {
                                             {stat.key === "revenue" && (
                                                 <i
                                                     className={`pi ${showRevenue ? "pi-eye-slash" : "pi-eye"} dashboard-stat-eye`}
-                                                    onClick={() => setShowRevenue((prev) => !prev)}
+                                                    onClick={toggleShowRevenue}
                                                 ></i>
                                             )}
                                         </div>

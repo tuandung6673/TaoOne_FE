@@ -3,12 +3,15 @@ import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { InputText } from "primereact/inputtext";
-import { Paginator } from "primereact/paginator";
+import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
 import queryString from "query-string";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SaleRecord } from "../../../constants/interface";
 import ApiService from "../../../services/api.service";
 import "./SaleRecordList.scss";
+
+const HOME_BREADCRUMB = { icon: "pi pi-home", url: "" };
+const BREADCRUMB_ITEMS = [{ label: "Đơn hàng Online" }];
 
 const formatCurrency = (value: number | null) =>
     value == null ? "" : value.toLocaleString("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 });
@@ -20,9 +23,6 @@ const formatDate = (value: string | null) => {
 };
 
 function SaleRecordList() {
-    const home = { icon: "pi pi-home", url: "" };
-    const breadcrumbItems = [{ label: "Đơn hàng Online" }];
-
     const [list, setList] = useState<SaleRecord[]>([]);
     const [recordsTotal, setRecordsTotal] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -31,59 +31,59 @@ function SaleRecordList() {
     const [phoneInput, setPhoneInput] = useState("");
     const [phone, setPhone] = useState("");
 
-    const fetchList = async () => {
-        setLoading(true);
-        try {
-            const queryParams = queryString.stringify({
-                phone,
-                offSet: first,
-                pageSize: rows
-            });
-            const res = await ApiService.getSaleRecordList(queryParams);
-            const data = res?.data?.data ?? res?.data ?? res ?? [];
-            setRecordsTotal(res?.data?.recordsTotal ?? 0);
-            setList(Array.isArray(data) ? data : []);
-        } catch (err) {
-            setList([]);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        const fetchList = async () => {
+            setLoading(true);
+            try {
+                const queryParams = queryString.stringify({
+                    phone,
+                    offSet: first,
+                    pageSize: rows
+                });
+                const res = await ApiService.getSaleRecordList(queryParams);
+                const data = res?.data?.data ?? res?.data ?? res ?? [];
+                setRecordsTotal(res?.data?.recordsTotal ?? 0);
+                setList(Array.isArray(data) ? data : []);
+            } catch (err) {
+                setList([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchList();
     }, [first, rows, phone]);
 
-    const searchHandler = () => {
+    const searchHandler = useCallback(() => {
         setFirst(0);
         setPhone(phoneInput.trim());
-    };
+    }, [phoneInput]);
 
-    const handleKeyDown = (event: any) => {
-        if (event && event.key === "Enter") {
+    const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
             searchHandler();
         }
-    };
+    }, [searchHandler]);
 
-    const onPageChange = (event: any) => {
+    const onPageChange = useCallback((event: PaginatorPageChangeEvent) => {
         setFirst(event.first);
         setRows(event.rows);
-    };
+    }, []);
 
-    const sellPriceTemplate = (rowData: SaleRecord) => formatCurrency(rowData.sellPrice);
-    const importPriceTemplate = (rowData: SaleRecord) => formatCurrency(rowData.importPrice);
-    const costTemplate = (rowData: SaleRecord) => formatCurrency(rowData.cost);
-    const profitTemplate = (rowData: SaleRecord) => formatCurrency(rowData.profit);
-    const soldDateTemplate = (rowData: SaleRecord) => formatDate(rowData.soldDate);
-    const deliveryDateTemplate = (rowData: SaleRecord) => formatDate(rowData.deliveryDate);
-    const phoneTemplate = (rowData: SaleRecord) => (
+    const sellPriceTemplate = useCallback((rowData: SaleRecord) => formatCurrency(rowData.sellPrice), []);
+    const importPriceTemplate = useCallback((rowData: SaleRecord) => formatCurrency(rowData.importPrice), []);
+    const costTemplate = useCallback((rowData: SaleRecord) => formatCurrency(rowData.cost), []);
+    const profitTemplate = useCallback((rowData: SaleRecord) => formatCurrency(rowData.profit), []);
+    const soldDateTemplate = useCallback((rowData: SaleRecord) => formatDate(rowData.soldDate), []);
+    const deliveryDateTemplate = useCallback((rowData: SaleRecord) => formatDate(rowData.deliveryDate), []);
+    const phoneTemplate = useCallback((rowData: SaleRecord) => (
         <span className={rowData.profit < 0 ? "sale-record-negative-profit" : ""}>{'0' + rowData.phone}</span>
-    );
+    ), []);
 
     return (
         <div className="wrapper sale-record-admin">
             <div className="header">
-                <BreadCrumb model={breadcrumbItems} home={home} />
+                <BreadCrumb model={BREADCRUMB_ITEMS} home={HOME_BREADCRUMB} />
                 <div className="grid">
                     <div className="col-6 header-left flex">
                         <div className="empty"></div>
@@ -94,11 +94,11 @@ function SaleRecordList() {
                             <InputText
                                 placeholder="Nhập số điện thoại tìm kiếm"
                                 value={phoneInput}
-                                onKeyDown={(e) => handleKeyDown(e)}
+                                onKeyDown={handleKeyDown}
                                 onChange={(e) => setPhoneInput(e.target.value)}
                             />
                             <Button
-                                onClick={() => searchHandler()}
+                                onClick={searchHandler}
                                 icon="pi pi-search"
                             />
                         </div>

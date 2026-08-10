@@ -98,6 +98,11 @@
   gap: 1rem;
   max-height: 60vh;
   overflow-y: auto;
+  // Scroll perf with hundreds of items: let the browser skip layout/paint/
+  // style work for grid items that are off-screen, and reserve roughly the
+  // right amount of space up front so scrollbar/scroll position don't jump
+  // around as items below the fold get their real size once visible.
+  contain: layout paint;
 }
 
 .imageItem {
@@ -108,7 +113,9 @@
   transition: all 0.2s ease;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  
+  content-visibility: auto;
+  contain-intrinsic-size: 210px;
+
   &:hover {
     border-color: #007bff;
     transform: translateY(-2px);

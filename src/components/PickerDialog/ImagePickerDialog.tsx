@@ -25,6 +25,62 @@ let imageCache: ImageItem[] = [];
 let cacheTimestamp: number = 0;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
+// Firebase Storage throttles/slows way down when hundreds of getDownloadURL +
+// getMetadata calls fire at once — cap how many are in flight simultaneously
+// so the dialog doesn't stutter while the folder listing loads.
+const METADATA_FETCH_CONCURRENCY = 8;
+
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  limit: number,
+  mapper: (item: T) => Promise<R>
+): Promise<R[]> {
+  const results: R[] = new Array(items.length);
+  let nextIndex = 0;
+
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (nextIndex < items.length) {
+      const currentIndex = nextIndex++;
+      results[currentIndex] = await mapper(items[currentIndex]);
+    }
+  });
+
+  await Promise.all(workers);
+  return results;
+}
+
+const sortImages = (imageList: ImageItem[], sortType: 'date' | 'name' | 'size'): ImageItem[] => {
+  const sorted = [...imageList];
+
+  switch (sortType) {
+    case 'date':
+      return sorted.sort((a, b) => b.lastModified - a.lastModified); // Newest first
+    case 'name':
+      return sorted.sort((a, b) => a.name.localeCompare(b.name));
+    case 'size':
+      return sorted.sort((a, b) => b.size - a.size); // Largest first
+    default:
+      return sorted;
+  }
+};
+
+const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+};
+
+const formatDate = (timestamp: number): string => {
+  const date = new Date(timestamp);
+  return date.toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+};
+
 const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
   visible,
   onHide,
@@ -56,33 +112,37 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
       const folderRef = ref(storage, process.env.REACT_APP_FIREBASE_IMAGE_FILE);
       const result = await listAll(folderRef);
 
-      // Get metadata for each file to get last modified date and size
-      const imagePromises = result.items.map(async (itemRef) => {
-        try {
-          const [url, metadata] = await Promise.all([
-            getDownloadURL(itemRef),
-            getMetadata(itemRef)
-          ]);
-          return {
-            url,
-            name: itemRef.name,
-            lastModified: metadata.timeCreated ? new Date(metadata.timeCreated).getTime() : Date.now(),
-            size: metadata.size || 0
-          };
-        } catch (error) {
-          console.error(`Error getting metadata for ${itemRef.name}:`, error);
-          // Fallback: return basic info without metadata
-          const url = await getDownloadURL(itemRef);
-          return {
-            url,
-            name: itemRef.name,
-            lastModified: Date.now(),
-            size: 0
-          };
+      // Fetching download URL + metadata for hundreds of files at once floods
+      // Firebase Storage and stalls the main thread on the resulting burst of
+      // setState/promise resolutions — cap concurrent requests instead.
+      const imageItems = await mapWithConcurrency(
+        result.items,
+        METADATA_FETCH_CONCURRENCY,
+        async (itemRef): Promise<ImageItem> => {
+          try {
+            const [url, metadata] = await Promise.all([
+              getDownloadURL(itemRef),
+              getMetadata(itemRef)
+            ]);
+            return {
+              url,
+              name: itemRef.name,
+              lastModified: metadata.timeCreated ? new Date(metadata.timeCreated).getTime() : Date.now(),
+              size: metadata.size || 0
+            };
+          } catch (error) {
+            console.error(`Error getting metadata for ${itemRef.name}:`, error);
+            // Fallback: return basic info without metadata
+            const url = await getDownloadURL(itemRef);
+            return {
+              url,
+              name: itemRef.name,
+              lastModified: Date.now(),
+              size: 0
+            };
+          }
         }
-      });
-
-      const imageItems = await Promise.all(imagePromises);
+      );
 
       // Update cache
       imageCache = imageItems;
@@ -99,26 +159,10 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
     }
   }, [sortBy]);
 
-  const sortImages = (imageList: ImageItem[], sortType: 'date' | 'name' | 'size'): ImageItem[] => {
-    const sorted = [...imageList];
-
-    switch (sortType) {
-      case 'date':
-        return sorted.sort((a, b) => b.lastModified - a.lastModified); // Newest first
-      case 'name':
-        return sorted.sort((a, b) => a.name.localeCompare(b.name));
-      case 'size':
-        return sorted.sort((a, b) => b.size - a.size); // Largest first
-      default:
-        return sorted;
-    }
-  };
-
-  const handleSortChange = (newSortBy: 'date' | 'name' | 'size') => {
+  const handleSortChange = useCallback((newSortBy: 'date' | 'name' | 'size') => {
     setSortBy(newSortBy);
-    const sortedImages = sortImages(images, newSortBy);
-    setImages(sortedImages);
-  };
+    setImages((prev) => sortImages(prev, newSortBy));
+  }, []);
 
   useEffect(() => {
     if (visible) {
@@ -126,40 +170,20 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
     }
   }, [visible, loadImages]);
 
-  const handleImageClick = (imageUrl: string) => {
+  const handleImageClick = useCallback((imageUrl: string) => {
     onImageSelect(imageUrl);
     onHide();
-  };
+  }, [onImageSelect, onHide]);
 
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     // Clear cache and reload
     imageCache = [];
     cacheTimestamp = 0;
     loadImages();
-  };
-
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-  };
-
-  const formatDate = (timestamp: number): string => {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      // hour: '2-digit',
-      // minute: '2-digit',
-      // second: '2-digit'
-    });
-  };
+  }, [loadImages]);
 
   // add new image
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -187,7 +211,7 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
       setError('Có lỗi xảy ra. Vui lòng thử lại.');
       hideSpinner();
     }
-  };
+  }, [showSpinner, hideSpinner, handleRefresh]);
 
   const footer = (
     <div className="flex justify-content-between align-items-center">
@@ -278,13 +302,13 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
         </div>
       ) : (
         <div className={classes.imageGrid}>
-          {images.map((image, index) => (
+          {images.map((image) => (
             <div
-              key={index}
+              key={image.url}
               className={classes.imageItem}
               onClick={() => handleImageClick(image.url)}
             >
-              <img src={image.url} alt={image.name} />
+              <img src={image.url} alt={image.name} loading="lazy" decoding="async" />
               <div className={classes.imageInfo}>
                 <div className={classes.imageName}>{image.name}</div>
                 <div className={classes.imageMeta}>

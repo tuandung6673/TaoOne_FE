@@ -226,3 +226,29 @@ export interface CheckApplyVoucherResult {
     applicable_products: VoucherApplicableProduct[];
     ineligible_products: VoucherIneligibleProduct[];
 }
+
+export class ProductCommentForm {
+    product_id: string = "";
+    name: string = "";
+    phone: string = "";
+    content: string = "";
+    rating: number = 5;
+}
+
+export interface ProductCommentItem {
+    id: string;
+    product_id: string;
+    product_name?: string;
+    name: string;
+    phone: string;
+    content: string;
+    rating: number;
+    status: number;
+    created_at: string;
+}
+
+export interface ProductCommentSummary {
+    average_rating: number;
+    total_count: number;
+    comments: ProductCommentItem[];
+}

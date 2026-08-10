@@ -10,6 +10,7 @@ import ImportHistory from './components/admin/import/ImportHistory';
 import NewsAdminDetail from './components/admin/news_admin/news-detail/NewsDetail';
 import NewsAdmin from './components/admin/news_admin/NewsAdmin';
 import Order from './components/admin/order/Order';
+import ProductCommentAdmin from './components/admin/product-comment/ProductCommentAdmin';
 import SaleRecordList from './components/admin/sale-record/SaleRecordList';
 import VoucherDetail from './components/admin/voucher-detail/VoucherDetail';
 import Voucher from './components/admin/voucher/Voucher';
@@ -27,7 +28,7 @@ import ProductDetail from './components/product-detail/ProductDetail';
 import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
 import Spinner from './components/spinner/Spinner';
 import UserSearch from './components/user-search/UserSearch';
-import { ROLE } from './constants/constants';
+import { AllRouteType, ROLE } from './constants/constants';
 import { CartProvider } from './custom-hook/CartContext';
 import { SpinnerProvider } from './custom-hook/SpinnerContext';
 import { VoucherProvider } from './custom-hook/VoucherContext';
@@ -63,6 +64,7 @@ function App() {
                   <Route path='voucher' element={<Voucher />} />
                   <Route path='voucher/them-moi' element={<VoucherDetail />} />
                   <Route path='voucher/:voucherId' element={<VoucherDetail />} />
+                  <Route path={AllRouteType.comment} element={<ProductCommentAdmin />} />
                 </Route>
               </Route>
               <Route path='login' element={<LoginForm />}>

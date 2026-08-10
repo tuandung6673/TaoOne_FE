@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { AdviseForm, CheckApplyVoucherRequest, Login, PaymentForm } from "../constants/interface";
+import { AdviseForm, CheckApplyVoucherRequest, Login, PaymentForm, ProductCommentForm } from "../constants/interface";
 import axiosInstance from "./api.interceptor";
 
 const ApiService = {
@@ -549,6 +549,69 @@ const ApiService = {
             return response.data;
         } catch (error) {
             console.error("Error checking voucher:", error);
+            throw error;
+        }
+    },
+
+    // Product Comment
+    postProductComment: async (data: ProductCommentForm) => {
+        try {
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_BASE_URL}/ProductComment/PostComment`,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error posting product comment:", error);
+            throw error;
+        }
+    },
+
+    getProductCommentsByProduct: async (productId: string) => {
+        try {
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_BASE_URL}/ProductComment/GetByProduct?productId=` + productId
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching product comments:", error);
+            throw error;
+        }
+    },
+
+    getCommentList: async (queryParams: string) => {
+        try {
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_BASE_URL}/ProductComment/GetCommentList?` + queryParams
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching comment list:", error);
+            throw error;
+        }
+    },
+
+    updateCommentStatus: async (data: { id: string; status: number }) => {
+        try {
+            const response = await axiosInstance.put(
+                `${process.env.REACT_APP_BASE_URL}/ProductComment/UpdateCommentStatus`,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error updating comment status:", error);
+            throw error;
+        }
+    },
+
+    deleteComment: async (id: string) => {
+        try {
+            const response = await axiosInstance.delete(
+                `${process.env.REACT_APP_BASE_URL}/ProductComment/DeleteComment?id=` + id
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error deleting comment:", error);
             throw error;
         }
     }

@@ -97,6 +97,11 @@ function AdminHeader() {
             url: ROLE.admin + '/' + AllRouteType.voucher
         },
         {
+            label: 'Bình luận',
+            icon: '',
+            url: ROLE.admin + '/' + AllRouteType.comment
+        },
+        {
             label: 'Import',
             icon: '',
             // url: ROLE.admin + '/' + AllRouteType.import,

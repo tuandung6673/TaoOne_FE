@@ -1,0 +1,245 @@
+@import "../../color/colors.scss";
+
+.wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+// ---- Summary card ----
+.summaryCard {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.summaryScore {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 110px;
+}
+
+.summaryNumber {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: #333;
+    line-height: 1;
+}
+
+.summaryCount {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.summaryDivider {
+    width: 1px;
+    align-self: stretch;
+    background: #e0e0e0;
+
+    @media (max-width: 576px) {
+        display: none;
+    }
+}
+
+.summaryPrompt {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    flex: 1;
+    flex-wrap: wrap;
+
+    p {
+        margin: 0;
+        color: #555;
+        font-size: 0.9rem;
+        max-width: 480px;
+    }
+}
+
+// ---- Pill buttons (override the global `.p-button { width: 100% }` rule
+// that was stretching every button here to full row width) ----
+.pillBtn {
+    width: auto !important;
+    flex: none !important;
+    padding: 0 1.25rem !important;
+    height: 42px;
+    border-radius: 999px !important;
+    background-color: $main-green-color !important;
+    border-color: $main-green-color !important;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: $main-green-color-hover !important;
+        border-color: $main-green-color-hover !important;
+    }
+}
+
+.pillBtnOutlined {
+    background: transparent !important;
+    color: $main-green-color !important;
+
+    &:hover {
+        background: rgba(124, 189, 67, 0.08) !important;
+        color: $main-green-color-hover !important;
+    }
+}
+
+// ---- Write-review form ----
+.formBox {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+
+.formRating {
+    :global(.p-rating-icon) {
+        font-size: 1.4rem;
+        color: #dcdcdc;
+        margin-right: 4px;
+    }
+
+    :global(.p-rating-item-active .p-rating-icon) {
+        color: #ffb800;
+    }
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    @media (max-width: 576px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.formField {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #333;
+    }
+}
+
+.invalid {
+    border-color: #e24c4c !important;
+}
+
+.error {
+    color: #e24c4c;
+    font-size: 0.8rem;
+}
+
+.formActions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+// ---- Comment list ----
+.list {
+    display: flex;
+    flex-direction: column;
+}
+
+.empty {
+    color: #6c757d;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.item {
+    display: flex;
+    gap: 0.9rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid #f0f0f0;
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.avatar {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: $main-green-color;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.itemBody {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.itemHeader {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.itemName {
+    font-weight: 600;
+    color: #333;
+}
+
+.itemDate {
+    color: #999;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.itemMeta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.itemPhone {
+    color: #999;
+    font-size: 0.8rem;
+
+    &::before {
+        content: "•";
+        margin-right: 0.5rem;
+        color: #ccc;
+    }
+}
+
+.itemContent {
+    margin: 0.15rem 0 0;
+    color: #444;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.loadMore {
+    display: flex;
+    justify-content: center;
+    padding-top: 0.5rem;
+}

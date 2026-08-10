@@ -13,16 +13,20 @@ import { A11y, Navigation, Pagination, Scrollbar } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss/navigation";
 import { AllRouteType, CAM_KET, QUA_TANG } from "../../constants/constants";
-import { ItemDetail, SubImage } from "../../constants/interface";
+import { ItemDetail, ProductCommentSummary, SubImage } from "../../constants/interface";
 import { useCart } from "../../custom-hook/CartContext";
 import GiftIcon from "../../icons/giftbox.png";
 import saleLogo from "../../images/sale_tag_2.png";
 import ApiService from "../../services/api.service";
 import LeadForm from "../event/LeadForm";
+import ProductCommentSection from "../product-comment/ProductCommentSection";
+import StarRating from "../product-comment/StarRating";
 import ProductItem from "../product-item/ProductItem";
 import "./ProductDetail.scss";
 
 const HOME_BREADCRUMB = { icon: "pi pi-home", url: "/" };
+const REVIEWS_TAB_INDEX = 3;
+const EMPTY_COMMENT_SUMMARY: ProductCommentSummary = { average_rating: 0, total_count: 0, comments: [] };
 
 const RELATED_PRODUCTS_BREAKPOINTS = {
     1200: { slidesPerView: 4, spaceBetween: 25 },
@@ -53,6 +57,9 @@ function ProductDetail() {
     const { categoryName, itemId } = useParams();
     const [breadcrumbItems, setBreadcrumbItems] = useState<MenuItem[]>([]);
     const { addToCart } = useCart();
+    const [commentSummary, setCommentSummary] = useState<ProductCommentSummary>(EMPTY_COMMENT_SUMMARY);
+    const [commentLoading, setCommentLoading] = useState(false);
+    const [activeTabIndex, setActiveTabIndex] = useState(0);
 
     const categoryBreadcrumbItems = useMemo(
         () => [
@@ -95,6 +102,30 @@ function ProductDetail() {
         if (!detailData.price) return 0;
         return Math.round((1 - detailData.salePrice / detailData.price) * 100);
     }, [detailData.price, detailData.salePrice]);
+
+    const fetchComments = useCallback(async () => {
+        if (!itemId) return;
+
+        setCommentLoading(true);
+        try {
+            const res = await ApiService.getProductCommentsByProduct(itemId);
+            setCommentSummary(res?.data ?? EMPTY_COMMENT_SUMMARY);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setCommentLoading(false);
+        }
+    }, [itemId]);
+
+    useEffect(() => {
+        setActiveTabIndex(0);
+        fetchComments();
+    }, [fetchComments]);
+
+    const handleViewReviews = useCallback(() => {
+        setActiveTabIndex(REVIEWS_TAB_INDEX);
+        document.querySelector(".product2")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, []);
 
     useEffect(() => {
         if (!itemId) return;
@@ -241,12 +272,17 @@ function ProductDetail() {
                                 {detailData.name}
                             </div>
                         )}
-                        {/* <div className="product_rating">
-                            <div>
-                                <Rating value={4} readOnly cancel={false} />
-                            </div>
-                            |<span>5 Đánh giá</span>|<span>Nhận xét</span>
-                        </div> */}
+                        <div className="product_rating" onClick={handleViewReviews}>
+                            <StarRating value={commentSummary.average_rating} size={14} />
+                            {commentSummary.total_count > 0 ? (
+                                <>
+                                    <span className="product_rating_score">{commentSummary.average_rating.toFixed(1)}</span>
+                                    <span className="product_rating_count">({commentSummary.total_count} đánh giá)</span>
+                                </>
+                            ) : (
+                                <span className="product_rating_count">Chưa có đánh giá — Hãy là người đầu tiên</span>
+                            )}
+                        </div>
                         {detailData.price && detailData.salePrice && (
                             <div>
                                 <span className="sale_price">
@@ -319,7 +355,7 @@ function ProductDetail() {
 
             <div className="product2">
                 <div className="product_down">
-                    <TabView>
+                    <TabView activeIndex={activeTabIndex} onTabChange={(e) => setActiveTabIndex(e.index)}>
                         <TabPanel header="Mô tả">
                             <div
                                 className="descrip"
@@ -356,6 +392,14 @@ function ProductDetail() {
                                     </div>
                                 </div>
                             )}
+                        </TabPanel>
+                        <TabPanel header={`Đánh giá (${commentSummary.total_count})`}>
+                            <ProductCommentSection
+                                productId={detailData.id}
+                                summary={commentSummary}
+                                loading={commentLoading}
+                                onCommentPosted={fetchComments}
+                            />
                         </TabPanel>
                     </TabView>
                 </div>

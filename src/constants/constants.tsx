@@ -11,7 +11,8 @@ export const AllRouteType = {
     import: 'import',
     importHistory: 'import-history',
     saleRecord: 'sale-record',
-    voucher: 'voucher'
+    voucher: 'voucher',
+    comment: 'binh-luan'
 }
 
 export const SORTFILTER = {

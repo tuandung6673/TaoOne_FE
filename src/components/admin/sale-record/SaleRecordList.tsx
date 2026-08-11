@@ -138,7 +138,7 @@ function SaleRecordList() {
                     {/* <Column field="source" header="Nguồn" style={{ minWidth: "8rem" }} /> */}
                 </DataTable>
 
-                <div className="flex justify-content-between surface-section mt-3">
+                <div className="flex justify-content-between surface-section">
                     <div className="flex align-items-center pl-3">
                         Tổng số {recordsTotal} bản ghi
                     </div>

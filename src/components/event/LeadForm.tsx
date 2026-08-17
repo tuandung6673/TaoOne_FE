@@ -5,7 +5,7 @@ import { Toast } from "primereact/toast";
 import { useMemo, useRef, useState } from "react";
 import TelebotService from "../../services/telebot.service";
 import ApiService from "../../services/api.service";
-import classes from "./LeadForm.module.scss";
+import "./LeadForm.scss";
 import { AdviseForm } from "../../constants/interface";
 
 type LeadFormState = {
@@ -115,16 +115,16 @@ function LeadForm({ source }: Props) {
 
     if (sent) {
         return (
-            <div className={classes.thanks}>
+            <div className="lead-form-thanks">
                 <Toast ref={toast} position="top-right" />
-                <div className={classes.thanksTitle}>Cảm ơn bạn đã đăng ký.</div>
-                <div className={classes.thanksDesc}>
+                <div className="lead-form-thanks-title">Cảm ơn bạn đã đăng ký.</div>
+                <div className="lead-form-thanks-desc">
                     TaoOne sẽ liên hệ theo số <b>{form.phone}</b>. (Ghi nhận lúc {nowText})
                 </div>
-                <div className={classes.thanksActions}>
+                <div className="lead-form-thanks-actions">
                     <Button
                         label="Gửi thêm 1 đăng ký"
-                        className={classes.secondary}
+                        className="lead-form-secondary"
                         onClick={() => {
                             setSent(false);
                             setForm({ name: "", phone: "", note: "" });
@@ -137,35 +137,35 @@ function LeadForm({ source }: Props) {
     }
 
     return (
-        <div className={classes.wrap}>
+        <div className="lead-form-wrap">
             <Toast ref={toast} position="top-right" />
 
-            <div className={classes.grid}>
-                <div className={classes.field}>
-                    <div className={classes.label}>Họ và tên *</div>
+            <div className="lead-form-grid">
+                <div className="lead-form-field">
+                    <div className="lead-form-label">Họ và tên *</div>
                     <InputText
-                        className={`w-full ${errors.name ? classes.invalid : ""}`}
+                        className={`w-full ${errors.name ? "lead-form-invalid" : ""}`}
                         placeholder="Họ tên của bạn"
                         value={form.name}
                         onChange={(e) => handleChange("name", e.target.value)}
                     />
-                    {errors.name && <div className={classes.error}>{errors.name}</div>}
+                    {errors.name && <div className="lead-form-error">{errors.name}</div>}
                 </div>
 
-                <div className={classes.field}>
-                    <div className={classes.label}>Số điện thoại *</div>
+                <div className="lead-form-field">
+                    <div className="lead-form-label">Số điện thoại *</div>
                     <InputText
-                        className={`w-full ${errors.phone ? classes.invalid : ""}`}
+                        className={`w-full ${errors.phone ? "lead-form-invalid" : ""}`}
                         placeholder="Số điện thoại của bạn"
                         value={form.phone}
                         onChange={(e) => handleChange("phone", e.target.value)}
                         inputMode="tel"
                     />
-                    {errors.phone && <div className={classes.error}>{errors.phone}</div>}
+                    {errors.phone && <div className="lead-form-error">{errors.phone}</div>}
                 </div>
 
-                {/* <div className={classes.field}>
-                    <div className={classes.label}>Email</div>
+                {/* <div className="lead-form-field">
+                    <div className="lead-form-label">Email</div>
                     <InputText
                         className="w-full"
                         placeholder="Email của bạn (không bắt buộc)"
@@ -175,8 +175,8 @@ function LeadForm({ source }: Props) {
                     />
                 </div> */}
 
-                <div className={classes.fieldFull}>
-                    <div className={classes.label}>Ghi chú</div>
+                <div className="lead-form-field-full">
+                    <div className="lead-form-label">Ghi chú</div>
                     <InputTextarea
                         className="w-full"
                         placeholder="Ví dụ: muốn tư vấn mẫu/size, ngân sách, khung giờ tiện nghe máy..."
@@ -188,14 +188,14 @@ function LeadForm({ source }: Props) {
                 </div>
             </div>
 
-            <div className={classes.actions}>
+            <div className="lead-form-actions">
                 <Button
                     label={loading ? "Đang gửi..." : "Đăng ký nhận ưu đãi"}
                     disabled={loading}
-                    className={classes.primary}
+                    className="lead-form-primary"
                     onClick={handleSubmit}
                 />
-                <div className={classes.policy}>
+                <div className="lead-form-policy">
                     Bằng việc gửi, bạn đồng ý để TaoOne liên hệ tư vấn và cung cấp thông tin ưu đãi. (Nội dung chính sách sẽ
                     được cập nhật minh bạch.)
                 </div>

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { CAM_KET, QUA_TANG, SOCIAL_LINKS } from "../../constants/constants";
 import LeadForm from "../event/LeadForm";
-import classes from "./PromoAppleWatch4.module.scss";
+import "./PromoAppleWatch4.scss";
 
 const PAIN_POINTS = [
     {
@@ -75,51 +75,51 @@ function PromoAppleWatch4() {
     }, []);
 
     return (
-        <div className={classes.page}>
+        <div className={"promo-aw4-page"}>
 
             {/* ── HERO ── */}
-            <section className={classes.hero}>
-                <div className={classes.heroOverlay} />
-                <div className={classes.heroInner}>
-                    <div className={classes.heroText}>
-                        <div className={classes.heroBadge}>Số lượng giới hạn • Không còn sản xuất mới</div>
-                        <h1 className={classes.heroH1}>
+            <section className={"promo-aw4-hero"}>
+                <div className={"promo-aw4-hero-overlay"} />
+                <div className={"promo-aw4-hero-inner"}>
+                    <div className={"promo-aw4-hero-text"}>
+                        <div className={"promo-aw4-hero-badge"}>Số lượng giới hạn • Không còn sản xuất mới</div>
+                        <h1 className={"promo-aw4-hero-h1"}>
                             Apple Watch Series 4
                             <br />
-                            <span className={classes.heroAccent}>
+                            <span className={"promo-aw4-hero-accent"}>
                                 Chính hãng — Giá chỉ từ 2.990.000đ
                             </span>
                         </h1>
-                        <p className={classes.heroSub}>
+                        <p className={"promo-aw4-hero-sub"}>
                             Chiếc Apple Watch <b>"đủ xài nhất"</b> cho người muốn trải nghiệm hệ sinh thái Apple với chi phí tối ưu.
                             Đã kiểm tra kỹ, pin tốt, dùng mượt cho nhu cầu hằng ngày.
                         </p>
-                        <div className={classes.heroCtas}>
-                            <button className={classes.ctaPrimary} onClick={scrollToForm}>
+                        <div className={"promo-aw4-hero-ctas"}>
+                            <button className={"promo-aw4-cta-primary"} onClick={scrollToForm}>
                                 Xem mẫu đang có – Nhận báo giá ngay
                             </button>
-                            <button className={classes.ctaSecondary} onClick={scrollToForm}>
+                            <button className={"promo-aw4-cta-secondary"} onClick={scrollToForm}>
                                 Nhận ưu đãi 70% hôm nay
                             </button>
                         </div>
-                        <div className={classes.heroTrust}>
+                        <div className={"promo-aw4-hero-trust"}>
                             <span>✓ Hơn 300 khách đã mua</span>
                             <span>✓ Freeship toàn quốc</span>
                             <span>✓ Kiểm tra trước khi thanh toán</span>
                         </div>
                     </div>
-                    <div className={classes.heroMedia}>
-                        <div className={classes.heroMediaSingle} aria-label="Apple Watch Series 4">
+                    <div className={"promo-aw4-hero-media"}>
+                        <div className={"promo-aw4-hero-media-single"} aria-label="Apple Watch Series 4">
                             <button
                                 type="button"
-                                className={classes.heroMediaPromo}
+                                className={"promo-aw4-hero-media-promo"}
                                 onClick={scrollToForm}
                                 aria-label="Ưu đãi 70% (nhấn để xem form)"
                             >
                                 Ưu đãi 70%
                             </button>
                             <img
-                                className={classes.heroMediaSingleImg}
+                                className={"promo-aw4-hero-media-single-img"}
                                 src="https://scontent.fhan14-3.fna.fbcdn.net/v/t1.15752-9/663494664_1092770170579318_10819237057789602_n.png?_nc_cat=103&ccb=1-7&_nc_sid=9f807c&_nc_ohc=3_-Nkz9ivcYQ7kNvwGTP169&_nc_oc=AdrkI3yiZw0fx2SrDHTulcTIz0qR6DhJplHuJTcUMVGl2CCmHV3EU4B3p8Uy_HbuV5I&_nc_zt=23&_nc_ht=scontent.fhan14-3.fna&_nc_ss=7a3a8&oh=03_Q7cD5AFgdrnW1akhaARtcRceSCHxLZXDbF4a8NJqj5yRM4C_9Q&oe=69FD26E7"
                                 alt="Apple Watch Series 4"
                                 loading="eager"
@@ -130,15 +130,15 @@ function PromoAppleWatch4() {
             </section>
 
             {/* ── VIDEO TIKTOK (3 cột dọc) ── */}
-            <section className={classes.tiktokVideoSection} aria-label="Video trải nghiệm sản phẩm">
-                <div className={classes.tiktokVideoHead}>
-                    <div className={classes.tiktokVideoLabel}>Xem nhanh</div>
-                    <h2 className={classes.tiktokVideoTitle}>Trên tay & review Apple Watch chính hãng</h2>
+            <section className={"promo-aw4-tiktok-video-section"} aria-label="Video trải nghiệm sản phẩm">
+                <div className={"promo-aw4-tiktok-video-head"}>
+                    <div className={"promo-aw4-tiktok-video-label"}>Xem nhanh</div>
+                    <h2 className={"promo-aw4-tiktok-video-title"}>Trên tay & review Apple Watch chính hãng</h2>
                 </div>
-                <div className={classes.tiktokVideoRow}>
+                <div className={"promo-aw4-tiktok-video-row"}>
                     {TIKTOK_EMBEDS.map(({ videoId, embedUrl }) => (
-                        <div key={videoId} className={classes.tiktokVideoCell}>
-                            <div className={classes.tiktokVideoFrame}>
+                        <div key={videoId} className={"promo-aw4-tiktok-video-cell"}>
+                            <div className={"promo-aw4-tiktok-video-frame"}>
                                 <iframe
                                     src={embedUrl}
                                     title={`YouTube video ${videoId}`}
@@ -154,18 +154,18 @@ function PromoAppleWatch4() {
             </section>
 
             {/* ── PAIN POINTS ── */}
-            <section className={classes.section}>
-                <div className={classes.container}>
-                    <div className={classes.sectionLabel}>Bạn đang gặp vấn đề này?</div>
-                    <h2 className={classes.h2}>Lý do nhiều người chưa dám mua Apple Watch</h2>
-                    <div className={classes.painGrid}>
+            <section className={"promo-aw4-section"}>
+                <div className={"promo-aw4-container"}>
+                    <div className={"promo-aw4-section-label"}>Bạn đang gặp vấn đề này?</div>
+                    <h2 className={"promo-aw4-h2"}>Lý do nhiều người chưa dám mua Apple Watch</h2>
+                    <div className={"promo-aw4-pain-grid"}>
                         {PAIN_POINTS.map((p) => (
-                            <div key={p.title} className={classes.painCard}>
-                                <div className={classes.painIcon} aria-hidden>
+                            <div key={p.title} className={"promo-aw4-pain-card"}>
+                                <div className={"promo-aw4-pain-icon"} aria-hidden>
                                     <i className={p.icon} />
                                 </div>
-                                <div className={classes.painTitle}>{p.title}</div>
-                                <div className={classes.painDesc}>{p.desc}</div>
+                                <div className={"promo-aw4-pain-title"}>{p.title}</div>
+                                <div className={"promo-aw4-pain-desc"}>{p.desc}</div>
                             </div>
                         ))}
                     </div>
@@ -173,25 +173,25 @@ function PromoAppleWatch4() {
             </section>
 
             {/* ── GIẢI PHÁP ── */}
-            <section className={classes.sectionDark}>
-                <div className={classes.container}>
-                    <div className={classes.splitSolution}>
-                        <div className={classes.solutionText}>
-                            <div className={classes.sectionLabel}>Giải pháp</div>
-                            <h2 className={classes.h2White}>
+            <section className={"promo-aw4-section-dark"}>
+                <div className={"promo-aw4-container"}>
+                    <div className={"promo-aw4-split-solution"}>
+                        <div className={"promo-aw4-solution-text"}>
+                            <div className={"promo-aw4-section-label"}>Giải pháp</div>
+                            <h2 className={"promo-aw4-h2-white"}>
                                 Apple Watch Series 4 —<br />
                                 Cân bằng hoàn hảo giữa giá tiền, tính năng và độ ổn định
                             </h2>
-                            <ul className={classes.solutionList}>
+                            <ul className={"promo-aw4-solution-list"}>
                                 <li>Đã được kiểm tra kỹ, <b>pin tốt</b>, sử dụng mượt cho nhu cầu hằng ngày</li>
                                 <li><b>Tiết kiệm 5–7 triệu</b> so với mua Apple Watch mới nhất</li>
                                 <li>Đầy đủ tính năng: sức khoẻ, thông báo, cuộc gọi, thanh toán</li>
                                 <li>Hỗ trợ <b>trước – trong – sau bán</b>, không bán xong là mất hút</li>
                             </ul>
                         </div>
-                        <div className={classes.solutionMediaWrap}>
-                            <div className={classes.solutionMedia}>
-                                <div className={classes.mediaPlaceholderDark}>
+                        <div className={"promo-aw4-solution-media-wrap"}>
+                            <div className={"promo-aw4-solution-media"}>
+                                <div className={"promo-aw4-media-placeholder-dark"}>
                                     {/* <span>Ảnh Apple Watch Series 4<br />trên tay / lifestyle</span> */}
                                     <img
                                         src='https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/PROD%2FS456_nhom_hong%20(10).JPEG?alt=media&token=8b2b08ff-a232-4976-8ae0-17019a8eb6c5'
@@ -201,8 +201,8 @@ function PromoAppleWatch4() {
                             </div>
                         </div>
                     </div>
-                    <div className={classes.solutionCta}>
-                        <button className={classes.ctaPrimary} onClick={scrollToForm}>
+                    <div className={"promo-aw4-solution-cta"}>
+                        <button className={"promo-aw4-cta-primary"} onClick={scrollToForm}>
                             Nhận ưu đãi ngay →
                         </button>
                     </div>
@@ -210,18 +210,18 @@ function PromoAppleWatch4() {
             </section>
 
             {/* ── LỢI ÍCH ── */}
-            <section className={classes.section}>
-                <div className={classes.container}>
-                    <div className={classes.sectionLabel}>Tính năng nổi bật</div>
-                    <h2 className={classes.h2}>Lợi ích chính của Apple Watch Series 4</h2>
-                    <div className={classes.benefitGrid}>
+            <section className={"promo-aw4-section"}>
+                <div className={"promo-aw4-container"}>
+                    <div className={"promo-aw4-section-label"}>Tính năng nổi bật</div>
+                    <h2 className={"promo-aw4-h2"}>Lợi ích chính của Apple Watch Series 4</h2>
+                    <div className={"promo-aw4-benefit-grid"}>
                         {BENEFITS.map((b) => (
-                            <div key={b.title} className={classes.benefitCard}>
-                                <div className={classes.benefitIcon} aria-hidden>
+                            <div key={b.title} className={"promo-aw4-benefit-card"}>
+                                <div className={"promo-aw4-benefit-icon"} aria-hidden>
                                     <i className={b.icon} />
                                 </div>
-                                <div className={classes.benefitTitle}>{b.title}</div>
-                                <div className={classes.benefitDesc}>{b.desc}</div>
+                                <div className={"promo-aw4-benefit-title"}>{b.title}</div>
+                                <div className={"promo-aw4-benefit-desc"}>{b.desc}</div>
                             </div>
                         ))}
                     </div>
@@ -229,33 +229,33 @@ function PromoAppleWatch4() {
             </section>
 
             {/* ── LIFESTYLE PHOTOS ── */}
-            <section className={classes.sectionGray}>
-                <div className={classes.container}>
-                    <div className={classes.sectionLabel}>Hình ảnh thực tế</div>
-                    <h2 className={classes.h2}>Chỉ còn lại số lượng rất hạn chế</h2>
-                    <div className={classes.photoGrid}>
-                        <div className={classes.photoPlaceholder}>
+            <section className={"promo-aw4-section-gray"}>
+                <div className={"promo-aw4-container"}>
+                    <div className={"promo-aw4-section-label"}>Hình ảnh thực tế</div>
+                    <h2 className={"promo-aw4-h2"}>Chỉ còn lại số lượng rất hạn chế</h2>
+                    <div className={"promo-aw4-photo-grid"}>
+                        <div className={"promo-aw4-photo-placeholder"}>
                             <img
                                 src="https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/PROD%2FIMG_5219.jpg?alt=media&token=620631f8-62f2-4287-9df2-305baa9d464b"
                                 alt="Apple Watch Series 4 - Ảnh thực tế 1"
                                 loading="lazy"
                             />
                         </div>
-                        <div className={classes.photoPlaceholder}>
+                        <div className={"promo-aw4-photo-placeholder"}>
                             <img
                                 src="https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/PROD%2FIMG_5222.jpg?alt=media&token=0376c23f-72e7-4da2-9c6d-7e7ef4d5bf02"
                                 alt="Apple Watch Series 4 - Ảnh thực tế 2"
                                 loading="lazy"
                             />
                         </div>
-                        <div className={classes.photoPlaceholder}>
+                        <div className={"promo-aw4-photo-placeholder"}>
                             <img
                                 src="https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/PROD%2FIMG_5227.jpg?alt=media&token=3df952ae-e6ab-4b4a-9714-9c581dd7f732"
                                 alt="Apple Watch Series 4 - Ảnh thực tế 3"
                                 loading="lazy"
                             />
                         </div>
-                        <div className={classes.photoPlaceholder}>
+                        <div className={"promo-aw4-photo-placeholder"}>
                             <img
                                 src="https://firebasestorage.googleapis.com/v0/b/taoone-c4bb7.appspot.com/o/PROD%2FIMG_5225.jpg?alt=media&token=fd652bce-72b3-4dc7-83cd-9ec380c4b82f"
                                 alt="Apple Watch Series 4 - Ảnh thực tế 4"
@@ -264,7 +264,7 @@ function PromoAppleWatch4() {
                         </div>
                     </div>
                     <div style={{ display: "flex", justifyContent: "center", marginTop: 28 }}>
-                        <button className={classes.ctaPrimary} onClick={scrollToForm}>
+                        <button className={"promo-aw4-cta-primary"} onClick={scrollToForm}>
                             Nhận ưu đãi ngay →
                         </button>
                     </div>
@@ -272,15 +272,15 @@ function PromoAppleWatch4() {
             </section>
 
             {/* ── SOCIAL PROOF ── */}
-            <section className={classes.section}>
-                <div className={classes.container}>
-                    <div className={classes.proofRow}>
-                        <div className={classes.proofStat}>
-                            <div className={classes.proofNumber}>300+</div>
-                            <div className={classes.proofLabel}>khách hàng đã mua và phản hồi tốt</div>
+            <section className={"promo-aw4-section"}>
+                <div className={"promo-aw4-container"}>
+                    <div className={"promo-aw4-proof-row"}>
+                        <div className={"promo-aw4-proof-stat"}>
+                            <div className={"promo-aw4-proof-number"}>300+</div>
+                            <div className={"promo-aw4-proof-label"}>khách hàng đã mua và phản hồi tốt</div>
                         </div>
-                        <div className={classes.proofDivider} />
-                        <div className={classes.proofPoints}>
+                        <div className={"promo-aw4-proof-divider"} />
+                        <div className={"promo-aw4-proof-points"}>
                             <p>Nhiều khách mua lần đầu Apple Watch chọn Series 4 vì <b>dễ dùng, ổn định</b></p>
                             <p>Có hỗ trợ trước – trong – sau bán, <b>không bán xong là mất hút</b></p>
                             <p>Hàng đẹp, <b>pin tốt</b>, không phải lo lắng về chất lượng</p>
@@ -290,73 +290,73 @@ function PromoAppleWatch4() {
             </section>
 
             {/* ── BẢNG GIÁ SO SÁNH ── */}
-            <section className={classes.sectionDark}>
-                <div className={classes.container}>
-                    <div className={classes.sectionLabel}>So sánh giá</div>
-                    <h2 className={classes.h2White}>Tại sao chọn Series 4 thay vì mua mới?</h2>
-                    <div className={classes.priceTable}>
-                        <div className={classes.priceCol}>
-                            <div className={classes.priceColHeader}>Apple Watch Mới</div>
-                            <div className={classes.priceAmount}>7 – 10 triệu</div>
-                            <ul className={classes.priceList}>
+            <section className={"promo-aw4-section-dark"}>
+                <div className={"promo-aw4-container"}>
+                    <div className={"promo-aw4-section-label"}>So sánh giá</div>
+                    <h2 className={"promo-aw4-h2-white"}>Tại sao chọn Series 4 thay vì mua mới?</h2>
+                    <div className={"promo-aw4-price-table"}>
+                        <div className={"promo-aw4-price-col"}>
+                            <div className={"promo-aw4-price-col-header"}>Apple Watch Mới</div>
+                            <div className={"promo-aw4-price-amount"}>7 – 10 triệu</div>
+                            <ul className={"promo-aw4-price-list"}>
                                 <li>Tính năng nhiều hơn nhu cầu</li>
                                 <li>Chi phí cao</li>
                                 <li>Dư tính năng không dùng tới</li>
                             </ul>
                         </div>
-                        <div className={classes.priceCol}>
-                            <div className={classes.priceColHeader}>Series cao hơn (S5 – S9)</div>
-                            <div className={classes.priceAmount}>5 – 8 triệu</div>
-                            <ul className={classes.priceList}>
+                        <div className={"promo-aw4-price-col"}>
+                            <div className={"promo-aw4-price-col-header"}>Series cao hơn (S5 – S9)</div>
+                            <div className={"promo-aw4-price-amount"}>5 – 8 triệu</div>
+                            <ul className={"promo-aw4-price-list"}>
                                 <li>Tính năng vẫn dư thừa</li>
                                 <li>Giá vẫn còn cao</li>
                                 <li>Không cần thiết với nhu cầu cơ bản</li>
                             </ul>
                         </div>
-                        <div className={`${classes.priceCol} ${classes.priceColHighlight}`}>
-                            <div className={classes.priceColBadge}>Lựa chọn tốt nhất</div>
-                            <div className={classes.priceColHeader}>Apple Watch Series 4 tại shop</div>
-                            <div className={classes.priceAmountAccent}>Chỉ từ 2.990.000đ</div>
-                            <ul className={classes.priceList}>
+                        <div className={`${"promo-aw4-price-col"} ${"promo-aw4-price-col-highlight"}`}>
+                            <div className={"promo-aw4-price-col-badge"}>Lựa chọn tốt nhất</div>
+                            <div className={"promo-aw4-price-col-header"}>Apple Watch Series 4 tại shop</div>
+                            <div className={"promo-aw4-price-amount-accent"}>Chỉ từ 2.990.000đ</div>
+                            <ul className={"promo-aw4-price-list"}>
                                 <li>✓ Đủ tính năng cần thiết</li>
                                 <li>✓ Tiết kiệm 5–7 triệu</li>
                                 <li>✓ Đã kiểm tra kỹ, bảo hành rõ ràng</li>
                                 <li>✓ Hỗ trợ đầy đủ sau mua</li>
                             </ul>
-                            <button className={classes.ctaPrimary} onClick={scrollToForm} style={{ marginTop: "16px", width: "100%" }}>
+                            <button className={"promo-aw4-cta-primary"} onClick={scrollToForm} style={{ marginTop: "16px", width: "100%" }}>
                                 Chốt ngay hôm nay
                             </button>
                         </div>
                     </div>
                     {/* Ưu đãi chốt đơn */}
-                    <div className={classes.dealBar}>
-                        <div className={classes.dealTitle}>Ưu đãi chốt đơn hôm nay</div>
-                        <div className={classes.dealItems}>
-                            <span className={classes.dealItem}>🎁 Giảm thêm cho khách chốt trong hôm nay</span>
-                            <span className={classes.dealItem}>🚚 Freeship toàn quốc</span>
+                    <div className={"promo-aw4-deal-bar"}>
+                        <div className={"promo-aw4-deal-title"}>Ưu đãi chốt đơn hôm nay</div>
+                        <div className={"promo-aw4-deal-items"}>
+                            <span className={"promo-aw4-deal-item"}>🎁 Giảm thêm cho khách chốt trong hôm nay</span>
+                            <span className={"promo-aw4-deal-item"}>🚚 Freeship toàn quốc</span>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* ── QUÀ TẶNG ── */}
-            <section className={classes.section}>
-                <div className={classes.container}>
-                    <div className={classes.giftWrap}>
-                        <div className={classes.giftLeft}>
-                            <div className={classes.sectionLabel}>Giá trị cộng thêm</div>
-                            <h2 className={classes.h2}>Mua kèm quà tặng hấp dẫn</h2>
-                            <ul className={classes.giftList}>
+            <section className={"promo-aw4-section"}>
+                <div className={"promo-aw4-container"}>
+                    <div className={"promo-aw4-gift-wrap"}>
+                        <div className={"promo-aw4-gift-left"}>
+                            <div className={"promo-aw4-section-label"}>Giá trị cộng thêm</div>
+                            <h2 className={"promo-aw4-h2"}>Mua kèm quà tặng hấp dẫn</h2>
+                            <ul className={"promo-aw4-gift-list"}>
                                 {QUA_TANG.map((t) => (
                                     <li key={t}>{t}</li>
                                 ))}
                                 <li>Hỗ trợ cài đặt, hướng dẫn sử dụng chi tiết cho người mới</li>
                             </ul>
                         </div>
-                        <div className={classes.giftRight}>
-                            <div className={classes.giftPlaceholder}>
+                        <div className={"promo-aw4-gift-right"}>
+                            <div className={"promo-aw4-gift-placeholder"}>
                                 <img
-                                    className={classes.giftImage}
+                                    className={"promo-aw4-gift-image"}
                                     src="https://scontent.fhan2-3.fna.fbcdn.net/v/t1.15752-9/663411647_25991328973895829_1903081013089547257_n.png?_nc_cat=101&ccb=1-7&_nc_sid=9f807c&_nc_ohc=NxQeXUJgongQ7kNvwEZvxvo&_nc_oc=AdqjtEeTPauoo-BDUC_2Hqjgbs5oUK1l-9QzzDNjRev-8nPzK3PYzitvucM4oiDCdow&_nc_zt=23&_nc_ht=scontent.fhan2-3.fna&_nc_ss=7a3a8&oh=03_Q7cD5AH80R_ruEiUd_ppShrQtqcK30c5BDWv2iGI-iOkqKcbIA&oe=69FC4DBB"
                                     alt="Quà tặng kèm theo"
                                     loading="lazy"
@@ -368,17 +368,17 @@ function PromoAppleWatch4() {
             </section>
 
             {/* ── KHAN HIẾM ── */}
-            <section className={classes.scarcity}>
-                <div className={classes.container}>
-                    <div className={classes.scarcityInner}>
-                        <div className={classes.scarcityIcon}>⏳</div>
-                        <h2 className={classes.scarcityH2}>Series 4 hiện không còn sản xuất mới</h2>
-                        <p className={classes.scarcityDesc}>
+            <section className={"promo-aw4-scarcity"}>
+                <div className={"promo-aw4-container"}>
+                    <div className={"promo-aw4-scarcity-inner"}>
+                        <div className={"promo-aw4-scarcity-icon"}>⏳</div>
+                        <h2 className={"promo-aw4-scarcity-h2"}>Series 4 hiện không còn sản xuất mới</h2>
+                        <p className={"promo-aw4-scarcity-desc"}>
                             Hàng đẹp, pin tốt không có nhiều. Mỗi đợt chỉ về <b>số lượng rất hạn chế</b>.
                             <br />
                             {/* Hết là phải chờ đợt khác — <b>không giữ giá</b>. */}
                         </p>
-                        <button className={classes.ctaPrimary} onClick={scrollToForm}>
+                        <button className={"promo-aw4-cta-primary"} onClick={scrollToForm}>
                             Nhận ưu đãi ngay →
                         </button>
                     </div>
@@ -386,28 +386,28 @@ function PromoAppleWatch4() {
             </section>
 
             {/* ── HƯỚNG DẪN GHÉP APPLE WATCH ── */}
-            <section className={classes.pairGuideSection} aria-label="Hướng dẫn ghép Apple Watch với iPhone">
-                <div className={classes.container}>
-                    <div className={classes.pairGuideGrid}>
+            <section className={"promo-aw4-pair-guide-section"} aria-label="Hướng dẫn ghép Apple Watch với iPhone">
+                <div className={"promo-aw4-container"}>
+                    <div className={"promo-aw4-pair-guide-grid"}>
                         <div>
-                            <div className={classes.sectionLabel}>Sau khi nhận máy</div>
-                            <h2 className={classes.h2}>Cách ghép Apple Watch Series 4 với iPhone</h2>
-                            <p className={classes.pairGuideLead}>
+                            <div className={"promo-aw4-section-label"}>Sau khi nhận máy</div>
+                            <h2 className={"promo-aw4-h2"}>Cách ghép Apple Watch Series 4 với iPhone</h2>
+                            <p className={"promo-aw4-pair-guide-lead"}>
                                 Series 4 ghép qua app <b>Watch</b> trên iPhone. Bạn chỉ cần iPhone đã đăng nhập iCloud, bật Bluetooth và Wi‑Fi;
                                 đồng hồ đặt sát máy là có thể bắt đầu.
                             </p>
-                            <ul className={classes.pairGuideList}>
+                            <ul className={"promo-aw4-pair-guide-list"}>
                                 <li>Mở app <b>Watch</b> → <b>Bắt đầu ghép nối</b> → quét animation trên mặt đồng hồ.</li>
                                 <li>Chọn <b>cổ tay</b> (trái/phải), đồng ý điều khoản, chờ đồng bộ vài phút.</li>
                                 <li>Tạo <b>mã PIN</b> trên đồng hồ để bảo vệ khi tháo khỏi tay.</li>
                                 <li>Bật <b>Thông báo</b>, <b>Sức khỏe</b>, <b>Phòng tập</b> theo nhu cầu — có thể chỉnh sau trong app.</li>
                                 <li>Nếu đồng hồ đã từng ghép máy khác: cần <b>xóa/ghi đè</b> trong Cài đặt trên đồng hồ hoặc nhờ shop reset trước khi ghép máy mới.</li>
                             </ul>
-                            <div className={classes.pairGuideNote}>
+                            <div className={"promo-aw4-pair-guide-note"}>
                                 <b>Mua tại TáoOne:</b> được hỗ trợ ghép nối và cài đặt cơ bản — xem video bên cạnh hoặc inbox để được chỉ từng bước.
                             </div>
                         </div>
-                        <div className={classes.pairGuideMedia}>
+                        <div className={"promo-aw4-pair-guide-media"}>
                             <iframe
                                 src={PAIR_GUIDE_YT_EMBED}
                                 title="Ghép đôi Apple Watch"
@@ -422,18 +422,18 @@ function PromoAppleWatch4() {
             </section>
 
             {/* ── CAM KẾT ── */}
-            <section className={classes.sectionGray}>
-                <div className={classes.container}>
-                    <div className={classes.sectionLabel}>Cam kết của TáoOne</div>
-                    <h2 className={classes.h2}>Mua an tâm — hỗ trợ tận tâm</h2>
-                    <div className={classes.promiseGrid}>
+            <section className={"promo-aw4-section-gray"}>
+                <div className={"promo-aw4-container"}>
+                    <div className={"promo-aw4-section-label"}>Cam kết của TáoOne</div>
+                    <h2 className={"promo-aw4-h2"}>Mua an tâm — hỗ trợ tận tâm</h2>
+                    <div className={"promo-aw4-promise-grid"}>
                         {PROMISE_ITEMS.map((p) => (
-                            <div key={p.title} className={classes.promiseCard}>
-                                <div className={classes.promiseIcon} aria-hidden>
+                            <div key={p.title} className={"promo-aw4-promise-card"}>
+                                <div className={"promo-aw4-promise-icon"} aria-hidden>
                                     <i className={p.icon} />
                                 </div>
-                                <div className={classes.promiseTitle}>{p.title}</div>
-                                <div className={classes.promiseDesc}>{p.desc}</div>
+                                <div className={"promo-aw4-promise-title"}>{p.title}</div>
+                                <div className={"promo-aw4-promise-desc"}>{p.desc}</div>
                             </div>
                         ))}
                     </div>
@@ -441,16 +441,16 @@ function PromoAppleWatch4() {
             </section>
 
             {/* ── PHẢN HỒI KHÁCH HÀNG ── */}
-            <section className={classes.section}>
-                <div className={classes.container}>
-                    <div className={classes.sectionLabel}>Khách đã nói gì?</div>
-                    <h2 className={classes.h2}>Feedback từ người đã mua</h2>
-                    <div className={classes.feedbackGrid}>
+            <section className={"promo-aw4-section"}>
+                <div className={"promo-aw4-container"}>
+                    <div className={"promo-aw4-section-label"}>Khách đã nói gì?</div>
+                    <h2 className={"promo-aw4-h2"}>Feedback từ người đã mua</h2>
+                    <div className={"promo-aw4-feedback-grid"}>
                         {CUSTOMER_FEEDBACK.map((f) => (
-                            <div key={f.author} className={classes.feedbackCard}>
-                                <div className={classes.feedbackStars} aria-hidden>{f.stars}</div>
-                                <p className={classes.feedbackQuote}>“{f.quote}”</p>
-                                <div className={classes.feedbackAuthor}>{f.author}</div>
+                            <div key={f.author} className={"promo-aw4-feedback-card"}>
+                                <div className={"promo-aw4-feedback-stars"} aria-hidden>{f.stars}</div>
+                                <p className={"promo-aw4-feedback-quote"}>“{f.quote}”</p>
+                                <div className={"promo-aw4-feedback-author"}>{f.author}</div>
                             </div>
                         ))}
                     </div>
@@ -458,24 +458,24 @@ function PromoAppleWatch4() {
             </section>
 
             {/* ── CTA MẠNH + FORM ── */}
-            <section className={classes.sectionDark} id="cta-form">
-                <div className={classes.container}>
-                    <div className={classes.formWrap}>
-                        <div className={classes.formLeft}>
-                            <div className={classes.sectionLabel}>Hành động</div>
-                            <h2 className={classes.h2White}>
+            <section className={"promo-aw4-section-dark"} id="cta-form">
+                <div className={"promo-aw4-container"}>
+                    <div className={"promo-aw4-form-wrap"}>
+                        <div className={"promo-aw4-form-left"}>
+                            <div className={"promo-aw4-section-label"}>Hành động</div>
+                            <h2 className={"promo-aw4-h2-white"}>
                                 Inbox ngay để xem mẫu Apple Watch Series 4 đang có
                             </h2>
-                            <p className={classes.formSubtext}>
+                            <p className={"promo-aw4-form-subtext"}>
                                 Nhận giá tốt nhất và ưu đãi trong hôm nay. Số lượng có hạn — đừng để lỡ.
                             </p>
-                            <div className={classes.formTrustList}>
+                            <div className={"promo-aw4-form-trust-list"}>
                                 {CAM_KET.map((c) => (
-                                    <div key={c} className={classes.formTrustItem}>✓ {c}</div>
+                                    <div key={c} className={"promo-aw4-form-trust-item"}>✓ {c}</div>
                                 ))}
                             </div>
                         </div>
-                        <div className={classes.formRight}>
+                        <div className={"promo-aw4-form-right"}>
                             <LeadForm source="promo-aws4" />
                         </div>
                     </div>
@@ -483,47 +483,47 @@ function PromoAppleWatch4() {
             </section>
 
             {/* ── CHÍNH SÁCH ── */}
-            <section className={classes.section}>
-                <div className={classes.container}>
-                    <div className={classes.sectionLabel}>Chính sách minh bạch</div>
-                    <h2 className={classes.h2}>Không lo rủi ro khi mua</h2>
-                    <div className={classes.policyGrid}>
-                        <div className={classes.policyCard}>
-                            <div className={classes.policyIcon} aria-hidden>
+            <section className={"promo-aw4-section"}>
+                <div className={"promo-aw4-container"}>
+                    <div className={"promo-aw4-section-label"}>Chính sách minh bạch</div>
+                    <h2 className={"promo-aw4-h2"}>Không lo rủi ro khi mua</h2>
+                    <div className={"promo-aw4-policy-grid"}>
+                        <div className={"promo-aw4-policy-card"}>
+                            <div className={"promo-aw4-policy-icon"} aria-hidden>
                                 <i className="pi pi-search" />
                             </div>
-                            <div className={classes.policyTitle}>Kiểm tra hàng trước khi thanh toán</div>
-                            <div className={classes.policyDesc}>Mở hộp kiểm tra tình trạng sản phẩm trước khi trả tiền.</div>
+                            <div className={"promo-aw4-policy-title"}>Kiểm tra hàng trước khi thanh toán</div>
+                            <div className={"promo-aw4-policy-desc"}>Mở hộp kiểm tra tình trạng sản phẩm trước khi trả tiền.</div>
                         </div>
-                        <div className={classes.policyCard}>
-                            <div className={classes.policyIcon} aria-hidden>
+                        <div className={"promo-aw4-policy-card"}>
+                            <div className={"promo-aw4-policy-icon"} aria-hidden>
                                 <i className="pi pi-shield" />
                             </div>
-                            <div className={classes.policyTitle}>Bảo hành rõ ràng</div>
-                            <div className={classes.policyDesc}>Bảo hành minh bạch, hỗ trợ đổi nếu lỗi phần cứng.</div>
+                            <div className={"promo-aw4-policy-title"}>Bảo hành rõ ràng</div>
+                            <div className={"promo-aw4-policy-desc"}>Bảo hành minh bạch, hỗ trợ đổi nếu lỗi phần cứng.</div>
                         </div>
-                        <div className={classes.policyCard}>
-                            <div className={classes.policyIcon} aria-hidden>
+                        <div className={"promo-aw4-policy-card"}>
+                            <div className={"promo-aw4-policy-icon"} aria-hidden>
                                 <i className="pi pi-globe" />
                             </div>
-                            <div className={classes.policyTitle}>Giao hàng toàn quốc</div>
-                            <div className={classes.policyDesc}>Ship COD toàn quốc — nhận hàng rồi mới thanh toán.</div>
+                            <div className={"promo-aw4-policy-title"}>Giao hàng toàn quốc</div>
+                            <div className={"promo-aw4-policy-desc"}>Ship COD toàn quốc — nhận hàng rồi mới thanh toán.</div>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* ── LIÊN HỆ ── */}
-            <section className={classes.contact}>
-                <div className={classes.container}>
-                    <h2 className={classes.h2White}>Liên hệ với TáoOne</h2>
-                    <p className={classes.contactSub}>Sẵn sàng tư vấn — phản hồi nhanh trong giờ làm việc</p>
-                    <div className={classes.contactLinks}>
+            <section className={"promo-aw4-contact"}>
+                <div className={"promo-aw4-container"}>
+                    <h2 className={"promo-aw4-h2-white"}>Liên hệ với TáoOne</h2>
+                    <p className={"promo-aw4-contact-sub"}>Sẵn sàng tư vấn — phản hồi nhanh trong giờ làm việc</p>
+                    <div className={"promo-aw4-contact-links"}>
                         <a
                             href={SOCIAL_LINKS.facebook}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={classes.contactBtn}
+                            className={"promo-aw4-contact-btn"}
                         >
                             Facebook / Inbox
                         </a>
@@ -531,13 +531,13 @@ function PromoAppleWatch4() {
                             href={`https://zalo.me/${SOCIAL_LINKS.mobile.replace("+84", "0")}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={classes.contactBtn}
+                            className={"promo-aw4-contact-btn"}
                         >
                             Zalo
                         </a>
                         <a
                             href={`tel:${SOCIAL_LINKS.mobile}`}
-                            className={classes.contactBtnOutline}
+                            className={"promo-aw4-contact-btn-outline"}
                         >
                             Hotline: {SOCIAL_LINKS.mobile}
                         </a>

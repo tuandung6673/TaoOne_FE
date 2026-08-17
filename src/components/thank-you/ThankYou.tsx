@@ -3,7 +3,6 @@ import { PaymentForm } from "./../../constants/interface";
 import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import headerStyle from "../Header/user-header/UserHeader.module.scss"
 
 interface Props {
     paymentForm: PaymentForm;
@@ -15,7 +14,7 @@ function ThankYou({ paymentForm }: Props) {
         navigate('/');
     }
     const adjustThankWrapperHeight = () => {
-        const navbar = document.querySelector(`.${headerStyle.header}`) as HTMLElement;
+        const navbar = document.querySelector(".user-header") as HTMLElement;
         const footer = document.querySelector(".main_footer") as HTMLElement;
         const thankWrapper = document.querySelector(".thank-wrapper") as HTMLElement;
     

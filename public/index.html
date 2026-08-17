@@ -3,6 +3,21 @@
 
 <head>
   <meta charset="utf-8" />
+  <!-- Dark mode pre-paint: sets data-theme before React mounts to avoid a flash of the wrong theme.
+       Never touches /admin or /login (admin sign-in), even on a direct/hard-loaded URL, since neither
+       route is wrapped by ThemeProvider (see src/custom-hook/ThemeContext.tsx). -->
+  <script>
+    (function () {
+      try {
+        var path = window.location.pathname;
+        var isNonCustomerPath = path.indexOf('/admin') === 0 || path.indexOf('/login') === 0;
+        if (isNonCustomerPath) return;
+        if (localStorage.getItem('theme') === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) { }
+    })();
+  </script>
   <!-- Facebook Pixel Code -->
   <script>
     !function (f, b, e, v, n, t, s) {
@@ -61,7 +76,7 @@
   <title>Táo One</title>
   <style>
     body {
-      background: #F5F5F7;
+      background: var(--bg-base, #F5F5F7);
     }
   </style>
 </head>

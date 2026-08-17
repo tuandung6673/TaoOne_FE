@@ -1,4 +1,4 @@
-import classes from "./StarRating.module.scss";
+import "./StarRating.scss";
 
 interface StarRatingProps {
     value: number;
@@ -11,11 +11,11 @@ function StarRating({ value, size = 14 }: StarRatingProps) {
     const filled = Math.round(value);
 
     return (
-        <span className={classes.stars} style={{ fontSize: size }}>
+        <span className="star-rating-stars" style={{ fontSize: size }}>
             {STARS.map((n) => (
                 <i
                     key={n}
-                    className={`pi ${n <= filled ? `pi-star-fill ${classes.filled}` : `pi-star ${classes.empty}`}`}
+                    className={`pi ${n <= filled ? "pi-star-fill star-rating-filled" : "pi-star star-rating-empty"}`}
                 />
             ))}
         </span>

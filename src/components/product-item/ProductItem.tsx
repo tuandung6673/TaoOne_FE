@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { useRef } from "react";
 import { ItemDetail } from "../../constants/interface";
 import { useCart } from "../../custom-hook/CartContext";
-import classes from "./ProductItem.module.scss";
+import "./ProductItem.scss";
 
 interface Props {
     productItem: ItemDetail;
@@ -68,37 +68,37 @@ function ProductItem({ productItem, onAddToCart }: Props) {
     };
 
     return (
-        <div 
-            className={classes.product} 
+        <div
+            className="product-item-card"
             onClick={handleClick}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
         >
             {productItem.price !== productItem.salePrice && (
-                <span className={classes.sale_percent}>
+                <span className="product-item-sale-percent">
                     -{((1 - productItem.salePrice / productItem.price) * 100).toFixed(0)}%
                 </span>
             )}
-            <div className={classes.product_img}>
+            <div className="product-item-card-img">
                 <img src={productItem.img} alt={productItem.name} />
             </div>
-            <p className={classes.product_name}>{productItem.name}</p>
-            <div className={classes.product_price}>
-                <span className={classes.price_sale}>
+            <p className="product-item-card-name">{productItem.name}</p>
+            <div className="product-item-card-price">
+                <span className="product-item-price-sale">
                     {productItem.salePrice.toLocaleString("vi-VN")}đ
                 </span>
                 {productItem.price !== productItem.salePrice && (
-                    <span className={classes.price}>
+                    <span className="product-item-price-original">
                         {productItem.price.toLocaleString("vi-VN")}đ
                     </span>
                 )}
             </div>
-            {/* <div className={classes.add_to_cart}>
+            {/* <div className="product-item-add-to-cart">
                 <Button
                     icon="pi pi-shopping-bag"
                     size="small"
                     onClick={handleAddToCart}
-                    className={classes.cart_button}
+                    className="product-item-cart-button"
                 />
             </div> */}
         </div>

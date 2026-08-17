@@ -1,0 +1,50 @@
+// Semantic color tokens for customer-facing (UserLayout) dark mode.
+// :root values equal today's implicit light colors (no visual change for admin,
+// which never sets [data-theme="dark"] on <html>).
+:root {
+    --bg-base: #F5F5F7;
+    --bg-surface: #FFFFFF;
+    --bg-surface-alt: #F0F0F2;
+    --bg-overlay: #FFFFFF;
+
+    --text-primary: #0C0C0C;
+    --text-secondary: #4B4B4D;
+    --text-muted: #8A8A8E;
+    --text-on-accent: #FFFFFF;
+
+    --border-color: rgba(43, 47, 51, 0.15);
+    --border-color-strong: #D8D8DC;
+
+    --accent: #7CBD43;
+    --accent-hover: #218838;
+    --accent-blue: #007bff;
+
+    --danger: #E53935;
+    --success: #43A047;
+
+    --shadow-sm: 0 2px 3px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] {
+    --bg-base: #121212;
+    --bg-surface: #1E1E1E;
+    --bg-surface-alt: #262626;
+    --bg-overlay: #242424;
+
+    --text-primary: #F1F1F1;
+    --text-secondary: #C7C7C9;
+    --text-muted: #8F8F94;
+    --text-on-accent: #FFFFFF;
+
+    --border-color: rgba(255, 255, 255, 0.12);
+    --border-color-strong: #3A3A3C;
+
+    --accent: #8FD658;
+    --accent-hover: #7CBD43;
+    --accent-blue: #3B9EFF;
+
+    --danger: #FF6B60;
+    --success: #66BB6A;
+
+    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.4);
+}

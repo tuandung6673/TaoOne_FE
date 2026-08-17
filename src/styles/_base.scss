@@ -1,0 +1,25 @@
+// Base text/background so customer content not explicitly styled per-component
+// still follows the active theme (falls back to today's implicit black-on-white
+// in light mode, since --text-primary/--bg-base equal today's defaults).
+body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+}
+
+.grid {
+    margin: 0;
+}
+
+.swiper-initialized {
+    padding: 0 10px;
+    margin: 0 -10px;
+}
+
+.control-arrow {
+    display: none !important;
+}
+
+// hide power by TinyMCE
+.tox-statusbar__branding {
+    display: none !important;
+}

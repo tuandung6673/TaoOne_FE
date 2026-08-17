@@ -4,7 +4,7 @@ import { Dialog } from 'primereact/dialog';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSpinner } from '../../custom-hook/SpinnerContext';
 import { storage } from '../../firebase/firebaseConfig';
-import classes from './ImagePickerDialog.module.scss';
+import './ImagePickerDialog.scss';
 
 interface ImagePickerDialogProps {
   visible: boolean;
@@ -257,7 +257,7 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
           label="Thêm mới"
           icon="pi pi-plus"
           size="small"
-          className={classes['add-new-btn']}
+          className="image-picker-add-new-btn"
           onClick={() => {
             fileInputRef.current?.click();
           }}
@@ -275,7 +275,7 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
       footer={footer}
       style={{ width: '90vw', maxWidth: '1100px' }}
       modal
-      className={classes.imagePickerDialog}
+      className="image-picker-dialog"
     >
       <input
         type="file"
@@ -285,12 +285,12 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
         accept="image/*"
       />
       {loading ? (
-        <div className={classes.loading}>
+        <div className="image-picker-loading">
           <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem' }}></i>
           <p>Đang tải ảnh...</p>
         </div>
       ) : error ? (
-        <div className={classes.error}>
+        <div className="image-picker-error">
           <i className="pi pi-exclamation-triangle" style={{ fontSize: '2rem', color: '#f44336' }}></i>
           <p>{error}</p>
           <Button
@@ -301,17 +301,17 @@ const ImagePickerDialog: React.FC<ImagePickerDialogProps> = ({
           />
         </div>
       ) : (
-        <div className={classes.imageGrid}>
+        <div className="image-picker-grid">
           {images.map((image) => (
             <div
               key={image.url}
-              className={classes.imageItem}
+              className="image-picker-item"
               onClick={() => handleImageClick(image.url)}
             >
               <img src={image.url} alt={image.name} loading="lazy" decoding="async" />
-              <div className={classes.imageInfo}>
-                <div className={classes.imageName}>{image.name}</div>
-                <div className={classes.imageMeta}>
+              <div className="image-picker-item-info">
+                <div className="image-picker-item-name">{image.name}</div>
+                <div className="image-picker-item-meta">
                   <span>{formatFileSize(image.size)}</span>
                   <span>{formatDate(image.lastModified)}</span>
                 </div>

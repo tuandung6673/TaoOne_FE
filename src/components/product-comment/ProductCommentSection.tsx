@@ -6,7 +6,7 @@ import { Toast } from "primereact/toast";
 import { useEffect, useRef, useState } from "react";
 import { ProductCommentForm, ProductCommentSummary } from "../../constants/interface";
 import ApiService from "../../services/api.service";
-import classes from "./ProductCommentSection.module.scss";
+import "./ProductCommentSection.scss";
 import StarRating from "./StarRating";
 
 const INITIAL_VISIBLE_COUNT = 5;
@@ -123,68 +123,68 @@ function ProductCommentSection({ productId, summary, loading, onCommentPosted }:
     const hasMore = summary.comments.length > visibleCount;
 
     return (
-        <div className={classes.wrap}>
+        <div className="product-comment-wrap">
             <Toast ref={toast} position="top-right" />
 
-            <div className={classes.summaryCard}>
-                <div className={classes.summaryScore}>
-                    <div className={classes.summaryNumber}>{summary.average_rating.toFixed(1)}</div>
+            <div className="product-comment-summary-card">
+                <div className="product-comment-summary-score">
+                    <div className="product-comment-summary-number">{summary.average_rating.toFixed(1)}</div>
                     <StarRating value={summary.average_rating} size={16} />
-                    <div className={classes.summaryCount}>
+                    <div className="product-comment-summary-count">
                         {summary.total_count > 0 ? `${summary.total_count} đánh giá` : "Chưa có đánh giá"}
                     </div>
                 </div>
-                <div className={classes.summaryDivider} />
-                <div className={classes.summaryPrompt}>
+                <div className="product-comment-summary-divider" />
+                <div className="product-comment-summary-prompt">
                     <p>Hãy chia sẻ trải nghiệm của bạn để giúp những khách hàng khác lựa chọn tốt hơn.</p>
                     <Button
                         label={showForm ? "Đóng" : "Viết đánh giá"}
                         icon={showForm ? "pi pi-times" : "pi pi-pencil"}
-                        className={`${classes.pillBtn} ${showForm ? classes.pillBtnOutlined : ""}`}
+                        className={`product-comment-pill-btn ${showForm ? "product-comment-pill-btn-outlined" : ""}`}
                         onClick={() => setShowForm((prev) => !prev)}
                     />
                 </div>
             </div>
 
             {showForm && (
-                <div className={classes.formBox}>
-                    <div className={classes.formField}>
+                <div className="product-comment-form-box">
+                    <div className="product-comment-form-field">
                         <label>Đánh giá của bạn *</label>
                         <Rating
                             value={form.rating}
                             onChange={(e) => handleChange("rating", e.value || 0)}
                             cancel={false}
-                            className={classes.formRating}
+                            className="product-comment-form-rating"
                         />
-                        {errors.rating && <div className={classes.error}>{errors.rating}</div>}
+                        {errors.rating && <div className="product-comment-error">{errors.rating}</div>}
                     </div>
-                    <div className={classes.formGrid}>
-                        <div className={classes.formField}>
+                    <div className="product-comment-form-grid">
+                        <div className="product-comment-form-field">
                             <label>Họ và tên *</label>
                             <InputText
-                                className={`w-full ${errors.name ? classes.invalid : ""}`}
+                                className={`w-full ${errors.name ? "product-comment-invalid" : ""}`}
                                 placeholder="Tên của bạn"
                                 value={form.name}
                                 onChange={(e) => handleChange("name", e.target.value)}
                             />
-                            {errors.name && <div className={classes.error}>{errors.name}</div>}
+                            {errors.name && <div className="product-comment-error">{errors.name}</div>}
                         </div>
-                        <div className={classes.formField}>
+                        <div className="product-comment-form-field">
                             <label>Số điện thoại *</label>
                             <InputText
-                                className={`w-full ${errors.phone ? classes.invalid : ""}`}
+                                className={`w-full ${errors.phone ? "product-comment-invalid" : ""}`}
                                 placeholder="Số điện thoại của bạn"
                                 value={form.phone}
                                 onChange={(e) => handleChange("phone", e.target.value)}
                                 inputMode="tel"
                             />
-                            {errors.phone && <div className={classes.error}>{errors.phone}</div>}
+                            {errors.phone && <div className="product-comment-error">{errors.phone}</div>}
                         </div>
                     </div>
-                    <div className={classes.formField}>
+                    <div className="product-comment-form-field">
                         <label>Nội dung *</label>
                         <InputTextarea
-                            className={`w-full ${errors.content ? classes.invalid : ""}`}
+                            className={`w-full ${errors.content ? "product-comment-invalid" : ""}`}
                             placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..."
                             value={form.content}
                             onChange={(e) => handleChange("content", e.target.value)}
@@ -192,38 +192,38 @@ function ProductCommentSection({ productId, summary, loading, onCommentPosted }:
                             rows={3}
                             maxLength={1000}
                         />
-                        {errors.content && <div className={classes.error}>{errors.content}</div>}
+                        {errors.content && <div className="product-comment-error">{errors.content}</div>}
                     </div>
-                    <div className={classes.formActions}>
+                    <div className="product-comment-form-actions">
                         <Button
                             label={submitting ? "Đang gửi..." : "Gửi đánh giá"}
                             disabled={submitting}
-                            className={classes.pillBtn}
+                            className="product-comment-pill-btn"
                             onClick={handleSubmit}
                         />
                     </div>
                 </div>
             )}
 
-            <div className={classes.list}>
+            <div className="product-comment-list">
                 {loading && summary.comments.length === 0 ? (
-                    <div className={classes.empty}>Đang tải đánh giá...</div>
+                    <div className="product-comment-empty">Đang tải đánh giá...</div>
                 ) : visibleComments.length === 0 ? (
-                    <div className={classes.empty}>Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá sản phẩm này!</div>
+                    <div className="product-comment-empty">Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá sản phẩm này!</div>
                 ) : (
                     visibleComments.map((comment) => (
-                        <div className={classes.item} key={comment.id}>
-                            <div className={classes.avatar}>{getInitial(comment.name)}</div>
-                            <div className={classes.itemBody}>
-                                <div className={classes.itemHeader}>
-                                    <span className={classes.itemName}>{comment.name}</span>
-                                    <span className={classes.itemDate}>{formatCommentDate(comment.created_at)}</span>
+                        <div className="product-comment-item" key={comment.id}>
+                            <div className="product-comment-avatar">{getInitial(comment.name)}</div>
+                            <div className="product-comment-item-body">
+                                <div className="product-comment-item-header">
+                                    <span className="product-comment-item-name">{comment.name}</span>
+                                    <span className="product-comment-item-date">{formatCommentDate(comment.created_at)}</span>
                                 </div>
-                                <div className={classes.itemMeta}>
+                                <div className="product-comment-item-meta">
                                     <StarRating value={comment.rating} size={12} />
-                                    <span className={classes.itemPhone}>{maskPhone(comment.phone)}</span>
+                                    <span className="product-comment-item-phone">{maskPhone(comment.phone)}</span>
                                 </div>
-                                <p className={classes.itemContent}>{comment.content}</p>
+                                <p className="product-comment-item-content">{comment.content}</p>
                             </div>
                         </div>
                     ))
@@ -231,10 +231,10 @@ function ProductCommentSection({ productId, summary, loading, onCommentPosted }:
             </div>
 
             {hasMore && (
-                <div className={classes.loadMore}>
+                <div className="product-comment-load-more">
                     <Button
                         label="Xem thêm đánh giá"
-                        className={`${classes.pillBtn} ${classes.pillBtnOutlined}`}
+                        className="product-comment-pill-btn product-comment-pill-btn-outlined"
                         onClick={() => setVisibleCount((prev) => prev + LOAD_MORE_STEP)}
                     />
                 </div>

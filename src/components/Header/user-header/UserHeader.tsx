@@ -3,14 +3,16 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AllRouteType } from "../../../constants/constants";
 import { useCart } from "../../../custom-hook/CartContext";
+import { useTheme } from "../../../custom-hook/ThemeContext";
 import headerLogo from "../../../images/Tao one den.png";
-import classes from "./UserHeader.module.scss";
+import "./UserHeader.scss";
 
 import { OverlayPanel } from "primereact/overlaypanel";
 import { CartItem } from "../../../constants/interface";
 
 function UserHeader() {
   const { clearCart } = useCart();
+  const { theme, toggleTheme } = useTheme();
   const [isFixed, setIsFixed] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -128,18 +130,18 @@ function UserHeader() {
 
   return (
     <>
-      <div className={`${classes.header} ${isFixed ? classes.header_fixed : ''}`}>
-        <div className={classes.header_main}>
-          <div className={`${classes.header_left}`}>
+      <div className={`user-header ${isFixed ? "user-header-fixed" : ''}`}>
+        <div className="user-header-main">
+          <div className="user-header-left">
             <a href="/" title="Trang chủ">
               <img
-                className={classes.logo}
+                className="user-header-logo"
                 src={headerLogo}
                 alt="Logo"
               />
             </a>
           </div>
-          <div className={`${classes.header_center}`}>
+          <div className="user-header-center">
             <ul>
               <li>
                 <a href={"/" + AllRouteType.watch} title="">
@@ -179,9 +181,19 @@ function UserHeader() {
               </li>
             </ul>
           </div>
-          <div className={`${classes.header_right}`}>
+          <div className="user-header-right">
             <span
-              className={`${classes.item} ${classes.cart_item}`}
+              className="user-header-item"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}
+            >
+              <i
+                className={theme === 'dark' ? 'pi pi-sun' : 'pi pi-moon'}
+                style={{ color: "white" }}
+              ></i>
+            </span>
+            <span
+              className="user-header-item user-header-cart-item"
               onClick={handleCartClick}
             >
               <i
@@ -189,16 +201,16 @@ function UserHeader() {
                 style={{ color: "white" }}
               ></i>
               {getCartCount() > 0 && (
-                <span className={classes.cart_badge}>
+                <span className="user-header-cart-badge">
                   {getCartCount()}
                 </span>
               )}
             </span>
-            
+
             {/* Search Input - Appears to the right when active */}
             {isSearchActive ? (
-              <div className={classes.search_container_right}>
-                <form onSubmit={handleSearchSubmit} className={classes.search_form}>
+              <div className="user-header-search-container-right">
+                <form onSubmit={handleSearchSubmit} className="user-header-search-form">
                   <input
                     ref={searchInputRef}
                     type="text"
@@ -206,14 +218,14 @@ function UserHeader() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={handleSearchKeyDown}
-                    className={classes.search_input}
+                    className="user-header-search-input"
                   />
-                  <button type="submit" className={classes.search_submit}>
+                  <button type="submit" className="user-header-search-submit">
                     <i className="pi pi-search"></i>
                   </button>
-                  <button 
-                    type="button" 
-                    className={classes.search_close}
+                  <button
+                    type="button"
+                    className="user-header-search-close"
                     onClick={handleSearchClose}
                   >
                     <i className="pi pi-times"></i>
@@ -221,8 +233,8 @@ function UserHeader() {
                 </form>
               </div>
             ) : (
-              <span 
-                className={classes.item}
+              <span
+                className="user-header-item"
                 onClick={handleSearchClick}
               >
                 <i
@@ -232,20 +244,20 @@ function UserHeader() {
               </span>
             )}
           </div>
-          <div className={`${classes.cart_mobile}`}>
+          <div className="user-header-cart-mobile">
             <button
-              className={classes.cart_mobile_button}
+              className="user-header-cart-mobile-button"
               onClick={() => navigate("/cart")}
               aria-label="Giỏ hàng"
             >
               <i className="pi pi-shopping-bag"></i>
               {getCartCount() > 0 && (
-                <span className={classes.cart_badge_mobile}>{getCartCount()}</span>
+                <span className="user-header-cart-badge-mobile">{getCartCount()}</span>
               )}
             </button>
           </div>
         </div>
-        <div className={`${classes.header_mobile}`}>
+        <div className="user-header-mobile">
           <div>
             <a href={"/" + AllRouteType.watch} title="">
               Watch
@@ -277,35 +289,35 @@ function UserHeader() {
       {/* Cart OverlayPanel - Desktop Only */}
       <OverlayPanel
         ref={cartOverlayRef}
-        className={classes.cart_overlay_panel}
+        className="user-header-cart-overlay-panel"
         dismissable={true}
         showCloseIcon={false}
         style={{ transform: 'translateX(-50px)' }}
       >
-        <div className={classes.cart_overlay_content}>
-          <div className={classes.cart_overlay_header}>
+        <div className="user-header-cart-overlay-content">
+          <div className="user-header-cart-overlay-header">
             <h3>Giỏ hàng ({getCartCount()} sản phẩm)</h3>
           </div>
 
           {cartItems.length === 0 ? (
-            <div className={classes.cart_empty_overlay}>
+            <div className="user-header-cart-empty-overlay">
               <i className="pi pi-shopping-bag"></i>
               <p>Giỏ hàng trống</p>
             </div>
           ) : (
             <>
-              <div className={classes.cart_items_overlay}>
+              <div className="user-header-cart-items-overlay">
                 {cartItems.map((item) => (
-                  <div key={item.id + item.size} className={classes.cart_item_overlay}>
-                    <div className={classes.item_image_overlay}>
+                  <div key={item.id + item.size} className="user-header-cart-item-overlay">
+                    <div className="user-header-item-image-overlay">
                       <img src={item.img} alt={item.name} />
                     </div>
-                    <div className={classes.item_details_overlay}>
+                    <div className="user-header-item-details-overlay">
                       <h4 onClick={() => handleItemClick(item)}>{item.name}{item.size ? ` - ${item.size}` : ""}</h4>
-                      <p className={classes.item_price_overlay}>
+                      <p className="user-header-item-price-overlay">
                         {formatNumber(item.salePrice)}đ
                       </p>
-                      <div className={classes.item_quantity_overlay}>
+                      <div className="user-header-item-quantity-overlay">
                         <button
                           onClick={() => handleQuantityChange(item.id, item.quantity - 1, item.size)}
                           disabled={item.quantity <= 1}
@@ -320,10 +332,10 @@ function UserHeader() {
                         </button>
                       </div>
                     </div>
-                    <div className={classes.item_total_overlay}>
+                    <div className="user-header-item-total-overlay">
                       <span>{formatNumber(item.salePrice * item.quantity)}đ</span>
                       <button
-                        className={classes.remove_item_overlay}
+                        className="user-header-remove-item-overlay"
                         onClick={() => handleRemoveItem(item.id, item.size)}
                       >
                         <i className="pi pi-trash"></i>
@@ -332,17 +344,17 @@ function UserHeader() {
                   </div>
                 ))}
               </div>
-              <div className={classes.cart_summary_overlay}>
-                <div className={classes.summary_total_overlay}>
+              <div className="user-header-cart-summary-overlay">
+                <div className="user-header-summary-total-overlay">
                   <span>Tổng cộng:</span>
                   <span>{formatNumber(getCartTotal())}đ</span>
                 </div>
-                <div className={classes.cart_summary_actions}>
-                  <button className={classes.clear_all_overlay} onClick={handleClearCart}>
+                <div className="user-header-cart-summary-actions">
+                  <button className="user-header-clear-all-overlay" onClick={handleClearCart}>
                     Xóa tất cả
                   </button>
                   <button
-                    className={classes.checkout_overlay}
+                    className="user-header-checkout-overlay"
                     onClick={handleCheckoutClick}
                   >
                     Thanh toán

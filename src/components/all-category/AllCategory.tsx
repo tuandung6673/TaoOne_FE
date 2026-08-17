@@ -13,7 +13,7 @@ import {
 } from "../../constants/interface";
 import ApiService from "../../services/api.service";
 import ProductItem from "../product-item/ProductItem";
-import classes from "./AllCategory.module.scss";
+import "./AllCategory.scss";
 
 const CATEGORY_TITLES: Record<string, string> = {
     [AllRouteType.watch]: "Apple Watch",
@@ -139,10 +139,10 @@ function AllCategory() {
     }, []);
 
     return (
-        <div className={classes.main}>
+        <div className="all-category-main">
             <Toast ref={toast} position="top-right" />
             <h1>{categoryName ? CATEGORY_TITLES[categoryName] ?? "" : ""}</h1>
-            <div className={classes.carousel_custom}>
+            <div className="all-category-carousel-custom">
                 <Carousel
                     autoPlay={true}
                     interval={6000}
@@ -152,25 +152,25 @@ function AllCategory() {
                     showStatus={false}
                 >
                     {banner.map((sl) => (
-                        <div key={sl.id} className={classes.slider}>
+                        <div key={sl.id} className="all-category-slider">
                             <img src={sl.img} alt={sl.name} />
                         </div>
                     ))}
                 </Carousel>
             </div>
-            <div className={classes.filter}>
+            <div className="all-category-filter">
                 <div
                     onClick={() => handleFilterClick("all")}
-                    className={`${classes.filter_item} ${activeFilter === "all" ? classes.active : ""
+                    className={`all-category-filter-item ${activeFilter === "all" ? "all-category-filter-active" : ""
                         }`}
                 >
                     Tất cả
                 </div>
                 {/* for small/mobile screen */}
-                <div className={classes.filter_scrollable}>
+                <div className="all-category-filter-scrollable">
                     {categoryDetail.map((detail: CategoryDetail) => (
                         <div
-                            className={`${classes.filter_item} ${activeFilter === detail.id ? classes.active : ""
+                            className={`all-category-filter-item ${activeFilter === detail.id ? "all-category-filter-active" : ""
                                 }`}
                             key={detail.id}
                             onClick={() => handleFilterClick(detail.id)}
@@ -182,8 +182,8 @@ function AllCategory() {
                 {/* for large screen */}
                 {categoryDetail.map((detail: CategoryDetail) => (
                     <div
-                        className={`${classes.filter_item} ${activeFilter === detail.id ? classes.active : ""
-                            } ${classes.filter_item_large_screen}`}
+                        className={`all-category-filter-item ${activeFilter === detail.id ? "all-category-filter-active" : ""
+                            } all-category-filter-item-large-screen`}
                         key={detail.id}
                         onClick={() => handleFilterClick(detail.id)}
                     >
@@ -191,7 +191,7 @@ function AllCategory() {
                     </div>
                 ))}
             </div>
-            <div className={classes.sort}>
+            <div className="all-category-sort">
                 <span onClick={(e) => op.current?.toggle(e)}>
                     Xếp theo: {sortFilterLabel}{" "}
                     <i className="pi pi-chevron-down"></i>
@@ -201,8 +201,8 @@ function AllCategory() {
                 {SORT_OPTIONS.map((option) => (
                     <div
                         key={option.value}
-                        className={`${classes.sort_option} ${sortFilterValue === option.value
-                            ? classes.sort_active
+                        className={`all-category-sort-option ${sortFilterValue === option.value
+                            ? "all-category-sort-active"
                             : ""
                             }`}
                         onClick={() => handleSortClick(option.value)}
@@ -216,7 +216,7 @@ function AllCategory() {
                     </div>
                 ))}
             </OverlayPanel>
-            <div className={classes.category_wrapper}>
+            <div className="all-category-category-wrapper">
                 {product.map((item: ItemDetail) => (
                     <ProductItem
                         productItem={item}

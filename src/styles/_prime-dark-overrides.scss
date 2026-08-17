@@ -1,0 +1,155 @@
+// Hand-written dark skin for the PrimeReact components actually used on
+// customer-facing pages (Button, InputText/Textarea, Dropdown, OverlayPanel,
+// Dialog/ConfirmDialog, BreadCrumb, TabView, Toast, Rating).
+//
+// Kept as an override layer instead of loading a second PrimeReact theme
+// stylesheet, so the base lara-light-cyan theme (shared with admin) never
+// changes. These rules only ever match while [data-theme="dark"] is present
+// on <html>, which only happens inside the customer route tree (see
+// ThemeContext.tsx). Portalled overlays (OverlayPanel/Dialog/Toast render via
+// createPortal to document.body) are still descendants of <html>, so the
+// attribute selector reaches them too.
+
+[data-theme="dark"] {
+    .p-component {
+        color: var(--text-primary);
+    }
+
+    // Button
+    .p-button {
+        background: var(--bg-surface-alt);
+        border-color: var(--border-color-strong);
+        color: var(--text-primary);
+
+        &:not(:disabled):hover {
+            background: var(--border-color-strong);
+            border-color: var(--border-color-strong);
+        }
+
+        &.p-button-outlined {
+            background: transparent;
+            color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+    }
+
+    // Text inputs
+    .p-inputtext,
+    .p-inputtextarea {
+        background: var(--bg-surface);
+        border-color: var(--border-color-strong);
+        color: var(--text-primary);
+
+        &::placeholder {
+            color: var(--text-muted);
+        }
+
+        &:enabled:focus {
+            border-color: var(--accent-blue);
+        }
+    }
+
+    // Dropdown
+    .p-dropdown {
+        background: var(--bg-surface);
+        border-color: var(--border-color-strong);
+        color: var(--text-primary);
+
+        .p-dropdown-label {
+            color: var(--text-primary);
+        }
+
+        .p-dropdown-trigger {
+            color: var(--text-secondary);
+        }
+    }
+
+    .p-dropdown-panel,
+    .p-overlaypanel,
+    .p-dialog,
+    .p-confirm-dialog {
+        background: var(--bg-overlay);
+        color: var(--text-primary);
+        border-color: var(--border-color-strong);
+
+        .p-dialog-header,
+        .p-dialog-footer,
+        .p-confirm-dialog .p-dialog-header,
+        .p-confirm-dialog .p-dialog-footer {
+            background: var(--bg-overlay);
+            color: var(--text-primary);
+        }
+
+        .p-dropdown-items .p-dropdown-item {
+            color: var(--text-primary);
+
+            &:hover {
+                background: var(--bg-surface-alt);
+            }
+
+            &.p-highlight {
+                background: var(--accent);
+                color: var(--text-on-accent);
+            }
+        }
+    }
+
+    .p-overlaypanel:before,
+    .p-overlaypanel:after {
+        border-bottom-color: var(--bg-overlay);
+    }
+
+    // BreadCrumb
+    .p-breadcrumb {
+        background: transparent;
+        color: var(--text-secondary);
+
+        .p-breadcrumb-list li .p-menuitem-link .p-menuitem-text,
+        .p-breadcrumb-list li .p-menuitem-icon {
+            color: var(--text-secondary);
+        }
+
+        .p-breadcrumb-list li.p-menuitem-separator {
+            color: var(--text-muted);
+        }
+    }
+
+    // TabView
+    .p-tabview {
+        .p-tabview-nav {
+            background: transparent;
+            border-color: var(--border-color-strong);
+
+            li .p-tabview-nav-link {
+                background: transparent;
+                color: var(--text-secondary);
+                border-color: var(--border-color-strong);
+            }
+
+            li.p-highlight .p-tabview-nav-link {
+                color: var(--accent-blue);
+                border-color: var(--accent-blue);
+            }
+        }
+
+        .p-tabview-panels {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+        }
+    }
+
+    // Toast
+    .p-toast-message {
+        background: var(--bg-overlay);
+        color: var(--text-primary);
+    }
+
+    // Rating
+    .p-rating .p-rating-icon {
+        color: var(--text-muted);
+
+        &.pi-star-fill {
+            color: var(--accent);
+        }
+    }
+}

@@ -1,0 +1,58 @@
+// Dark mode: customer-only overrides for the shared selectors in _prime-shared.scss.
+// [data-theme="dark"] is only ever set on <html> inside the UserLayout
+// route tree (see ThemeContext.tsx), so these rules are inert for admin.
+[data-theme="dark"] {
+    .header-left .main-title {
+        color: var(--text-primary);
+    }
+
+    .search-btn {
+        .p-inputtext {
+            border-color: var(--border-color-strong);
+        }
+        .p-button {
+            background-color: var(--bg-surface);
+            color: var(--accent-blue);
+            border-color: var(--border-color-strong);
+        }
+    }
+
+    .filter-btn,
+    .add-btn {
+        .p-button {
+            background: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+        }
+    }
+
+    .cancel-btn {
+        .p-button {
+            border: 1px solid var(--accent-blue);
+        }
+        .p-button-label {
+            color: var(--accent-blue);
+        }
+    }
+
+    .save-btn {
+        .p-button {
+            background: var(--accent-blue);
+        }
+    }
+
+    .wrapper {
+        color: var(--text-primary);
+    }
+
+    .detail-wrapper {
+        background: var(--bg-surface);
+        color: var(--text-primary);
+    }
+
+    .sort_option {
+        color: var(--text-primary);
+        &:hover {
+            background: var(--bg-surface-alt);
+        }
+    }
+}

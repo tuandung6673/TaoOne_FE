@@ -1,4 +1,4 @@
-@import "../../color/colors.scss";
+@import "../../styles/legacy-vars";
 
 .product1 {
     width: 100%;
@@ -14,7 +14,7 @@
 }
 
 .product_image {
-    background: #ffffff;
+    background: var(--bg-surface);
     width: 100%;
     position: relative;
     border-radius: 8px;
@@ -31,22 +31,22 @@
 .product_size_item {
     padding: 2px 9px;
     margin: 0 5px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--border-color-strong);
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.3s ease;
     display: inline-block;
-    background-color: #ffffff;
+    background-color: var(--bg-surface);
 
     &:hover {
-        border-color: $main-green-color;
-        background-color: #f8f9fa;
+        border-color: var(--accent);
+        background-color: var(--bg-surface-alt);
     }
 
     &.active {
-        border-color: $main-green-color;
-        background-color: $main-green-color;
-        color: #ffffff;
+        border-color: var(--accent);
+        background-color: var(--accent);
+        color: var(--text-on-accent);
     }
 }
 
@@ -84,17 +84,17 @@
 
     .product_rating_score {
         font-weight: 700;
-        color: #333;
+        color: var(--text-primary);
     }
 
     .product_rating_count {
-        color: #6c757d;
+        color: var(--text-secondary);
         text-decoration: underline;
         text-underline-offset: 2px;
     }
 
     &:hover .product_rating_count {
-        color: $main-green-color;
+        color: var(--accent);
     }
 }
 
@@ -113,7 +113,7 @@
     font-size: 20px;
     font-weight: bold;
     margin-right: 5px;
-    color: #7CBD43;
+    color: var(--accent);
 }
 
 .sale_percent {
@@ -147,7 +147,7 @@
     }
 
     &_icon {
-        color: $main-green-color;
+        color: var(--accent);
     }
 
     &_value {
@@ -158,12 +158,12 @@
 .gift {
     padding: 15px 15px 10px 15px;
     margin: 20px 5px 15px 5px;
-    border: 2px solid $main-green-color;
+    border: 2px solid var(--accent);
     border-radius: 6px;
     position: relative;
 
     &_header {
-        background-color: #f5f5f7;
+        background-color: var(--bg-base);
         position: absolute;
         top: -15px;
         padding: 0 4px;
@@ -186,12 +186,12 @@
     font-size: 18px;
     font-weight: 900;
     letter-spacing: -0.01em;
-    color: $main-green-color;
+    color: var(--accent);
     margin: 0 0 12px 0;
 }
 
 .product2 {
-    background: #ffffff;
+    background: var(--bg-surface);
 }
 
 .product_down {
@@ -240,7 +240,7 @@
     img {
         cursor: pointer;
         border-radius: 8px;
-        background: #ffffff;
+        background: var(--bg-surface);
         height: 90px;
         width: 100%;
         object-fit: cover;
@@ -248,7 +248,7 @@
 }
 
 .related_products {
-    background: #ffffff;
+    background: var(--bg-surface);
 
     // margin-top: 15px;
     // padding: 20px 0;
@@ -269,34 +269,34 @@
 }
 
 .cart .p-button {
-    background-color: $main-green-color;
-    border-color: $main-green-color;
+    background-color: var(--accent);
+    border-color: var(--accent);
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
 .cart .p-button:hover {
-    background-color: $main-green-color-hover;
-    border-color: $main-green-color-hover;
+    background-color: var(--accent-hover);
+    border-color: var(--accent-hover);
 }
 
 .bag .p-button {
-    border-color: $main-green-color;
+    border-color: var(--accent);
     background: transparent;
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 
     &:hover {
-        background-color: $main-green-color;
-        border-color: $main-green-color;
+        background-color: var(--accent);
+        border-color: var(--accent);
 
         .p-button-label,
         .p-button-icon {
-            color: #ffffff;
+            color: var(--text-on-accent);
         }
     }
 
     .p-button-label,
     .p-button-icon {
-        color: $main-green-color;
+        color: var(--accent);
     }
 }
 

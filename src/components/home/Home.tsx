@@ -11,7 +11,7 @@ import "swiper/scss/navigation";
 import { BannerDetail, HomeCategory } from "../../constants/interface";
 import ApiService from "../../services/api.service";
 import ProductItem from "../product-item/ProductItem";
-import classes from "./Home.module.scss";
+import "./Home.scss";
 
 const SWIPER_BREAKPOINTS = {
     1200: { slidesPerView: 4, spaceBetween: 25 },
@@ -67,10 +67,10 @@ function Home() {
     }, []);
 
     return (
-        <div className={classes.homeWrapper}>
+        <div className="home-wrapper">
             <Toast ref={toast} position="top-right" />
 
-            <div className={classes.carousel}>
+            <div className="home-carousel">
                 <Carousel
                     autoPlay
                     interval={10000}
@@ -80,32 +80,32 @@ function Home() {
                     showStatus={false}
                 >
                     {slides.map((slide) => (
-                        <div key={slide.id} className={classes.slider}>
+                        <div key={slide.id} className="home-slider">
                             <img src={slide.img} alt={slide.name} />
                         </div>
                     ))}
                 </Carousel>
             </div>
 
-            <div className={classes.main}>
-                <div className={classes.category}>
+            <div className="home-main">
+                <div className="home-category">
                     {categories.map((ctg) => (
                         <div
                             key={ctg.id}
-                            className={classes.category_item}
+                            className="home-category-item"
                             onClick={() => handleGoToCategory(ctg.code)}
                         >
-                            <div className={classes.item_img}>
+                            <div className="home-category-item-img">
                                 <img src={ctg.img} alt={ctg.name} />
                             </div>
-                            <p className={classes.item_name}>{ctg.name}</p>
+                            <p className="home-category-item-name">{ctg.name}</p>
                         </div>
                     ))}
                 </div>
 
-                <div className={classes.categories}>
+                <div className="home-categories">
                     {categories.map((category) => (
-                        <div key={category.id} className={classes.product_wrapper}>
+                        <div key={category.id} className="home-product-wrapper">
                             <h2 style={{ textAlign: "center" }}>
                                 {category.name}
                             </h2>
@@ -116,7 +116,7 @@ function Home() {
                                 {category.products.map((product) => (
                                     <SwiperSlide
                                         key={product.id}
-                                        className={classes.product}
+                                        className="home-product"
                                     >
                                         <ProductItem
                                             productItem={product}

@@ -9,7 +9,7 @@ import { SORTFILTER } from "../../constants/constants";
 import { BannerDetail, ItemDetail } from "../../constants/interface";
 import ApiService from "../../services/api.service";
 import ProductItem from "../product-item/ProductItem";
-import classes from "./UserSearch.module.scss";
+import "./UserSearch.scss";
 
 const SORT_OPTIONS = [
     SORTFILTER.DEFAULT,
@@ -76,9 +76,9 @@ const UserSearch = () => {
     }, []);
 
     return (
-        <div className={classes.main}>
+        <div className="user-search-main">
             <Toast ref={toast} position="top-right" />
-            <div className={classes.carousel_custom}>
+            <div className="user-search-carousel-custom">
                 <Carousel
                     autoPlay={true}
                     interval={6000}
@@ -88,18 +88,18 @@ const UserSearch = () => {
                     showStatus={false}
                 >
                     {banner.map((sl) => (
-                        <div key={sl.id} className={classes.slider}>
+                        <div key={sl.id} className="user-search-slider">
                             <img src={sl.img} alt={sl.name} />
                         </div>
                     ))}
                 </Carousel>
             </div>
-            <div className={classes.filter}>
-                <div className={classes.filter_item}>
-                    <div className={classes.empty}></div>
-                    <div className={classes.filter_item_label}>Từ khóa: <span className={classes.filter_item_label_text}>{filter}</span> <span className={classes.filter_item_label_length}>({product.length} sản phẩm)</span></div>
+            <div className="user-search-filter">
+                <div className="user-search-filter-item">
+                    <div className="user-search-filter-empty"></div>
+                    <div className="user-search-filter-item-label">Từ khóa: <span className="user-search-filter-item-label-text">{filter}</span> <span className="user-search-filter-item-label-length">({product.length} sản phẩm)</span></div>
                 </div>
-                <div className={classes.sort}>
+                <div className="user-search-sort">
                     <span onClick={(e) => op.current?.toggle(e)}>
                         Xếp theo: {sortFilterLabel}{" "}
                         <i className="pi pi-chevron-down"></i>
@@ -110,8 +110,8 @@ const UserSearch = () => {
                 {SORT_OPTIONS.map((option) => (
                     <div
                         key={option.value}
-                        className={`${classes.sort_option} ${sortFilterValue === option.value
-                            ? classes.sort_active
+                        className={`user-search-sort-option ${sortFilterValue === option.value
+                            ? "user-search-sort-active"
                             : ""
                             }`}
                         onClick={() => handleSortClick(option.value)}
@@ -125,7 +125,7 @@ const UserSearch = () => {
                     </div>
                 ))}
             </OverlayPanel>
-            <div className={classes.category_wrapper}>
+            <div className="user-search-category-wrapper">
                 {product.map((category: ItemDetail) => (
                     <ProductItem
                         productItem={category}

@@ -1,20 +1,20 @@
-@import "../../color/colors.scss";
+@import "../../styles/legacy-vars";
 
 .product {
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .user-info {
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .overview {
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .main-form {
     margin-top: 10px;
-    background-color: #ffffff;
+    background-color: var(--bg-surface);
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -65,7 +65,7 @@
 /* Tổng quan đơn hàng */
 .overview {
     padding: 10px;
-    background-color: #f1f3f5;
+    background-color: var(--bg-surface-alt);
     border-radius: 8px;
     margin-bottom: 20px;
 }
@@ -80,7 +80,7 @@
         font-weight: 600;
     }
     .voucher-discount-line {
-        color: #dc3545;
+        color: var(--danger);
         font-weight: 600;
     }
 }
@@ -108,15 +108,15 @@
 
 .option {
     &-1 {
-        border-bottom: 1px solid #ececec;
+        border-bottom: 1px solid var(--border-color);
     }
     &-2 {
-        border-bottom: 1px solid #ececec;
+        border-bottom: 1px solid var(--border-color);
     }
 }
 
 .error {
-    color: red;
+    color: var(--danger);
     font-size: 14px;
 }
 
@@ -187,14 +187,14 @@
 }
 
 .order .p-button {
-    border-color: $main-green-color;
-    background-color: $main-green-color;
+    border-color: var(--accent);
+    background-color: var(--accent);
     transition: background-color 0.3s, color 0.3s, border-color 0.3s;
     &:hover {
-        background-color: $main-green-color-hover;
-        border-color: $main-green-color-hover;
+        background-color: var(--accent-hover);
+        border-color: var(--accent-hover);
         .p-button-label {
-            color: #ffffff;
+            color: var(--text-on-accent);
         }
     }
 }

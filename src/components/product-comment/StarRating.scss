@@ -1,14 +1,14 @@
-.stars {
+.star-rating-stars {
     display: inline-flex;
     align-items: center;
     gap: 2px;
     line-height: 1;
 }
 
-.filled {
+.star-rating-filled {
     color: #ffb800;
 }
 
-.empty {
+.star-rating-empty {
     color: #dcdcdc;
 }

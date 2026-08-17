@@ -1,0 +1,14 @@
+// Single entry point for src/App.scss. Import order matters for cascade —
+// keep it as-is when adding new partials:
+//   1. tokens            – CSS custom properties (light + [data-theme="dark"])
+//   2. legacy-vars       – old $sass-variable brand colors, still used by some components
+//   3. base              – resets/global element rules (admin + customer)
+//   4. prime-shared       – PrimeReact/layout overrides shared by admin + customer
+//   5. prime-dark-overrides – dark skin for PrimeReact components (customer only)
+//   6. customer-dark     – dark variants of the _prime-shared.scss selectors (customer only)
+@import "./tokens";
+@import "./legacy-vars";
+@import "./base";
+@import "./prime-shared";
+@import "./prime-dark-overrides";
+@import "./customer-dark";

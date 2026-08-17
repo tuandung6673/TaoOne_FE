@@ -1,25 +1,19 @@
-.homeWrapper {
-    background: #f5f5f7;
+.home-wrapper {
+    background: var(--bg-base);
 }
 
-.main {
+.home-main {
     width: 65%;
     margin: 0 auto;
 }
 
-// .categories {
-//     @media (min-width: 1600px) {
-//         margin-bottom: 60px;
-//     }
-// }
-
-.category {
+.home-category {
     margin: 60px 0;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
 
-    &_item {
-        background: #ffffff;
+    .home-category-item {
+        background: var(--bg-surface);
         margin: 10px;
         border-radius: 20px;
         height: 220px;
@@ -35,14 +29,14 @@
             }
         }
 
-        .item_img {
+        .home-category-item-img {
             height: 165px;
             display: flex;
             justify-content: center;
             align-items: flex-end;
         }
 
-        .item_name {
+        .home-category-item-name {
             text-align: center;
         }
 
@@ -53,7 +47,7 @@
     }
 }
 
-.product_wrapper {
+.home-product-wrapper {
     padding: 0 10px;
     margin: 80px -10px 0;
 
@@ -65,39 +59,39 @@
 
 /* Media Queries */
 @media (min-width: 1200px) {
-    .main {
+    .home-main {
         width: 80%;
     }
 }
 
 @media (min-width: 1600px) {
-    .main {
+    .home-main {
         width: 65%;
     }
 }
 
 @media (max-width: 1200px) {
-    .main {
+    .home-main {
         width: 80%;
     }
 }
 
 @media (max-width: 768px) {
-    .main {
+    .home-main {
         width: 95%;
     }
 
-    .category {
+    .home-category {
         grid-template-columns: 1fr 1fr;
 
-        &_item {
+        .home-category-item {
             height: 190px;
 
-            .item_img {
+            .home-category-item-img {
                 height: 150px;
             }
 
-            .item_name {
+            .home-category-item-name {
                 margin-top: 0;
             }
 
@@ -110,22 +104,22 @@
         }
     }
 
-    .product_wrapper {
+    .home-product-wrapper {
         margin: 50px -5px 0;
     }
 }
 
 @media (max-width: 576px) {
-    .main {
+    .home-main {
         width: 100%;
         padding: 0 10px;
     }
 
-    .category_item img {
+    .home-category-item img {
         height: 100px;
     }
 
-    .product_wrapper {
+    .home-product-wrapper {
         margin: 30px -5px 0;
     }
 }

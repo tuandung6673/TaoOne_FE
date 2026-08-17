@@ -1,6 +1,6 @@
-@import "../../color/colors.scss";  
+@import "../../styles/legacy-vars";
 
-.main {
+.all-category-main {
     width: 65%;
     margin: 0 auto;
     padding: 0 10px;
@@ -23,24 +23,22 @@
     }
 }
 
-.category {
-    &_wrapper {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-gap: 20px;
-        // Adjust grid for smaller screens
-        @media (max-width: 1200px) {
-            grid-template-columns: repeat(2, 1fr);
-        }
+.all-category-category-wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    // Adjust grid for smaller screens
+    @media (max-width: 1200px) {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
-.filter {
+.all-category-filter {
     margin-top: 20px;
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start; // Align items to the start
-    
+
     @media (max-width: 768px) {
         flex-wrap: nowrap; // Prevent wrapping on mobile
         overflow-x: auto; // Enable horizontal scrolling
@@ -48,17 +46,17 @@
         -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
         scrollbar-width: none; // Hide scrollbar on Firefox
         -ms-overflow-style: none; // Hide scrollbar on IE/Edge
-        
+
         &::-webkit-scrollbar {
             display: none; // Hide scrollbar on WebKit browsers
         }
     }
 
-    &_scrollable {
+    .all-category-filter-scrollable {
         display: none;
     }
     @media (max-width: 768px) {
-        &_scrollable {
+        .all-category-filter-scrollable {
             display: flex;
             flex-direction: row;
             flex: 1;
@@ -67,67 +65,62 @@
             -ms-overflow-style: none; // Hide scrollbar on IE/Edge
             scrollbar-width: none; // Hide scrollbar on Firefox
         }
-        &_item_large_screen {
+        .all-category-filter-item-large-screen {
             display: none;
         }
     }
-    
-    &_item {
+
+    .all-category-filter-item {
         cursor: pointer;
-        color: #afb7bd;
+        color: var(--text-muted);
         margin-right: 30px;
         border-bottom: 1px solid transparent;
         padding: 10px 1px;
-        
+
         @media (max-width: 768px) {
             flex-shrink: 0; // Prevent items from shrinking on mobile
             white-space: nowrap; // Prevent text wrapping
             margin-right: 15px;
-            // &:first-child {
-            //     position: sticky;
-            //     left: 0;
-            //     z-index: 10;
-            //     margin-right: 15px; // Space after the fixed item
-            //     flex-shrink: 0; // Prevent shrinking
-            // }
         }
-        
+
         &:hover {
-            color: #000000;
-            border-bottom: 1px solid #000000;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--text-primary);
             transition: 0.15s;
         }
     }
     :first-child {
         margin-left: 0;
     }
-    .active {
-        color: #000000;
-        border-bottom: 1px solid #000000;
+    .all-category-filter-active {
+        color: var(--text-primary);
+        border-bottom: 1px solid var(--text-primary);
     }
 }
 
-.sort {
+.all-category-sort {
     margin: 10px 0 20px 0;
     cursor: pointer;
     text-align: right;
     @media (max-width: 768px) {
         text-align: left; // Align sort to the left on small screens
     }
-    &_option {
-        cursor: pointer;
-        padding: 7px 45px 7px 15px;
-        &:hover {
-            background: #afb7bd;
-        }
-    }
-    &_active {
-        color: blue;
+}
+
+.all-category-sort-option {
+    cursor: pointer;
+    padding: 7px 45px 7px 15px;
+    &:hover {
+        background: var(--bg-surface-alt);
     }
 }
 
+.all-category-sort-active {
+    color: var(--accent-blue);
+}
+
 // Adjust carousel image size for smaller screens
-.carousel_custom img {
+.all-category-carousel-custom img {
     width: 100%; // Ensure images take up full width of container
     height: auto; // Maintain aspect ratio
 }

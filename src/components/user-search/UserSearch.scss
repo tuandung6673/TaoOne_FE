@@ -1,0 +1,87 @@
+@import "../../styles/legacy-vars";
+
+.user-search-main {
+    width: 65%;
+    margin: 0 auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+
+    @media (min-width: 1200px) and (max-width: 1599px) {
+        width: 80%;
+    }
+
+    @media (max-width: 1200px) and (min-width: 769px) {
+        width: 80%;
+    }
+
+    @media (max-width: 768px) and (min-width: 577px) {
+        width: 95%;
+    }
+
+    @media (max-width: 576px) {
+        width: 100%;
+    }
+}
+
+.user-search-category-wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    // Adjust grid for smaller screens
+    @media (max-width: 1200px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.user-search-filter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-search-filter-item {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+}
+
+.user-search-filter-empty {
+    width: 6px;
+    height: 30px;
+    background-color: #218838;
+    border-radius: 10px;
+    margin-right: 5px;
+}
+
+.user-search-filter-item-label-text {
+    color: #218838;
+    font-weight: 500;
+}
+
+.user-search-sort {
+    margin: 20px 0;
+    cursor: pointer;
+    text-align: right;
+    @media (max-width: 768px) {
+        text-align: left; // Align sort to the left on small screens
+    }
+}
+
+.user-search-sort-option {
+    cursor: pointer;
+    padding: 7px 45px 7px 15px;
+    &:hover {
+        background: var(--bg-surface-alt);
+    }
+}
+
+.user-search-sort-active {
+    color: var(--accent-blue);
+}
+
+// Adjust carousel image size for smaller screens
+.user-search-carousel-custom img {
+    width: 100%; // Ensure images take up full width of container
+    height: auto; // Maintain aspect ratio
+}

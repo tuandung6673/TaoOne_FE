@@ -16,6 +16,11 @@ import VoucherDetail from './components/admin/voucher-detail/VoucherDetail';
 import Voucher from './components/admin/voucher/Voucher';
 import WatchDetail from './components/admin/watch-detail/WatchDetail';
 import Watch from './components/admin/watch/Watch';
+import AccountLayout from './components/account/AccountLayout';
+import AccountOverview from './components/account/AccountOverview';
+import AddressBook from './components/account/AddressBook';
+import ChangePassword from './components/account/ChangePassword';
+import PurchaseHistory from './components/account/PurchaseHistory';
 import AllCategory from './components/all-category/AllCategory';
 import Cart from './components/cart/Cart';
 import PromoAppleWatch4 from './components/event2/PromoAppleWatch4';
@@ -26,9 +31,10 @@ import UserNewsDetail from './components/newsList/UserNewsDetail/UserNewsDetail'
 import Payment from './components/payment/payment';
 import ProductDetail from './components/product-detail/ProductDetail';
 import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
+import RequireAuth from './components/protectedRoute/RequireAuth';
 import Spinner from './components/spinner/Spinner';
 import UserSearch from './components/user-search/UserSearch';
-import { AllRouteType, ROLE } from './constants/constants';
+import { ACCOUNT_ROUTE, AllRouteType, ROLE } from './constants/constants';
 import { CartProvider } from './custom-hook/CartContext';
 import { SpinnerProvider } from './custom-hook/SpinnerContext';
 import { VoucherProvider } from './custom-hook/VoucherContext';
@@ -81,6 +87,14 @@ function App() {
                 <Route path='news' element={<NewsList />} />
                 <Route path='news/:newsSlug' element={<UserNewsDetail />} />
                 <Route path='search' element={<UserSearch />} />
+                <Route path={ACCOUNT_ROUTE.root.slice(1)} element={<RequireAuth />}>
+                  <Route element={<AccountLayout />}>
+                    <Route index element={<AccountOverview />} />
+                    <Route path={ACCOUNT_ROUTE.changePassword} element={<ChangePassword />} />
+                    <Route path={ACCOUNT_ROUTE.purchaseHistory} element={<PurchaseHistory />} />
+                    <Route path={ACCOUNT_ROUTE.addressBook} element={<AddressBook />} />
+                  </Route>
+                </Route>
               </Route>
             </Routes>
           </Router>

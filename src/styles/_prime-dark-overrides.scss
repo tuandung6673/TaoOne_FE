@@ -47,6 +47,12 @@
         &:enabled:focus {
             border-color: var(--accent-blue);
         }
+
+        &:disabled {
+            background: var(--bg-surface-alt);
+            color: var(--text-muted);
+            opacity: 1;
+        }
     }
 
     // Dropdown
@@ -55,42 +61,118 @@
         border-color: var(--border-color-strong);
         color: var(--text-primary);
 
+        // .p-dropdown-label also carries the .p-inputtext class, which gets
+        // its own background/border from the rule above — nested inside a
+        // .p-dropdown that already draws that same border, so it doubles up
+        // (most visible along the bottom edge). The outer box already
+        // supplies the visual border, so strip the inner one.
         .p-dropdown-label {
             color: var(--text-primary);
+            background: transparent;
+            border: none;
+
+            &.p-placeholder {
+                color: var(--text-muted);
+            }
         }
 
         .p-dropdown-trigger {
             color: var(--text-secondary);
         }
+
+        &.p-disabled {
+            background: var(--bg-surface-alt);
+            opacity: 1;
+
+            .p-dropdown-label,
+            .p-dropdown-trigger {
+                color: var(--text-muted);
+            }
+        }
     }
 
-    .p-dropdown-panel,
-    .p-overlaypanel,
-    .p-dialog,
-    .p-confirm-dialog {
-        background: var(--bg-overlay);
-        color: var(--text-primary);
-        border-color: var(--border-color-strong);
+    // Checkbox
+    .p-checkbox {
+        .p-checkbox-box {
+            background: var(--bg-surface);
+            border-color: var(--border-color-strong);
 
-        .p-dialog-header,
-        .p-dialog-footer,
-        .p-confirm-dialog .p-dialog-header,
-        .p-confirm-dialog .p-dialog-footer {
-            background: var(--bg-overlay);
-            color: var(--text-primary);
-        }
-
-        .p-dropdown-items .p-dropdown-item {
-            color: var(--text-primary);
-
-            &:hover {
-                background: var(--bg-surface-alt);
+            .p-checkbox-icon {
+                color: var(--text-on-accent);
             }
 
             &.p-highlight {
                 background: var(--accent);
-                color: var(--text-on-accent);
+                border-color: var(--accent);
             }
+
+            &:not(.p-disabled):hover {
+                border-color: var(--accent-blue);
+            }
+        }
+
+        &.p-checkbox-disabled .p-checkbox-box {
+            background: var(--bg-surface-alt);
+            opacity: 1;
+        }
+    }
+
+    .p-dropdown-panel,
+    .p-overlaypanel {
+        background: var(--bg-overlay);
+        color: var(--text-primary);
+        border-color: var(--border-color-strong);
+    }
+
+    .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+        color: var(--text-primary);
+
+        &:hover {
+            background: var(--bg-surface-alt);
+        }
+
+        &.p-highlight {
+            background: var(--accent);
+            color: var(--text-on-accent);
+        }
+    }
+
+    // Dialog / ConfirmDialog — the theme sets background/color explicitly on
+    // .p-dialog-header, .p-dialog-content AND .p-dialog-footer individually
+    // (not just the .p-dialog root), each at the same specificity as a bare
+    // override would be, so every one of them must be targeted directly here
+    // (one extra class deep) or the light background wins the specificity tie.
+    .p-dialog,
+    .p-confirm-dialog {
+        border-color: var(--border-color-strong);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .p-dialog .p-dialog-header,
+    .p-dialog .p-dialog-content,
+    .p-dialog .p-dialog-footer,
+    .p-confirm-dialog .p-dialog-header,
+    .p-confirm-dialog .p-dialog-content,
+    .p-confirm-dialog .p-dialog-footer {
+        background: var(--bg-overlay);
+        color: var(--text-primary);
+    }
+
+    .p-dialog .p-dialog-header .p-dialog-title {
+        color: var(--text-primary);
+    }
+
+    .p-confirm-dialog .p-confirm-dialog-message {
+        color: var(--text-primary);
+    }
+
+    .p-dialog .p-dialog-header .p-dialog-header-icon,
+    .p-confirm-dialog .p-dialog-header .p-dialog-header-icon {
+        color: var(--text-secondary);
+
+        &:enabled:hover {
+            background: var(--bg-surface-alt);
+            color: var(--text-primary);
         }
     }
 

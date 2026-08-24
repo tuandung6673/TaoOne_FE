@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { AdviseForm, CheckApplyVoucherRequest, Login, PaymentForm, ProductCommentForm } from "../constants/interface";
+import { Address, AdviseForm, CheckApplyVoucherRequest, Login, PaymentForm, ProductCommentForm, Register } from "../constants/interface";
 import axiosInstance from "./api.interceptor";
 
 const ApiService = {
@@ -315,7 +315,84 @@ const ApiService = {
             );
             return response.data;
         } catch (error) {
-            console.log(error);
+            console.error("Error logging in:", error);
+            throw error;
+        }
+    },
+
+    postRegister: async (data: Register) => {
+        try {
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_BASE_URL}/Login/PostRegister`,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error registering:", error);
+            throw error;
+        }
+    },
+
+    // Account
+    getAddressList: async () => {
+        try {
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_BASE_URL}/Account/GetAddressList`
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching address list:", error);
+            throw error;
+        }
+    },
+
+    postAddress: async (data: Address) => {
+        try {
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_BASE_URL}/Account/PostAddress`,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error saving address:", error);
+            throw error;
+        }
+    },
+
+    deleteAddress: async (id: string) => {
+        try {
+            const response = await axiosInstance.delete(
+                `${process.env.REACT_APP_BASE_URL}/Account/DeleteAddress?id=` + id
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error deleting address:", error);
+            throw error;
+        }
+    },
+
+    setDefaultAddress: async (id: string) => {
+        try {
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_BASE_URL}/Account/SetDefaultAddress?id=` + id
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error setting default address:", error);
+            throw error;
+        }
+    },
+
+    getOrderHistory: async (queryParams: string = "") => {
+        try {
+            const url = queryParams
+                ? `${process.env.REACT_APP_BASE_URL}/Account/GetOrderHistory?${queryParams}`
+                : `${process.env.REACT_APP_BASE_URL}/Account/GetOrderHistory`;
+            const response = await axiosInstance.get(url);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching order history:", error);
+            throw error;
         }
     },
 

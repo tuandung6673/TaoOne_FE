@@ -11,7 +11,7 @@ import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
 import { Toast } from "primereact/toast";
 import queryString from "query-string";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PaymentForm } from "../../../constants/interface";
+import { OrderProductItem, PaymentForm } from "../../../constants/interface";
 import ApiService from "../../../services/api.service";
 import "./Order.scss";
 
@@ -40,14 +40,6 @@ const PAYMENT_METHOD_LABELS: Record<number, string> = {
     1: "Kiểm tra thanh toán",
     2: "Trả tiền mặt khi nhận hàng",
 };
-
-interface OrderLineItem {
-    img: string;
-    product_name: string;
-    size: string;
-    quantity: number;
-    salePrice: number;
-}
 
 function Order() {
     const [selectStatus, setSelectStatus] = useState<number | null>(null);
@@ -211,7 +203,7 @@ function Order() {
         }
     }, [selectedId, orderParams, fetchOrder]);
 
-    const imageBodyTemplate = useCallback((product: OrderLineItem) => (
+    const imageBodyTemplate = useCallback((product: OrderProductItem) => (
         <img
             src={product.img}
             alt={product.img}
@@ -221,7 +213,7 @@ function Order() {
     ), []);
 
     const rowExpansionTemplate = useCallback((data: PaymentForm) => (
-        <DataTable value={data.products as unknown as OrderLineItem[]} scrollable={false}>
+        <DataTable value={data.products} scrollable={false}>
             <Column field="img" header="Hình ảnh" body={imageBodyTemplate} style={{ width: "11rem" }}></Column>
             <Column field="product_name" header="Sản phẩm" style={{ width: "700px" }}></Column>
             <Column field="size" header="Phiên bản" style={{ width: "180px" }}></Column>
@@ -233,7 +225,7 @@ function Order() {
             <Column
                 header="Đơn giá"
                 field="salePrice"
-                body={(rowData: OrderLineItem) => priceFormatTemplate(rowData.salePrice)}
+                body={(rowData: OrderProductItem) => priceFormatTemplate(rowData.salePrice)}
             ></Column>
         </DataTable>
     ), [imageBodyTemplate, priceFormatTemplate]);

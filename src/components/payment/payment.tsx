@@ -8,7 +8,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import { BANK_INFO, TIEN_COC } from "../../constants/constants";
-import { CartItem, ItemDetail, PaymentForm } from "../../constants/interface";
+import { Address, CartItem, ItemDetail, PaymentForm } from "../../constants/interface";
+import { useAuth } from "../../custom-hook/useAuth";
 import { useCart } from "../../custom-hook/CartContext";
 import { useVoucher } from "../../custom-hook/VoucherContext";
 import QrLogo from "../../images/qr-code.jpg";
@@ -51,6 +52,9 @@ function Payment() {
     const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(
         PaymentMethod.CheckPayment
     );
+    const { isLoggedIn } = useAuth();
+    const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
+    const [selectedAddressId, setSelectedAddressId] = useState<string>();
     const { itemId } = useParams<{ itemId?: string }>();
     const { cartItems, clearCart } = useCart();
     const { appliedCode, discountAmount, applyVoucher, clearVoucher } = useVoucher();
@@ -74,6 +78,9 @@ function Payment() {
             fetchDetailProduct(itemId);
         }
         fetchCity();
+        if (isLoggedIn) {
+            fetchSavedAddresses();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sizeOneItemSelected]);
 
@@ -132,8 +139,10 @@ function Payment() {
                     return a.label.localeCompare(b.label);
                 });
             setCityList(data);
+            return data;
         } catch (error) {
             console.log(error);
+            return [];
         }
     };
 
@@ -145,10 +154,12 @@ function Payment() {
             const data: LocationOption[] = listProvice?.data?.districts?.map((provice: any) => ({
                 label: provice.name,
                 value: provice.code,
-            }));
+            })) || [];
             setProviceList(data);
+            return data;
         } catch (error) {
             console.log(error);
+            return [];
         }
     };
 
@@ -160,15 +171,90 @@ function Payment() {
             let data: LocationOption[] = listDistrict?.data?.wards?.map((wards: any) => ({
                 label: wards.name,
                 value: wards.code,
-            }));
+            })) || [];
             if (data) {
                 data = [...data, { label: '-Khác-', value: -1 }]
             }
             setDistrictList(data);
+            return data;
+        } catch (error) {
+            console.log(error);
+            return [];
+        }
+    };
+
+    const fetchSavedAddresses = useCallback(async () => {
+        try {
+            const res = await ApiService.getAddressList();
+            const data = res?.data?.data ?? res?.data ?? res ?? [];
+            const list: Address[] = Array.isArray(data) ? data : [];
+            setSavedAddresses(list);
+            const defaultAddress = list.find((addr) => addr.is_default) || list[0];
+            if (defaultAddress) {
+                applySavedAddress(defaultAddress);
+            }
         } catch (error) {
             console.log(error);
         }
-    };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const applySavedAddress = useCallback(async (addr: Address) => {
+        setSelectedAddressId(addr.id);
+        setFormError({});
+        setPaymentForm((prev) => ({
+            ...prev,
+            name: addr.receiver_name,
+            phone: addr.phone,
+            tp: addr.tp,
+            qh: addr.qh,
+            px: addr.px,
+            address: addr.address,
+        }));
+
+        setSelectProvice(undefined);
+        setSelectDistrict(undefined);
+        setProviceList([]);
+        setDistrictList([]);
+
+        try {
+            const cities = await fetchCity();
+            const cityMatch = cities?.find((c) => c.label === addr.tp);
+            setSelectCity(cityMatch?.value);
+            if (!cityMatch) return;
+
+            const districts = await fetchProvice(cityMatch.value);
+            const districtMatch = districts?.find((d) => d.label === addr.qh);
+            setSelectProvice(districtMatch?.value);
+            if (!districtMatch) return;
+
+            const wards = await fetchDistrict(districtMatch.value);
+            const wardMatch = wards?.find((w) => w.label === addr.px);
+            setSelectDistrict(wardMatch?.value);
+        } catch (error) {
+            console.log(error);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const handleUseNewAddress = useCallback(() => {
+        setSelectedAddressId(undefined);
+        setFormError({});
+        setPaymentForm((prev) => ({
+            ...prev,
+            name: "",
+            phone: "",
+            tp: "",
+            qh: "",
+            px: "",
+            address: "",
+        }));
+        setSelectCity(undefined);
+        setSelectProvice(undefined);
+        setSelectDistrict(undefined);
+        setProviceList([]);
+        setDistrictList([]);
+    }, []);
 
     const handleCityChange = useCallback((option?: LocationOption) => {
         if (option) {
@@ -423,6 +509,38 @@ function Payment() {
                                         </div>
                                     </div>
                                 ))}
+                            </div>
+                        )}
+                        {isLoggedIn && savedAddresses.length > 0 && (
+                            <div className="pm-saved-address">
+                                <div className="pm-saved-address__title">Địa chỉ giao hàng đã lưu</div>
+                                <div className="pm-saved-address__list">
+                                    {savedAddresses.map((addr) => (
+                                        <button
+                                            type="button"
+                                            key={addr.id}
+                                            className={`pm-saved-address__chip ${selectedAddressId === addr.id ? "pm-saved-address__chip--active" : ""}`}
+                                            onClick={() => applySavedAddress(addr)}
+                                        >
+                                            <div className="pm-saved-address__name">
+                                                {addr.receiver_name} · {addr.phone}
+                                                {addr.is_default && (
+                                                    <span className="pm-saved-address__badge">Mặc định</span>
+                                                )}
+                                            </div>
+                                            <div className="pm-saved-address__detail">
+                                                {[addr.address, addr.px, addr.qh, addr.tp].filter(Boolean).join(", ")}
+                                            </div>
+                                        </button>
+                                    ))}
+                                    <button
+                                        type="button"
+                                        className={`pm-saved-address__chip pm-saved-address__chip--new ${!selectedAddressId ? "pm-saved-address__chip--active" : ""}`}
+                                        onClick={handleUseNewAddress}
+                                    >
+                                        <i className="pi pi-plus"></i> Nhập địa chỉ mới
+                                    </button>
+                                </div>
                             </div>
                         )}
                         <div className="grid user-info">

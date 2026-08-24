@@ -86,11 +86,23 @@ export class NewsDetail {
     status : number = 1
 }
 
+export interface OrderProductItem {
+    payment_id?: string;
+    product_id: string;
+    product_name: string;
+    img: string;
+    quantity: number;
+    price: number;
+    salePrice: number;
+    size?: string;
+    discount_amount?: number;
+}
+
 export class PaymentForm extends UserInfo {
     id?: string | undefined = undefined;
     payment_method: string = "";
     note: string = "";
-    products?: CartItem[] = [];
+    products?: OrderProductItem[] = [];
     status?: number = 0;
     total_bill?:number = 0;
     date?:string = "";
@@ -102,6 +114,28 @@ export interface Window {
 export class Login {
     username: string = "";
     password: string = "";
+}
+
+export class Register {
+    username: string = "";
+    password: string = "";
+}
+
+export interface AuthResponseData {
+    username: string;
+    role: string;
+    token: string;
+}
+
+export class Address {
+    id?: string = "";
+    receiver_name: string = "";
+    phone: string = "";
+    tp: string = "";
+    qh: string = "";
+    px: string = "";
+    address: string = "";
+    is_default?: boolean = false;
 }
 
 export interface CartItem {

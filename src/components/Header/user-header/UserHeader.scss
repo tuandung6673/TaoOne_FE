@@ -113,6 +113,11 @@
     display: none;
 }
 
+// Account entry point
+.user-header-account-item {
+    cursor: pointer;
+}
+
 // Add keyframe animation for smooth slide down effect
 @keyframes slideDown {
     from {
@@ -388,6 +393,26 @@
     position: absolute;
     right: 0;
     top: 0;
+}
+
+.user-header-account-mobile-button {
+    background: #2f3033;
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    color: #fff;
+    font-size: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    &:hover {
+        background: #5e5e60;
+    }
 }
 
 .user-header-cart-mobile-button {

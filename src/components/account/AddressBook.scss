@@ -1,0 +1,156 @@
+.address-book {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.address-book-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    h2 {
+        margin: 0;
+        font-size: 20px;
+        color: var(--text-primary);
+        white-space: nowrap;
+    }
+
+    .p-button {
+        flex: 0 0 auto;
+        width: auto;
+    }
+}
+
+.address-book-loading {
+    color: var(--text-secondary);
+}
+
+.address-book-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.address-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--bg-surface-alt);
+}
+
+.address-card-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.address-card-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.address-card-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--text-on-accent);
+}
+
+.address-card-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+
+    label {
+        font-size: 13px;
+        color: var(--text-secondary);
+        cursor: pointer;
+    }
+}
+
+.address-card-detail {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.address-card-delete {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: rgba(229, 57, 53, 0.12);
+    color: var(--danger);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: var(--danger);
+        color: var(--text-on-accent);
+    }
+}
+
+.address-book-dialog {
+    width: 90vw;
+    max-width: 480px;
+}
+
+.address-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        label {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+    }
+
+    .form-group-checkbox {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+
+        label {
+            font-weight: 500;
+            cursor: pointer;
+        }
+    }
+
+    .p-dropdown,
+    .p-inputtext {
+        width: 100%;
+    }
+}
+
+.address-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}

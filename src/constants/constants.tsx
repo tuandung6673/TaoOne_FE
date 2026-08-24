@@ -43,6 +43,18 @@ export const ROLE = {
     admin: '/admin'
 }
 
+export const USER_ROLE = {
+    admin: 'admin',
+    customer: 'customer'
+}
+
+export const ACCOUNT_ROUTE = {
+    root: '/account',
+    changePassword: 'doi-mat-khau',
+    purchaseHistory: 'lich-su-mua-hang',
+    addressBook: 'so-dia-chi'
+}
+
 export const CAM_KET = [
     "Cam kết chính hãng Apple 100%",
     "Hoàn tiền 200% nếu không chính hãng Apple",

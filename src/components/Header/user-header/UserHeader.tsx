@@ -9,10 +9,12 @@ import "./UserHeader.scss";
 
 import { OverlayPanel } from "primereact/overlaypanel";
 import { CartItem } from "../../../constants/interface";
+import { useAuth } from "../../../custom-hook/useAuth";
 
 function UserHeader() {
   const { clearCart } = useCart();
   const { theme, toggleTheme } = useTheme();
+  const { username, isLoggedIn } = useAuth();
   const [isFixed, setIsFixed] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -128,6 +130,10 @@ function UserHeader() {
     }
   };
 
+  const handleAccountClick = () => {
+    navigate(isLoggedIn ? "/account" : "/login");
+  };
+
   return (
     <>
       <div className={`user-header ${isFixed ? "user-header-fixed" : ''}`}>
@@ -182,31 +188,6 @@ function UserHeader() {
             </ul>
           </div>
           <div className="user-header-right">
-            <span
-              className="user-header-item"
-              onClick={toggleTheme}
-              title={theme === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}
-            >
-              <i
-                className={theme === 'dark' ? 'pi pi-sun' : 'pi pi-moon'}
-                style={{ color: "white" }}
-              ></i>
-            </span>
-            <span
-              className="user-header-item user-header-cart-item"
-              onClick={handleCartClick}
-            >
-              <i
-                className="pi pi-shopping-bag"
-                style={{ color: "white" }}
-              ></i>
-              {getCartCount() > 0 && (
-                <span className="user-header-cart-badge">
-                  {getCartCount()}
-                </span>
-              )}
-            </span>
-
             {/* Search Input - Appears to the right when active */}
             {isSearchActive ? (
               <div className="user-header-search-container-right">
@@ -243,6 +224,42 @@ function UserHeader() {
                 ></i>
               </span>
             )}
+            <span
+              className="user-header-item"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}
+            >
+              <i
+                className={theme === 'dark' ? 'pi pi-sun' : 'pi pi-moon'}
+                style={{ color: "white" }}
+              ></i>
+            </span>
+            <span
+              className="user-header-item user-header-cart-item"
+              onClick={handleCartClick}
+            >
+              <i
+                className="pi pi-shopping-bag"
+                style={{ color: "white" }}
+              ></i>
+              {getCartCount() > 0 && (
+                <span className="user-header-cart-badge">
+                  {getCartCount()}
+                </span>
+              )}
+            </span>
+
+              <span
+              className="user-header-item user-header-account-item"
+              onClick={handleAccountClick}
+              title={isLoggedIn ? username || "Tài khoản" : "Đăng nhập"}
+            >
+              <i
+                className="pi pi-user"
+                style={{ color: "white" }}
+              ></i>
+            </span>
+            
           </div>
           <div className="user-header-cart-mobile">
             <button

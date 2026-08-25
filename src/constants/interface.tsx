@@ -127,6 +127,11 @@ export interface AuthResponseData {
     token: string;
 }
 
+export class ChangePasswordForm {
+    old_password: string = "";
+    new_password: string = "";
+}
+
 export class Address {
     id?: string = "";
     receiver_name: string = "";
@@ -279,6 +284,7 @@ export interface ProductCommentItem {
     rating: number;
     status: number;
     created_at: string;
+    is_verified?: boolean;
 }
 
 export interface ProductCommentSummary {

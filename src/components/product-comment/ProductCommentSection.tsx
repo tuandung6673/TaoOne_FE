@@ -216,7 +216,17 @@ function ProductCommentSection({ productId, summary, loading, onCommentPosted }:
                             <div className="product-comment-avatar">{getInitial(comment.name)}</div>
                             <div className="product-comment-item-body">
                                 <div className="product-comment-item-header">
-                                    <span className="product-comment-item-name">{comment.name}</span>
+                                    <span className="product-comment-item-name">
+                                        {comment.name}
+                                        {comment.is_verified && (
+                                            <span
+                                                className="product-comment-verified-badge"
+                                                title="Đánh giá đã xác thực"
+                                            >
+                                                <i className="pi pi-check"></i>
+                                            </span>
+                                        )}
+                                    </span>
                                     <span className="product-comment-item-date">{formatCommentDate(comment.created_at)}</span>
                                 </div>
                                 <div className="product-comment-item-meta">

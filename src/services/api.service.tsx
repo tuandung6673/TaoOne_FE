@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Address, AdviseForm, CheckApplyVoucherRequest, Login, PaymentForm, ProductCommentForm, Register } from "../constants/interface";
+import { Address, AdviseForm, ChangePasswordForm, CheckApplyVoucherRequest, Login, PaymentForm, ProductCommentForm, Register } from "../constants/interface";
 import axiosInstance from "./api.interceptor";
 
 const ApiService = {
@@ -379,6 +379,19 @@ const ApiService = {
             return response.data;
         } catch (error) {
             console.error("Error setting default address:", error);
+            throw error;
+        }
+    },
+
+    postChangePassword: async (data: ChangePasswordForm) => {
+        try {
+            const response = await axiosInstance.post(
+                `${process.env.REACT_APP_BASE_URL}/Account/PostChangePassword`,
+                data
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error changing password:", error);
             throw error;
         }
     },

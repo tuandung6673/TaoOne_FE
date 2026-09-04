@@ -124,15 +124,27 @@
         border-color: var(--border-color-strong);
     }
 
+    // PrimeReact highlights the hovered/keyboard-navigated item via a
+    // `.p-focus` class added by JS, not just `:hover` — and the theme's own
+    // `.p-dropdown-item:not(.p-highlight):not(.p-disabled).p-focus` rule
+    // stacks enough classes to out-specificity a plain `:hover` override, so
+    // both states must be targeted explicitly here.
     .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
         color: var(--text-primary);
 
-        &:hover {
+        &:hover,
+        &:not(.p-highlight):not(.p-disabled).p-focus {
             background: var(--bg-surface-alt);
+            color: var(--text-primary);
         }
 
         &.p-highlight {
             background: var(--accent);
+            color: var(--text-on-accent);
+        }
+
+        &.p-highlight.p-focus {
+            background: var(--accent-hover);
             color: var(--text-on-accent);
         }
     }

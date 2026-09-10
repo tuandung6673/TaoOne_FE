@@ -53,6 +53,10 @@ function UserHeader() {
   }, []);
 
   const handleCartClick = (event: React.MouseEvent) => {
+    if (window.innerWidth <= 768) {
+      navigate("/cart");
+      return;
+    }
     if (cartOverlayRef.current) {
       cartOverlayRef.current.toggle(event);
     }
@@ -188,44 +192,19 @@ function UserHeader() {
             </ul>
           </div>
           <div className="user-header-right">
-            {/* Search Input - Appears to the right when active */}
-            {isSearchActive ? (
-              <div className="user-header-search-container-right">
-                <form onSubmit={handleSearchSubmit} className="user-header-search-form">
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    placeholder="Tìm kiếm sản phẩm..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={handleSearchKeyDown}
-                    className="user-header-search-input"
-                  />
-                  <button type="submit" className="user-header-search-submit">
-                    <i className="pi pi-search"></i>
-                  </button>
-                  <button
-                    type="button"
-                    className="user-header-search-close"
-                    onClick={handleSearchClose}
-                  >
-                    <i className="pi pi-times"></i>
-                  </button>
-                </form>
-              </div>
-            ) : (
-              <span
-                className="user-header-item"
-                onClick={handleSearchClick}
-              >
-                <i
-                  className="pi pi-search"
-                  style={{ color: "white" }}
-                ></i>
-              </span>
-            )}
+            {/* Icons always stay mounted (just hidden) so this box never
+                changes width/reflows the center nav when search opens */}
             <span
-              className="user-header-item"
+              className={`user-header-item ${isSearchActive ? "user-header-item-invisible" : ""}`}
+              onClick={handleSearchClick}
+            >
+              <i
+                className="pi pi-search"
+                style={{ color: "white" }}
+              ></i>
+            </span>
+            <span
+              className={`user-header-item ${isSearchActive ? "user-header-item-invisible" : ""}`}
               onClick={toggleTheme}
               title={theme === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}
             >
@@ -235,7 +214,7 @@ function UserHeader() {
               ></i>
             </span>
             <span
-              className="user-header-item user-header-cart-item"
+              className={`user-header-item user-header-cart-item ${isSearchActive ? "user-header-item-invisible" : ""}`}
               onClick={handleCartClick}
             >
               <i
@@ -249,8 +228,8 @@ function UserHeader() {
               )}
             </span>
 
-              <span
-              className="user-header-item user-header-account-item"
+            <span
+              className={`user-header-item user-header-account-item ${isSearchActive ? "user-header-item-invisible" : ""}`}
               onClick={handleAccountClick}
               title={isLoggedIn ? username || "Tài khoản" : "Đăng nhập"}
             >
@@ -259,7 +238,32 @@ function UserHeader() {
                 style={{ color: "white" }}
               ></i>
             </span>
-            
+
+            {/* Search overlay - absolutely positioned, never affects layout */}
+            <div className={`user-header-search-container-right ${isSearchActive ? "user-header-search-container-right-active" : ""}`}>
+              <form onSubmit={handleSearchSubmit} className="user-header-search-form">
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder="Tìm kiếm sản phẩm..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleSearchKeyDown}
+                  className="user-header-search-input"
+                  tabIndex={isSearchActive ? 0 : -1}
+                />
+                <button type="submit" className="user-header-search-submit">
+                  <i className="pi pi-search"></i>
+                </button>
+                <button
+                  type="button"
+                  className="user-header-search-close"
+                  onClick={handleSearchClose}
+                >
+                  <i className="pi pi-times"></i>
+                </button>
+              </form>
+            </div>
           </div>
           <div className="user-header-cart-mobile">
             <button

@@ -21,37 +21,68 @@
 }
 
 .user-header-main {
-    width: 60%;
+    width: 90%;
+    max-width: 1100px;
     height: 60px;
     margin: 0 auto;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(8px, 2vw, 32px);
     position: relative;
 }
 
+// Cap the header width in tiers so it doesn't keep stretching
+// wider (and pushing left/center/right further apart) on big monitors
+@media (min-width: 1280px) {
+    .user-header-main {
+        max-width: 1180px;
+    }
+}
+
+@media (min-width: 1440px) {
+    .user-header-main {
+        max-width: 1260px;
+    }
+}
+
+@media (min-width: 1920px) {
+    .user-header-main {
+        max-width: 1340px;
+    }
+}
+
 .user-header-left {
-    width: 10%;
+    flex: 0 0 auto;
     .user-header-logo {
         height: 60px;
-        width: 100%;
+        width: auto;
         object-fit: cover;
     }
 }
 
 .user-header-center {
-    width: 76%;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
     ul {
         margin: 0;
         display: flex;
+        height: 100%;
+        justify-content: center;
+        flex-wrap: nowrap;
     }
     li {
         display: flex;
         justify-content: center;
         align-items: center;
         color: #FFFFFF;
-        width: calc(100% / 6);
+        flex: 0 1 auto;
+        padding: 0 clamp(6px, 1.4vw, 20px);
         height: 60px;
         cursor: pointer;
+        white-space: nowrap;
+        font-size: clamp(12px, 1vw, 16px);
         &:hover {
             background: #2d2d2d;
             transition: .15s ease-in-out;
@@ -67,7 +98,11 @@
 }
 
 .user-header-right {
-    width: 14%;
+    flex: 0 0 auto;
+    // Reserve the same width as the 3 icons even when the search
+    // input replaces the search icon (its container is absolutely
+    // positioned), so the center nav doesn't reflow/shift right.
+    min-width: 134px;
     height: 60px;
     display: flex;
     justify-content: flex-end;
@@ -467,12 +502,28 @@
 .user-header-search-container-right {
     display: flex;
     align-items: center;
-    animation: slideInSearchRight 0.3s ease-out;
     min-width: 200px;
     max-width: 300px;
     position: absolute;
+    top: 50%;
     right: -50px;
+    transform: translateY(-50%);
     z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    &.user-header-search-container-right-active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        animation: slideInSearchRight 0.3s ease-out;
+    }
+}
+
+.user-header-item-invisible {
+    visibility: hidden;
+    pointer-events: none;
 }
 
 .user-header-search-form {
@@ -485,7 +536,7 @@
 .user-header-search-input {
     width: 100%;
     height: 38px;
-    padding: 8px 40px 8px 12px;
+    padding: 8px 68px 8px 12px;
     border: none;
     border-radius: 19px;
     background: #2f3033;
@@ -506,7 +557,7 @@
 
 .user-header-search-submit {
     position: absolute;
-    right: 35px;
+    right: 38px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
@@ -560,11 +611,25 @@
 @keyframes slideInSearchRight {
     from {
         opacity: 0;
-        transform: translateX(20px);
+        transform: translateY(-50%) translateX(20px);
     }
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(-50%) translateX(0);
+    }
+}
+
+@media (max-width: 1024px) {
+    .user-header-main {
+        width: 96%;
+        gap: 10px;
+    }
+    .user-header-right {
+        gap: 6px;
+        .user-header-item {
+            height: 38px;
+            width: 38px;
+        }
     }
 }
 
@@ -576,7 +641,35 @@
         display: none;
     }
     .user-header-right {
-        display: none;
+        flex: 1 1 auto;
+        gap: 6px;
+        margin-right: 10px;
+        .user-header-item {
+            height: 36px;
+            width: 36px;
+            i {
+                font-size: 15px;
+            }
+        }
+        .user-header-cart-badge {
+            width: 17px;
+            height: 17px;
+            min-width: 17px;
+            font-size: 10px;
+            top: -4px;
+            right: -4px;
+        }
+    }
+    .user-header-search-container-right {
+        right: 0;
+        left: 35px;
+        min-width: unset;
+        max-width: unset;
+        width: auto;
+    }
+    // Cart already shown inside .user-header-right, avoid a duplicate button
+    .user-header-cart-mobile {
+        display: none !important;
     }
     .user-header-mobile {
         height: 50px;
@@ -592,16 +685,11 @@
     }
     .user-header-left {
         width: 35%;
+        margin-left: 10px;
     }
 
     // Hide cart overlay panel on mobile
     .user-header-cart-overlay-panel {
         display: none !important;
-    }
-    .user-header-cart-mobile {
-        display: block;
-        position: absolute;
-        right: 10px;
-        top: 10px;
     }
 }

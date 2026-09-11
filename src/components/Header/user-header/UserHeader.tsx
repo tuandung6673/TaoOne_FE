@@ -313,7 +313,6 @@ function UserHeader() {
         className="user-header-cart-overlay-panel"
         dismissable={true}
         showCloseIcon={false}
-        style={{ transform: 'translateX(-50px)' }}
       >
         <div className="user-header-cart-overlay-content">
           <div className="user-header-cart-overlay-header">
